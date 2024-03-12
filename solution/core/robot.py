@@ -9,7 +9,8 @@ point_direction_to_robot_cmd = {
     Point(0, -1) : 2,
     Point(0, 1) : 3,
     Point(-1, 0) : 1,
-    Point(1, 0) : 0
+    Point(1, 0) : 0,
+    Point(0, 0): 4
 }
     
 
@@ -73,16 +74,23 @@ class Robot():
             robots = None, 
             berths = None,  
             target_pos: Point = Point(-1, -1)):
+        # robot根据状态执行每一帧的动作
         if self.extended_status == Robot_Extended_Status.BackBerth:
             self.back_berth(robot_id, move_matrix, berth_id=berth_id, berths=berths)
+
         elif self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
             self.go_to_fetch_from_berth(robot_id, move_matrix, target_pos=target_pos)
+
         elif self.extended_status == Robot_Extended_Status.BackBerthAndPull:
             self.back_berth_and_pull(robot_id, move_matrix, berth_id=berth_id, berths=berths)
     
     def back_berth(self, robot_id: int, move_matrix: List[List[Point]],
                             berth_id: int = 0, berths = []):
         action = move_matrix[self.y][self.x]
+        # 泵碰撞？/
+        if (action not in point_direction_to_robot_cmd):
+            self.extended_status = Robot_Extended_Status.BackBerth
+            return
         if self.pos != berths[berth_id].pos:
             print("move", robot_id, point_direction_to_robot_cmd[action])
         else:
@@ -91,6 +99,12 @@ class Robot():
     def back_berth_and_pull(self, robot_id: int, move_matrix: List[List[Point]],
                             berth_id: int = 0, berths = []):
         action = move_matrix[self.y][self.x]
+        
+        # 碰撞？？？
+        if (action not in point_direction_to_robot_cmd):
+            self.extended_status = Robot_Extended_Status.BackBerth
+            return
+        
         if self.pos != berths[berth_id].pos:
             print("move", robot_id, point_direction_to_robot_cmd[action])
             if (self.pos + action == berths[berth_id].pos):
@@ -125,12 +139,15 @@ class Robot():
                 next_pos = self.context_go_to_fetch_from_berth.paths.get()
                 #logger.info(next_pos)
                 action = next_pos - self.pos
+                # 碰撞
+                if (action not in point_direction_to_robot_cmd):
+                    self.extended_status = Robot_Extended_Status.BackBerth
+                    return
                 print("move", robot_id, point_direction_to_robot_cmd[action])
                 if (next_pos == target_pos):
                     print("get", robot_id)
             elif (self.pos == target_pos):
                 self.extended_status = Robot_Extended_Status.GotGoods
                 self.context_go_to_fetch_from_berth.quit()
-                
-            
+    
             

@@ -81,8 +81,10 @@ def Input():
         logger.info("%d, %d, %d", y, x, val)
 
         # 暂时测试物品队列用
-        if (cost_matrix_list[0][y][x] >= 0 and val > 100):
-            berth_gds_priority_queue_list[0].put( (cost_matrix_list[0][y][x], Point(x, y)))
+        for i in range(1):
+            if (cost_matrix_list[i][y][x] >= 0 and val > 100):
+                berth_gds_priority_queue_list[i].put( (cost_matrix_list[i][y][x], Point(x, y)))
+        
     for i in range(robot_num):
         robot[i].goods, robot[i].y, robot[i].x, robot[i].status = map(int, input().split())
     for i in range(5):
@@ -104,12 +106,13 @@ def myInit():
 
 class Scheduler:
     def __init__(self) -> None:
-        self.init_scheduler_down_list = [False for _ in range(robot_num)]
         self.target_pos_list = [Point(-1, -1) for _ in range(robot_num)]
 
     def init_scheduler(self, robot_id: int):
         if robot[robot_id].pos != berth[robot_id].pos:
             robot[robot_id].extended_status = Robot_Extended_Status.BackBerth
+        else:
+            robot[robot_id].extended_status = Robot_Extended_Status.OnBerth
     
     def go_to_fetch_from_berth(self, robot_id: int):
         
@@ -140,10 +143,10 @@ if __name__ == "__main__":
         for i in range(robot_num):
             if (zhen == 1):
                 scheduler.init_scheduler(i)
-            if robot[0].extended_status == Robot_Extended_Status.OnBerth:
-                scheduler.go_to_fetch_from_berth(0)
-            elif (robot[0].extended_status == Robot_Extended_Status.GotGoods):
-                scheduler.back_berth_and_pull(0)
+            if robot[i].extended_status == Robot_Extended_Status.OnBerth:
+                scheduler.go_to_fetch_from_berth(i)
+            elif (robot[i].extended_status == Robot_Extended_Status.GotGoods):
+                scheduler.back_berth_and_pull(i)
             robot[i].run(i, move_matrix_list[i], target_pos = scheduler.target_pos_list[i], berths=berth, berth_id=i)
 
         if (boat[0].pos == -1 and boat[0].status == 1 or zhen == 1):
