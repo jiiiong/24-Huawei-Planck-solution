@@ -45,7 +45,7 @@ move_matrix_list:  List[ (List[List[Point]]) ] = []
 # global queue for goods
 berth_gds_priority_queue_list: List[PriorityQueue[Tuple[int, Point]]] = [PriorityQueue() for _ in range(berth_num)]
 
-back_count = boat_capacity
+back_count = 71
 
 def Init():
     for _ in range(0, n):
@@ -61,6 +61,7 @@ def Init():
         berth[id].transport_time = berth_list[3]
         berth[id].loading_speed = berth_list[4]
         logger.info("transport time: %d, loading speed: %d,",berth[id].transport_time, berth[id].loading_speed)
+    global boat_capacity
     boat_capacity = int(input())
     logger.info(boat_capacity)
     okk = input()
@@ -99,7 +100,7 @@ def myInit():
         from path_planing.utils import applyMoveMatrix2ChMap, saveMatrix2File
         saveMatrix2File(applyMoveMatrix2ChMap(ch, move_matrix))
     t = time.time() - t
-    logger.info("myInit time: %d s", t)
+    logger.info("myInit time: %ds", t)
 
 class Scheduler:
     def __init__(self) -> None:
@@ -109,16 +110,14 @@ class Scheduler:
     def init_scheduler(self, robot_id: int):
         if robot[robot_id].pos != berth[robot_id].pos:
             robot[robot_id].extended_status = Robot_Extended_Status.BackBerth
-        else:
-            self.init_scheduler_down_list[robot_id] = True
-            robot[robot_id].extended_status = Robot_Extended_Status.OnBerth
     
     def go_to_fetch_from_berth(self, robot_id: int):
         
-        target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
-        logger.info("target pos is %s", target_pos)
-        robot[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
-        self.target_pos_list[robot_id] = target_pos
+        if berth_gds_priority_queue_list[robot_id].empty() is False:
+            target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
+            logger.info("target pos is %s", target_pos)
+            robot[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
+            self.target_pos_list[robot_id] = target_pos
     
     # def back_berth(self, robot_id: int):
     #     if robot[robot_id].pos != berth[robot_id].pos:
@@ -139,26 +138,22 @@ if __name__ == "__main__":
     for zhen in range(1, 15001):
         id = Input()
         for i in range(robot_num):
-            if scheduler.init_scheduler_down_list[i] is False:
+            if (zhen == 1):
                 scheduler.init_scheduler(i)
-            elif (scheduler.init_scheduler_down_list[0] == True):
-                if robot[0].extended_status == Robot_Extended_Status.OnBerth:
-                    scheduler.go_to_fetch_from_berth(0)
-                elif (robot[0].extended_status == Robot_Extended_Status.GotGoods):
-                    scheduler.back_berth_and_pull(0)
-
-            robot[i].run(i, move_matrix_list[i], target_pos = scheduler.target_pos_list[i], berths=berth, berth_id=0)
+            if robot[0].extended_status == Robot_Extended_Status.OnBerth:
+                scheduler.go_to_fetch_from_berth(0)
+            elif (robot[0].extended_status == Robot_Extended_Status.GotGoods):
+                scheduler.back_berth_and_pull(0)
+            robot[i].run(i, move_matrix_list[i], target_pos = scheduler.target_pos_list[i], berths=berth, berth_id=i)
 
         if (boat[0].pos == -1 and boat[0].status == 1 or zhen == 1):
             print("ship", 0, 0)
         elif (boat[0].pos == 0 and boat[0].status == 1):
-            back_count -= 1
+            back_count = back_count - 1
             if (back_count == 0):
                 print("go", 0)
                 back_count = boat_capacity
+                logger.info("=++++++++++++++++++++++++++++++++++++%s", boat_capacity)
 
-        # for i in range(robot_num):
-        #     print("move", i, random.randint(0, 3))
-        #     sys.stdout.flush()
         print("OK")
         sys.stdout.flush()
