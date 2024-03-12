@@ -39,7 +39,7 @@ gds = [[0 for _ in range(N)] for _ in range(N)]
 
 # for path_planing 
 value_matrix:   List[List[int]]   = [[] for _ in range(10)] # 用来表示每个位置的开销，0代表不可通行
-cost_matrix_list:  List[ (List[List[int]]) ]   = [] #
+cost_matrix_list:  List[ (List[List[int]]) ]   = []
 move_matrix_list:  List[ (List[List[Point]]) ] = []
 
 # global queue for goods
@@ -153,7 +153,6 @@ if __name__ == "__main__":
             if (back_count == 0):
                 print("go", 0)
                 back_count = boat_capacity
-                logger.info("=++++++++++++++++++++++++++++++++++++%s", boat_capacity)
 
         print("OK")
         sys.stdout.flush()
