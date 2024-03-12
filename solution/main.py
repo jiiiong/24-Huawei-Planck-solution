@@ -45,7 +45,7 @@ move_matrix_list:  List[ (List[List[Point]]) ] = []
 # global queue for goods
 berth_gds_priority_queue_list: List[PriorityQueue[Tuple[int, Point]]] = [PriorityQueue() for _ in range(berth_num)]
 
-back_count = 71
+back_count = boat_capacity
 
 def Init():
     for _ in range(0, n):
@@ -62,7 +62,7 @@ def Init():
         berth[id].loading_speed = berth_list[4]
         logger.info("transport time: %d, loading speed: %d,",berth[id].transport_time, berth[id].loading_speed)
     boat_capacity = int(input())
-    logger.info(msg=boat_capacity)
+    logger.info(boat_capacity)
     okk = input()
 
     # 初始化所有港口的BFS
@@ -154,8 +154,8 @@ if __name__ == "__main__":
         elif (boat[0].pos == 0 and boat[0].status == 1):
             back_count -= 1
             if (back_count == 0):
-                back_count = boat_capacity
                 print("go", 0)
+                back_count = boat_capacity
 
         # for i in range(robot_num):
         #     print("move", i, random.randint(0, 3))

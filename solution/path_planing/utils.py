@@ -71,10 +71,10 @@ def applyMoveMatrix2ChMap(ch: List[List[str]], move_matrix: List[List[Point]]) -
 def saveMatrix2File(matrix: List[List[Any]]) -> None:
     '''将矩阵[[]]存到文件中'''
     index = 0
-    file_name = Path("/home/jiiiong/LinuxRelease/solution/test/move_" + str(index))
+    file_name = Path("solution/test/move_" + str(index))
     while file_name.exists():
         index += 1
-        file_name = Path("/home/jiiiong/LinuxRelease/solution/test/move_" + str(index))
+        file_name = Path("solution/test/move_" + str(index))
 
     with open(file_name, "w") as fd:
         for y in range(len(matrix)):

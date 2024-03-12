@@ -1,9 +1,9 @@
 import queue
-from typing import List
+from typing import List, Tuple
 from solution.path_planing.utils import fileMap2Matrix
 from solution.core import Point
 
-def BFS(value_matrix: List[List[int]], source_point: Point) -> tuple[list[list[Point]], list[list[int]]]:
+def BFS(value_matrix: List[List[int]], source_point: Point) -> Tuple[List[List[Point]], List[List[int]]]:
      
     frontier = queue.Queue()
     came_from = dict()
@@ -33,7 +33,7 @@ def BFS(value_matrix: List[List[int]], source_point: Point) -> tuple[list[list[P
 
     return move_matrix, cost_matrix
         
-def BFS_file(file, source_point: Point) -> tuple[list[list[Point]], list[list[int]]]:
+def BFS_file(file, source_point: Point) -> Tuple[List[List[Point]], List[List[int]]]:
     matrix = fileMap2Matrix(file)
  
     frontier = queue.Queue()
