@@ -63,7 +63,7 @@ def Init():
         logger.info("transport time: %d, loading speed: %d,",berth[id].transport_time, berth[id].loading_speed)
     global boat_capacity
     boat_capacity = int(input())
-    logger.info(boat_capacity)
+    logger.debug(boat_capacity)
     okk = input()
 
     # 初始化所有港口的BFS
