@@ -110,10 +110,9 @@ class Scheduler:
         self.target_pos_list = [Point(-1, -1) for _ in range(robot_num)]
 
     def init_scheduler(self, robot_id: int):
-        if robot[robot_id].pos != berth[robot_id].pos:
-            robot[robot_id].extended_status = Robot_Extended_Status.BackBerth
-        else:
-            robot[robot_id].extended_status = Robot_Extended_Status.OnBerth
+        robot[robot_id].robot_id = robot_id
+        robot[robot_id].berth_id = robot_id
+        self.back_berth_and_pull(robot_id)
     
     def go_to_fetch_from_berth(self, robot_id: int):
         
@@ -143,12 +142,19 @@ if __name__ == "__main__":
         id = Input()
         for i in range(robot_num):
             if (zhen == 1):
-                scheduler.back_berth_and_pull(i)
+                scheduler.init_scheduler(i)
             if robot[0].extended_status == Robot_Extended_Status.OnBerth:
                 scheduler.go_to_fetch_from_berth(0)
             elif (robot[0].extended_status == Robot_Extended_Status.GotGoods):
                 scheduler.back_berth_and_pull(0)
-            robot[i].run_new(i, move_matrix_list[i], target_pos = scheduler.target_pos_list[i], berths=berth, berth_id=i)
+            # move_matrix: List[List[Point]],
+            # robots = [],
+            # berths: List[Berth] = [], 
+            # target_pos: Point = Point(-1, -1)
+            robot[i].run_new(move_matrix=move_matrix_list[i],
+                             robots = robot,
+                             berths = berth,
+                             target_pos = scheduler.target_pos_list[i])
 
         if (boat[0].pos == -1 and boat[0].status == 1 or zhen == 1):
             print("ship", 0, 0)
