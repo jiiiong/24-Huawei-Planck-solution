@@ -112,23 +112,22 @@ class Scheduler:
     def init_scheduler(self, robot_id: int):
         robot[robot_id].robot_id = robot_id
         robot[robot_id].berth_id = robot_id
+        robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
+        logger.info("%s", robot[robot_id].alarming_area)
         self.back_berth_and_pull(robot_id)
     
     def go_to_fetch_from_berth(self, robot_id: int):
         
         if berth_gds_priority_queue_list[robot_id].empty() is False:
-            target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
+            target_pos = berth_gds_priority_queue_list[robot_id].get(False)[1]
             logger.info("target pos is %s", target_pos)
             robot[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
             self.target_pos_list[robot_id] = target_pos
-    
-    # def back_berth(self, robot_id: int):
-    #     if robot[robot_id].pos != berth[robot_id].pos:
-    #         robot[robot_id].extended_status = Robot_Extended_Status.BackBerth
 
     def back_berth_and_pull(self, robot_id: int):
-        if robot[robot_id].pos != berth[robot_id].pos:
-            robot[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
+        robot[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
+
+            
 
     
 if __name__ == "__main__":
@@ -152,9 +151,9 @@ if __name__ == "__main__":
             # berths: List[Berth] = [], 
             # target_pos: Point = Point(-1, -1)
             robot[i].run(move_matrix=move_matrix_list[i],
-                             robots = robot,
-                             berths = berth,
-                             target_pos = scheduler.target_pos_list[i])
+                         robots = robot,
+                         berths = berth,
+                         target_pos = scheduler.target_pos_list[i])
 
         if (boat[0].pos == -1 and boat[0].status == 1 or zhen == 1):
             print("ship", 0, 0)

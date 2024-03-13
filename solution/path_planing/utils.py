@@ -10,6 +10,7 @@ class Robot_Actions():
     RIGHT = Point(1, 0)
     HOLD = Point(0, 0)
 
+UNREACHABLE = Point(-2, -2)
 
 def evalLine(line: Iterable):
     newLine = []
