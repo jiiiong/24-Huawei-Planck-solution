@@ -74,7 +74,7 @@ def Init():
 
 def Input():
     id, money = map(int, input().split(" "))
-    logger.info("id: %s", id)
+    #logger.info("id: %s", id)
     num = int(input())
     for i in range(num):
         y, x, val = map(int, input().split())
@@ -151,7 +151,7 @@ if __name__ == "__main__":
             # robots = [],
             # berths: List[Berth] = [], 
             # target_pos: Point = Point(-1, -1)
-            robot[i].run_new(move_matrix=move_matrix_list[i],
+            robot[i].run(move_matrix=move_matrix_list[i],
                              robots = robot,
                              berths = berth,
                              target_pos = scheduler.target_pos_list[i])

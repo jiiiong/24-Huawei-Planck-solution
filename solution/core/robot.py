@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List
 from queue import LifoQueue
 
-from log import logger
+from log import logger, My_Timer
 from path_planing import Point
 from path_planing import Robot_Actions
 
@@ -17,41 +17,16 @@ robot_action_value_to_cmd = {
     Robot_Actions.HOLD  : 5,
 }
 
-class Args_Robot_Run():
-    def __init__(self) -> None:
-        robot_id: int
-        move_matrix: List[List[Point]]
-        berth_id: int = 0
-        robots = []
-        berths = []
-        target_pos: Point = Point(-1, -1)
-
 class Robot_Extended_Status(Enum):
     StayStill = 0
-    SetBerth = 1
-    BackBerth = 2
-    GotoFromBerth = 3
-    FetchGoods = 4
-    OffloadGoods = 5
-    GotoFetchFromBerth = 6
-    OnBerth = 7
-    GotGoods = 8
-    BackBerthAndPull = 9
 
-class Context_Go_To_Fetch_From_Berth:
-    
-    def __init__(self) -> None:
+    OnBerth = 1
 
-        self.init_down = False
-        self.paths: LifoQueue[Point] = LifoQueue()
-        self.fail = False
-    
-    def init(self):
-        self.paths = LifoQueue()
-        self.got_goods = False
+    BackBerthAndPull = 2
 
-    def quit(self):
-        self.init_down = False
+    GotoFetchFromBerth = 3
+
+    GotGoods = 4
 
 class Robot():
     def __init__(self, startX=0, startY=0, goods=0, status=0, mbx=0, mby=0):
@@ -68,9 +43,6 @@ class Robot():
         self.extended_status = Robot_Extended_Status.StayStill
         self.paths_stk = LifoQueue()
         self.num_paths_predict = 5
-
-        # runtime
-        self.context_go_to_fetch_from_berth = Context_Go_To_Fetch_From_Berth()
 
     @property
     def x(self):
@@ -98,7 +70,8 @@ class Robot():
                 robots = [],
                 berths: List[Berth] = [], 
                 target_pos: Point = Point(-1, -1)):
-
+            
+            timer = My_Timer()
             if self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
                 # 如何处理target pos不可达到
                 self.paths_stk = LifoQueue()
@@ -130,7 +103,8 @@ class Robot():
                 self.paths_stk = LifoQueue()
                 for _ in range(self.num_paths_predict):
                     self.paths_stk.put(self.pos)
-
+            #logger.info("DFS cost: %s", timer.click()*1000)
+                    
     def paths_execution(self, 
                 move_matrix: List[List[Point]],
                 robots = [],
@@ -169,7 +143,7 @@ class Robot():
         elif self.extended_status == Robot_Extended_Status.OnBerth:
             pass
         
-    def run_new(self, 
+    def run(self, 
                 move_matrix: List[List[Point]],
                 robots = [],
                 berths: List[Berth] = [], 
