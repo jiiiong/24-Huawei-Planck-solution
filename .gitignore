@@ -1,9 +1,9 @@
 solution/test/
 replay/
-log_info.txt
 
 .venv/
 solution/__pycache__/
 solution/log/__pycache__/
 solution/path_planing/__pycache__/
 
+log_info.txt

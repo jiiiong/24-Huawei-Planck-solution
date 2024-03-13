@@ -56,14 +56,14 @@ def Init():
         berth_list = [int(c) for c in line.split(sep=" ")]
         id = berth_list[0]
         # 以y为行，x为列
-        berth[id].y = berth_list[1] + 1
-        berth[id].x = berth_list[2] + 1
+        berth[id].y = berth_list[1] + 2
+        berth[id].x = berth_list[2] + 2
         berth[id].transport_time = berth_list[3]
         berth[id].loading_speed = berth_list[4]
         logger.info("transport time: %d, loading speed: %d,",berth[id].transport_time, berth[id].loading_speed)
     global boat_capacity
     boat_capacity = int(input())
-    logger.debug(boat_capacity)
+    logger.info("boat capacity: %s", boat_capacity)
     okk = input()
 
     # 初始化所有港口的BFS
@@ -74,6 +74,7 @@ def Init():
 
 def Input():
     id, money = map(int, input().split(" "))
+    logger.info("id: %s", id)
     num = int(input())
     for i in range(num):
         y, x, val = map(int, input().split())
@@ -99,8 +100,8 @@ def myInit():
         move_matrix, cost_matrix = BFS(value_matrix, b.pos)
         move_matrix_list.append(move_matrix)
         cost_matrix_list.append(cost_matrix)
-        from path_planing.utils import applyMoveMatrix2ChMap, saveMatrix2File
-        saveMatrix2File(applyMoveMatrix2ChMap(ch, move_matrix))
+        # from path_planing.utils import applyMoveMatrix2ChMap, saveMatrix2File
+        # saveMatrix2File(applyMoveMatrix2ChMap(ch, move_matrix))
     t = time.time() - t
     logger.info("myInit time: %ds", t)
 
@@ -142,12 +143,12 @@ if __name__ == "__main__":
         id = Input()
         for i in range(robot_num):
             if (zhen == 1):
-                scheduler.init_scheduler(i)
-            if robot[i].extended_status == Robot_Extended_Status.OnBerth:
-                scheduler.go_to_fetch_from_berth(i)
-            elif (robot[i].extended_status == Robot_Extended_Status.GotGoods):
                 scheduler.back_berth_and_pull(i)
-            robot[i].run(i, move_matrix_list[i], target_pos = scheduler.target_pos_list[i], berths=berth, berth_id=i)
+            if robot[0].extended_status == Robot_Extended_Status.OnBerth:
+                scheduler.go_to_fetch_from_berth(0)
+            elif (robot[0].extended_status == Robot_Extended_Status.GotGoods):
+                scheduler.back_berth_and_pull(0)
+            robot[i].run_new(i, move_matrix_list[i], target_pos = scheduler.target_pos_list[i], berths=berth, berth_id=i)
 
         if (boat[0].pos == -1 and boat[0].status == 1 or zhen == 1):
             print("ship", 0, 0)
