@@ -2,17 +2,29 @@ import sys
 from enum import Enum
 from typing import List
 from queue import LifoQueue
-from solution.core.base import Point
-from solution.log.logger import logger
 
-point_direction_to_robot_cmd = {
-    Point(0, -1) : 2,
-    Point(0, 1) : 3,
-    Point(-1, 0) : 1,
-    Point(1, 0) : 0,
-    Point(0, 0): 4
+from log import logger
+from path_planing import Point
+from path_planing import Robot_Actions
+
+from .berth import Berth
+
+robot_action_value_to_cmd = {
+    Robot_Actions.RIGHT : 0,
+    Robot_Actions.LEFT  : 1,
+    Robot_Actions.UP    : 2,
+    Robot_Actions.DOWN  : 3,
+    Robot_Actions.HOLD  : 5,
 }
-    
+
+class Args_Robot_Run():
+    def __init__(self) -> None:
+        robot_id: int
+        move_matrix: List[List[Point]]
+        berth_id: int = 0
+        robots = []
+        berths = []
+        target_pos: Point = Point(-1, -1)
 
 class Robot_Extended_Status(Enum):
     StayStill = 0
@@ -51,6 +63,9 @@ class Robot():
         self.mbx = mbx
         self.mby = mby
         self.extended_status = Robot_Extended_Status.StayStill
+        
+        self.paths_stk = LifoQueue()
+        self.num_paths_predict = 5
 
         # runtime
         self.context_go_to_fetch_from_berth = Context_Go_To_Fetch_From_Berth()
@@ -83,16 +98,18 @@ class Robot():
 
         elif self.extended_status == Robot_Extended_Status.BackBerthAndPull:
             self.back_berth_and_pull(robot_id, move_matrix, berth_id=berth_id, berths=berths)
-    
+
+        self.collision_check()
+
     def back_berth(self, robot_id: int, move_matrix: List[List[Point]],
                             berth_id: int = 0, berths = []):
         action = move_matrix[self.y][self.x]
         # 泵碰撞？/
-        if (action not in point_direction_to_robot_cmd):
+        if (action not in robot_action_value_to_cmd):
             self.extended_status = Robot_Extended_Status.BackBerth
             return
         if self.pos != berths[berth_id].pos:
-            print("move", robot_id, point_direction_to_robot_cmd[action])
+            print("move", robot_id, robot_action_value_to_cmd[action])
         else:
             self.extended_status = Robot_Extended_Status.OnBerth
 
@@ -101,17 +118,16 @@ class Robot():
         action = move_matrix[self.y][self.x]
         
         # 碰撞？？？
-        if (action not in point_direction_to_robot_cmd):
+        if (action not in robot_action_value_to_cmd):
             self.extended_status = Robot_Extended_Status.BackBerth
             return
         
         if self.pos != berths[berth_id].pos:
-            print("move", robot_id, point_direction_to_robot_cmd[action])
+            print("move", robot_id, robot_action_value_to_cmd[action])
             if (self.pos + action == berths[berth_id].pos):
                 print("pull", robot_id)
         else:
             berths[berth_id].num_gds += 1
-            logger.info("_______________________%s", berths[berth_id].num_gds)
             self.extended_status = Robot_Extended_Status.OnBerth
 
     def go_to_fetch_from_berth(self, robot_id: int, 
@@ -140,14 +156,92 @@ class Robot():
                 #logger.info(next_pos)
                 action = next_pos - self.pos
                 # 碰撞
-                if (action not in point_direction_to_robot_cmd):
+                if (action not in robot_action_value_to_cmd):
+                    self.context_go_to_fetch_from_berth.quit()
                     self.extended_status = Robot_Extended_Status.BackBerth
                     return
-                print("move", robot_id, point_direction_to_robot_cmd[action])
+                print("move", robot_id, robot_action_value_to_cmd[action])
                 if (next_pos == target_pos):
                     print("get", robot_id)
             elif (self.pos == target_pos):
                 self.extended_status = Robot_Extended_Status.GotGoods
                 self.context_go_to_fetch_from_berth.quit()
     
-            
+    def collision_check(self):
+        pass
+    
+    def path_planing(self, robot_id: int, move_matrix: List[List[Point]],
+            berth_id: int = 0, 
+            robots = None, 
+            berths = None,  
+            target_pos: Point = Point(-1, -1)):
+        if self.extended_status == Robot_Extended_Status.BackBerth:
+            self.back_berth(robot_id, move_matrix, berth_id=berth_id, berths=berths)
+
+        elif self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
+            self.go_to_fetch_from_berth(robot_id, move_matrix, target_pos=target_pos)
+
+        elif self.extended_status == Robot_Extended_Status.BackBerthAndPull:
+            self.back_berth_and_pull(robot_id, move_matrix, berth_id=berth_id, berths=berths)
+    
+    def DFS_path_planing(self, robot_id: int, move_matrix: List[List[Point]],
+            berth_id: int = 0, 
+            robots = [], 
+            berths: List[Berth] = [],  
+            target_pos: Point = Point(-1, -1)):
+
+            if self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
+                # 如何处理target pos不可达到
+                self.paths_stk = LifoQueue()
+                cur_pos = target_pos
+                self.paths_stk.put(cur_pos)
+                cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
+                while (cur_pos != berths[berth_id].pos or cur_pos != self.pos): # 此时self.pos就是在berth上
+                    self.paths_stk.put(cur_pos)
+                    cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
+
+            elif self.extended_status == Robot_Extended_Status.BackBerth:
+                self.paths_stk = LifoQueue()
+                tmp_stk = LifoQueue()
+                cur_pos = self.pos
+                tmp_stk.put(cur_pos)
+                cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
+                while (cur_pos != berths[berth_id].pos): # 此时self.pos就是在berth上
+                    tmp_stk.put(cur_pos)
+                    cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
+                while tmp_stk.empty() is False:
+                    self.paths_stk.put(tmp_stk.get())
+
+            elif self.extended_status == Robot_Extended_Status.OnBerth:
+                self.paths_stk = LifoQueue()
+                for _ in range(self.num_paths_predict):
+                    self.paths_stk.put(self.pos)
+
+    def paths_execution(self):
+        if self.paths_stk.empty() is False:
+            next_pos = self.paths_stk.get()
+            action = next_pos - self.pos
+            if (action not in robot_action_value_to_cmd):
+                logger.info("下一步action出错，不在预定的actions中，实际为%s", action)
+                self.extended_status = Robot_Extended_Status.BackBerth
+                return
+        else:
+            action = Robot_Actions.HOLD
+
+        if self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
+            pass
+
+        elif self.extended_status == Robot_Extended_Status.BackBerth:
+          pass
+        elif self.extended_status == Robot_Extended_Status.OnBerth:
+            pass
+        
+    def run_new(self, robot_id: int, move_matrix: List[List[Point]],
+            berth_id: int = 0, 
+            robots = [], 
+            berths: List[Berth] = [],  
+            target_pos: Point = Point(-1, -1)):
+        # robot根据状态执行每一帧的动作
+        self.DFS_path_planing(robot_id, move_matrix, berth_id, robots, berths, target_pos)
+        self.collision_check()
+        self.paths_execution()

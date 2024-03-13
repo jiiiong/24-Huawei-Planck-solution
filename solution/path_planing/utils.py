@@ -1,18 +1,15 @@
 from pathlib import Path
 from typing import List, Any, Iterable
-from solution.core import Point
 
-direction2Point = {
-    "UP" :Point(0, -1),
-    "DOWN" : Point(0, 1),
-    "LEFT" : Point(-1, 0),
-    "RIGHT" : Point(1, 0),
-}
+from .point import Point
 
-UP = Point(0, -1)
-DOWN = Point(0, 1)
-LEFT = Point(-1, 0)
-RIGHT = Point(1, 0)
+class Robot_Actions():
+    UP = Point(0, -1)
+    DOWN = Point(0, 1)
+    LEFT = Point(-1, 0)
+    RIGHT = Point(1, 0)
+    HOLD = Point(0, 0)
+
 
 def evalLine(line: Iterable):
     newLine = []
@@ -58,13 +55,13 @@ def applyMoveMatrix2ChMap(ch: List[List[str]], move_matrix: List[List[Point]]) -
 
     for y, line in enumerate(move_matrix):
         for x, c in enumerate(line):
-            if (c == UP):
+            if (c == Robot_Actions.UP):
                 matrix[y][x] = '↑'
-            elif (c == DOWN):
+            elif (c == Robot_Actions.DOWN):
                 matrix[y][x] = '↓'
-            elif (c == LEFT):
+            elif (c == Robot_Actions.LEFT):
                 matrix[y][x] = '←'
-            elif (c == RIGHT):
+            elif (c == Robot_Actions.RIGHT):
                 matrix[y][x] = '→'
     return matrix
 

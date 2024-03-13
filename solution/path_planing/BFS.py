@@ -1,7 +1,8 @@
 import queue
 from typing import List, Tuple
-from solution.path_planing.utils import fileMap2Matrix
-from solution.core import Point
+
+from .utils import fileMap2Matrix
+from .point import Point
 
 def BFS(value_matrix: List[List[int]], source_point: Point) -> Tuple[List[List[Point]], List[List[int]]]:
     '''

@@ -5,19 +5,18 @@
 # debugpy.breakpoint()
 
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
 from queue import Queue, PriorityQueue
-
 import random
 import time
 from typing import List, Tuple
 
-from solution.log.logger import logger
-from solution.core import Point, Robot, Berth, Boat
-from solution.core import Robot_Extended_Status
-from solution.path_planing.utils import chMap2ValueMatrix
-from solution.path_planing.BFS import BFS
+from log import logger
+from core import  Robot, Berth, Boat
+from core import Robot_Extended_Status
+from path_planing import Point
+from path_planing import BFS
+from path_planing import chMap2ValueMatrix
+
 
 n = 200
 robot_num = 10
@@ -43,7 +42,8 @@ cost_matrix_list:  List[ (List[List[int]]) ]   = []
 move_matrix_list:  List[ (List[List[Point]]) ] = []
 
 # global queue for goods
-berth_gds_priority_queue_list: List[PriorityQueue[Tuple[int, Point]]] = [PriorityQueue() for _ in range(berth_num)]
+# List[PriorityQueue[Tuple[int, Point]]]
+berth_gds_priority_queue_list = [PriorityQueue() for _ in range(berth_num)]
 
 back_count = 71
 
@@ -56,8 +56,8 @@ def Init():
         berth_list = [int(c) for c in line.split(sep=" ")]
         id = berth_list[0]
         # 以y为行，x为列
-        berth[id].y = berth_list[1] + 3
-        berth[id].x = berth_list[2] + 3
+        berth[id].y = berth_list[1] + 1
+        berth[id].x = berth_list[2] + 1
         berth[id].transport_time = berth_list[3]
         berth[id].loading_speed = berth_list[4]
         logger.info("transport time: %d, loading speed: %d,",berth[id].transport_time, berth[id].loading_speed)
@@ -78,7 +78,7 @@ def Input():
     for i in range(num):
         y, x, val = map(int, input().split())
         gds[y][x] = val
-        logger.info("%d, %d, %d", y, x, val)
+        #logger.info("%d, %d, %d", y, x, val)
 
         # 暂时测试物品队列用
         for i in range(1):
@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     Init()
     logger.info("----------------init----------------------")
-
+    
     scheduler = Scheduler()
 
     for zhen in range(1, 15001):
