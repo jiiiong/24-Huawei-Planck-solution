@@ -7,3 +7,4 @@ solution/log/__pycache__/
 solution/path_planing/__pycache__/
 
 log_info.txt
+log_error.txt

@@ -17,3 +17,5 @@ class Point():
         return Point(-self.x, -self.y)
     def __lt__(self, b):
         return True
+    def distance(self, b):
+        return abs(self.x - b.x) + abs(self.y - b.y)
