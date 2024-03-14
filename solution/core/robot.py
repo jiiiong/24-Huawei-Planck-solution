@@ -48,16 +48,22 @@ class Robot():
         self.mbx = mbx
         self.mby = mby
 
+        # 在第一帧开始前初始化的内容
         self.robot_id = -1
         self.berth_id = -1
         self.berths: List[Berth] = []
+        self.move_matrix_list: List[(List[List[Point]])] = []
+
+        # 状态，每个状态经过规划、避障、执行；状态更新在第二帧调度前进行
         self._extended_status = Robot_Extended_Status.Uninitialized
+        # 路径规划用，定义为接下来要经过的位置，空代表呆在原地
         self.paths_stk: LifoQueue[Point] = LifoQueue()
 
+        # 避障用的变量
         self.alarming_area_size = 2
-        self.alarming_area = set()
         self.surronding_robots_with_priority: Dict[int, int]= dict()
         self.collision_robots_id: List[int] = []
+        # 进入避障状态时保存原有状态的变量 
         self.original_extended_status = Robot_Extended_Status.Uninitialized
         self.original_paths_stk = LifoQueue()
         self.original_pos = None
@@ -67,13 +73,13 @@ class Robot():
         self.empty_paths = True
         self.suppose_pos = Point(x = startX, y = startY)
 
+    # 兼容原有代码用
     @property
     def x(self):
         return self.pos.x
     @x.setter
     def x(self, value):
         self.pos.x = value
-
     @property
     def y(self):
         return self.pos.y
@@ -99,7 +105,8 @@ class Robot():
                   and self.paths_stk.empty()):
                 pass
             elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance
-                  and self.paths_stk.empty()):
+                  and self.paths_stk.empty()): 
+                ###############################可能还需要保证不再碰撞
                 pass
             else:
                 invalid = True
@@ -122,7 +129,8 @@ class Robot():
         # 目标状态为GotoFetchFromBerth
         elif (value == Robot_Extended_Status.GotoFetchFromBerth):
             if (self.extended_status == Robot_Extended_Status.OnBerth
-                and self.paths_stk.empty()):
+                and self.paths_stk.empty()
+                and self.pos == self.berths[self.berth_id].pos):
                 pass
             elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance
                   and self.paths_stk.empty()):
@@ -144,7 +152,7 @@ class Robot():
         # 目标状态为UnableBackBerth
         elif (value == Robot_Extended_Status.UnableBackBerth):
             if (self.extended_status == Robot_Extended_Status.BackBerthAndPull
-                and self.paths_stk.empty()):
+                and self.move_matrix_list[self.berth_id][self.pos.y][self.pos.x] == UNREACHABLE):
                 pass
             elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance
                   and self.paths_stk.empty()):
@@ -161,7 +169,7 @@ class Robot():
             
         self._extended_status = value
 
-    def next_n_pos(self, n:int = 1) -> List[Point]: 
+    def next_n_pos(self, n:int = 1) -> List[Point]:
         poses: List[Point] = []
         count = 0
         tmp_fifoqueue = LifoQueue()
@@ -251,7 +259,9 @@ class Robot():
                     robots[id].enable_collision_avoidance(move_matrix, robots, berths, target_pos)
                     if id == self.robot_id: # 如果本机器人未被进行避障规划，则返回False要求重新规划
                         okk = False
-                eles
+                    # else:
+                    #     # xxxxxxxxxxx会导致已经执行过的重新执行
+                    #     robots[id].run(move_matrix, robots, berths, target_pos) 
         return okk
         # 如果没有会撞得，且当前为避障模式，则恢复原来模式 xxxxxxxxx错误，会导致循环
         # elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
@@ -261,15 +271,17 @@ class Robot():
                 move_matrix: List[List[Point]],
                 robots: List[Robot] = [],
                 berths: List[Berth] = [], 
-                target_pos: Point = Point(-1, -1)):  
+                target_pos: Point = Point(-2, -2)):  
             
             timer = My_Timer()
             
             # GotoFetchFromBerth只能由OnBerth状态转入，OnBerth时Paths为空
             if self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
-                # 根据BackBerth的性质，若Paths为空，要么是刚进入未初始化，或者是已经走到了，或者目标不可达
-                # 排除其他两种情况，如果是刚进入未初始化，则初始化
-                
+                # 转入GotoFetchFromBerth时，paths必须为空，且位置在berth
+                # 首先，如果从目标港口出发物品不可达（其实外部已保证），则停留在港口不动，此时满足转入港口的条件
+                # 否则必须规划路径，为了避免重复初始化，考虑以第一次转入的paths为空为判断条件
+                # 但当目标点已经是当前位置，或者已经走到目标点时，paths会变成空
+                # 路径规划算法在paths为空时会导致生成一个冗余的next_pos...后果未知，避免为好
                 if (move_matrix[target_pos.y][target_pos.x] == UNREACHABLE):
                     self.extended_status = Robot_Extended_Status.OnBerth
                     return False # 中途改变状态，重新规划路径
@@ -288,6 +300,10 @@ class Robot():
                 if move_matrix[self.pos.y][self.pos.x] == UNREACHABLE:
                     self.extended_status = Robot_Extended_Status.UnableBackBerth
                     return False # 中途改变状态，重新计算路径
+                # 转入BackBerthAndPull时总是保证 paths为空；
+                # 实际上，每一帧都可以为重新计算路径，但为了节省计算，仅在第一次进入时计算paths，“此时paths=空可以为判断条件”
+                # 值得注意的是，若转入该状态时已经到达，此时计算路径会导致生成一个冗余的原地pos，“排除这种情况”
+                # 若因为某些原因，paths全部走完为空时没有转换到其他状态，再次进入这个状态会保证仍然正确
                 elif self.paths_stk.empty() and (self.pos != berths[self.berth_id].pos):
                         tmp_stk = LifoQueue()
                         cur_pos = self.pos
@@ -310,11 +326,7 @@ class Robot():
             return True
             #logger.info("DFS cost: %s", timer.click()*1000)
 
-    def paths_execution(self, 
-                move_matrix: List[List[Point]],
-                robots: List[Robot] = [],
-                berths: List[Berth] = [], 
-                target_pos: Point = Point(-1, -1)):
+    def paths_execution(self):
         if not self.paths_stk.empty():
             self.empty_paths = False
             next_pos = self.paths_stk.get(False)
@@ -332,7 +344,7 @@ class Robot():
         
         if (action != Robot_Actions.HOLD):
             print("move", self.robot_id, robot_action_value_to_cmd[action])
-        
+
     def run(self, 
                 move_matrix: List[List[Point]],
                 robots: List[Robot] = [],
@@ -346,7 +358,6 @@ class Robot():
                 continue
             else:
                 break
-        self.paths_execution(move_matrix, robots, berths, target_pos)
 
     # 根据状态的执行结果改变状态，区别于run中的状态变化（如何区别？）
     def update_extended_status(self, 
@@ -363,14 +374,23 @@ class Robot():
                 self.paths_stk.put(self.suppose_pos)
             elif self.empty_paths == False:
                 self.paths_stk.put(self.suppose_pos)
-
+        
         if self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
+            # 转入GotoFetchFromBerth时paths必须为空，为保证切换条件正确，
+            # 必须保证在update之前 经过规划操作，否则可能误以为到达
+            # 实际上，每次update都放在了第二帧
             if (self.paths_stk.empty()):
                 # 可能取不到货，货已经消失
+                #？？？
+                #？？？
+                #？？？
                 print("get", self.robot_id)
                 self.extended_status = Robot_Extended_Status.GotGoods
         
         elif self.extended_status == Robot_Extended_Status.BackBerthAndPull:
+            # 转入BackBerthAndPull时paths必须为空，为保证切换条件正确，
+            # 必须保证在update之前 经过规划操作，否则可能误以为到达
+            # 实际上，每次update都放在了第二帧
             if (self.paths_stk.empty()):
                 self.extended_status = Robot_Extended_Status.OnBerth
                 if self.goods == 1:
@@ -378,22 +398,14 @@ class Robot():
                     berths[self.berth_id].num_gds += 1
         
         elif self.extended_status == Robot_Extended_Status.CollisionAvoidance:
+        # 每一帧开始时，检测是否可能还会碰撞
+        # 考虑避障期间会移动，若paths非空，则表明未归位，是否可以回归状态并将这些位置添加到原状态的paths上
             if (self.paths_stk.empty()
                 and self.collision_check(move_matrix, robots, berths, target_pos) == False):
                     self.disable_collision_avoidance(move_matrix, robots, berths, target_pos)
         
         elif self.extended_status == Robot_Extended_Status.OnBerth:
             pass
-
-    def cal_alarming_area(self, n, pose_list = [Point(0 ,0)]):
-        if n == 0:
-            for item in pose_list:
-                self.alarming_area.add(item)
-        else:
-            for action in [Robot_Actions.UP, Robot_Actions.DOWN, Robot_Actions.LEFT, Robot_Actions.RIGHT]:
-                tmp_set = []
-                for item in pose_list:
-                    tmp_set.append(item+action)
-                for item in tmp_set:
-                    self.alarming_area.add(item)
-                self.cal_alarming_area(n-1, tmp_set[:])
+        
+        elif self.extended_status == Robot_Extended_Status.Uninitialized:
+            pass

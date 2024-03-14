@@ -13,7 +13,7 @@ from typing import List, Tuple
 from log import logger
 from core import  Robot, Berth, Boat
 from core import Robot_Extended_Status
-from path_planing import Point
+from path_planing import Point, UNREACHABLE
 from path_planing import BFS
 from path_planing import chMap2ValueMatrix
 
@@ -114,6 +114,7 @@ class Scheduler:
             robot.robot_id = i
             robot.berth_id = i
             robot.berths = berths
+            robot.move_matrix_list = move_matrix_list
             robot.suppose_pos = robot.pos
             # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
             # logger.info("%s", robot[robot_id].alarming_area)
@@ -123,12 +124,14 @@ class Scheduler:
     #     self.back_berth_and_pull(robot_id)
     
     def go_to_fetch_from_berth(self, robot_id: int):
-        # 避免分配拿不到的物品
         if berth_gds_priority_queue_list[robot_id].empty() is False:
             target_pos = berth_gds_priority_queue_list[robot_id].get(False)[1]
-            logger.info("target pos is %s", target_pos)
-            robots[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
-            self.target_pos_list[robot_id] = target_pos
+            global robots
+            # 避免分配当前港口拿不到的物品
+            if move_matrix_list[robots[robot_id].berth_id][target_pos.y][target_pos.x] != UNREACHABLE:
+                # logger.info("target pos is %s", target_pos)
+                robots[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
+                self.target_pos_list[robot_id] = target_pos
 
     def back_berth_and_pull(self, robot_id: int):
         robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
@@ -152,7 +155,7 @@ if __name__ == "__main__":
 
         for i in range(robot_num):
             robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
-            # if i == 0:
+            # if i == 5:
             #     logger.info("%s   %s", robots[i].pos, robots[i].extended_status)
         for i in range(robot_num):
             which_one = 0
@@ -175,10 +178,9 @@ if __name__ == "__main__":
             # robots = [],
             # berths: List[Berth] = [], 
             # target_pos: Point = Point(-1, -1)
-            robots[i].run(move_matrix=move_matrix_list[i],
-                         robots = robots,
-                         berths = berths,
-                         target_pos = scheduler.target_pos_list[i])
+            robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+        for i in range(robot_num):
+            robots[i].paths_execution()
 
         if (boats[0].pos == -1 and boats[0].status == 1 or zhen == 1):
             print("ship", 0, 0)
