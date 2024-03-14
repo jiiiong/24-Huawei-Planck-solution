@@ -82,7 +82,7 @@ def Input():
         #logger.info("%d, %d, %d", y, x, val)
 
         # 暂时测试物品队列用
-        for i in range(1):
+        for i in range(robot_num):
             if (cost_matrix_list[i][y][x] >= 0 and val > 100):
                 berth_gds_priority_queue_list[i].put( (cost_matrix_list[i][y][x], Point(x, y)))
         
@@ -114,6 +114,7 @@ class Scheduler:
             robot.robot_id = i
             robot.berth_id = i
             robot.berths = berths
+            robot.suppose_pos = robot.pos
             # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
             # logger.info("%s", robot[robot_id].alarming_area)
 
@@ -122,7 +123,7 @@ class Scheduler:
     #     self.back_berth_and_pull(robot_id)
     
     def go_to_fetch_from_berth(self, robot_id: int):
-        
+        # 避免分配拿不到的物品
         if berth_gds_priority_queue_list[robot_id].empty() is False:
             target_pos = berth_gds_priority_queue_list[robot_id].get(False)[1]
             logger.info("target pos is %s", target_pos)
@@ -148,20 +149,26 @@ if __name__ == "__main__":
         # 可以集成到myinit中。先不管
         if (zhen == 1):
             scheduler.init_robots(robots, berths)
-        for i in range(robot_num):
-            robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
 
         for i in range(robot_num):
+            robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+            # if i == 0:
+            #     logger.info("%s   %s", robots[i].pos, robots[i].extended_status)
+        for i in range(robot_num):
             which_one = 0
+            # 碰撞了的化？？？？？？？？
             if (robots[i].status == 0):
-                robots[i].extended_status = Robot_Extended_Status.CollisionAvoidance
+                robots[i].enable_collision_avoidance(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+                
             elif robots[i].extended_status == Robot_Extended_Status.Uninitialized:
                 # 该转换符合robot状态机规则，paths此时为空
                 scheduler.back_berth_and_pull(i)
-            elif robots[i].extended_status == Robot_Extended_Status.OnBerth and (which_one == i):
+            # elif robots[i].extended_status == Robot_Extended_Status.OnBerth and (which_one == i):
+            elif robots[i].extended_status == Robot_Extended_Status.OnBerth:
                 # 若OnBerth满足性质，则该状态转换正确
                 scheduler.go_to_fetch_from_berth(i)
-            elif (robots[i].extended_status == Robot_Extended_Status.GotGoods) and (which_one == i):
+            # elif (robots[i].extended_status == Robot_Extended_Status.GotGoods) and (which_one == i):
+            elif (robots[i].extended_status == Robot_Extended_Status.GotGoods):
                 # 符合规则
                 scheduler.back_berth_and_pull(i)
             # move_matrix: List[List[Point]],
