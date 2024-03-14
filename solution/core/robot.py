@@ -52,7 +52,7 @@ class Robot():
         self.berth_id = -1
         self.berths: List[Berth] = []
         self._extended_status = Robot_Extended_Status.Uninitialized
-        self.paths_stk = LifoQueue()
+        self.paths_stk: LifoQueue[Point] = LifoQueue()
 
         self.alarming_area_size = 2
         self.alarming_area = set()
@@ -251,6 +251,7 @@ class Robot():
                     robots[id].enable_collision_avoidance(move_matrix, robots, berths, target_pos)
                     if id == self.robot_id: # 如果本机器人未被进行避障规划，则返回False要求重新规划
                         okk = False
+                eles
         return okk
         # 如果没有会撞得，且当前为避障模式，则恢复原来模式 xxxxxxxxx错误，会导致循环
         # elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
@@ -272,7 +273,7 @@ class Robot():
                 if (move_matrix[target_pos.y][target_pos.x] == UNREACHABLE):
                     self.extended_status = Robot_Extended_Status.OnBerth
                     return False # 中途改变状态，重新规划路径
-                elif (self.paths_stk.empty() 
+                elif (self.paths_stk.empty()
                     and (berths[self.berth_id].pos != target_pos)): 
                     cur_pos = target_pos
                     self.paths_stk.put(cur_pos)
