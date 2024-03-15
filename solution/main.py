@@ -45,6 +45,7 @@ move_matrix_list:  List[ (List[List[Point]]) ] = []
 # List[PriorityQueue[Tuple[int, Point]]]
 berth_gds_priority_queue_list = [PriorityQueue() for _ in range(berth_num)]
 
+check_num = 3
 back_count = 71
 
 def Init():
@@ -158,9 +159,10 @@ if __name__ == "__main__":
         for i in range(robot_num):
             robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
             # # debug 用，将运行路线打印出来
-            # if i == 2:
-            #     logger.info("%s, %s   %s",zhen, robots[i].pos, robots[i].extended_status)
-            #     next_n_pos = robots[i].next_n_pos(5)
+            if i == check_num:
+                logger.info("%s, %s   %s",zhen, robots[i].pos, robots[i].extended_status)
+                next_n_pos = robots[i].next_n_pos(5)
+                logger.info("%s", next_n_pos)
             #     next_n_move: List[Point] = []
                 
             #     for j, pos in enumerate(next_n_pos):
@@ -171,6 +173,7 @@ if __name__ == "__main__":
             #     if (zhen >= 110 and zhen <= 150):
             #         error_logger.error("%s", robots[i].pos)
             #         visualize_next_n_move(robots[i].pos, next_n_move)
+        
         for i in range(robot_num):
             which_one = 0
             # 碰撞了的化？？？？？？？？    
@@ -190,9 +193,15 @@ if __name__ == "__main__":
             # berths: List[Berth] = [], 
             # target_pos: Point = Point(-1, -1)
             robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+        
         for i in range(robot_num):
+            if i == check_num:
+                logger.info("%s, %s   %s",zhen, robots[i].pos, robots[i].extended_status)
+                next_n_pos = robots[i].next_n_pos(5)
+                logger.info("%s\n", next_n_pos)
             robots[i].paths_execution()
 
+        # boats shceduling
         for i in range(5):
             endone = False
             if (boats[i].pos == -1 and boats[i].status == 1 or zhen == 1):

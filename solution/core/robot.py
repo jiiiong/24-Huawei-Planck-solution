@@ -17,7 +17,7 @@ robot_action_value_to_cmd = {
     Robot_Actions.LEFT  : 1,
     Robot_Actions.UP    : 2,
     Robot_Actions.DOWN  : 3,
-    Robot_Actions.HOLD  : 5,
+    Robot_Actions.HOLD  : 4,
 }
 
 class Robot_Extended_Status(Enum):
