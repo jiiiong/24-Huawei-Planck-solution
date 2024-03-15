@@ -8,9 +8,9 @@ import sys
 from queue import Queue, PriorityQueue
 import random
 import time
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
-from log import logger
+from log import logger, error_logger
 from core import  Robot, Berth, Boat
 from core import Robot_Extended_Status
 from path_planing import Point, UNREACHABLE
@@ -116,6 +116,7 @@ class Scheduler:
             robot.berths = berths
             robot.move_matrix_list = move_matrix_list
             robot.suppose_pos = robot.pos
+            robot.last_pos = robot.pos
             # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
             # logger.info("%s", robot[robot_id].alarming_area)
 
@@ -136,9 +137,10 @@ class Scheduler:
     def back_berth_and_pull(self, robot_id: int):
         robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
 
-            
+def visualize_next_n_move(start_pos: Point, next_n_move: List[Point]):
+        from path_planing.utils import applyNextnMove2ChMap, saveMatrix2File
+        saveMatrix2File(applyNextnMove2ChMap(ch, start_pos, next_n_move))
 
-    
 if __name__ == "__main__":
 
     Init()
@@ -155,15 +157,24 @@ if __name__ == "__main__":
 
         for i in range(robot_num):
             robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
-            # if i == 5:
-            #     logger.info("%s   %s", robots[i].pos, robots[i].extended_status)
+            # # debug 用，将运行路线打印出来
+            # if i == 2:
+            #     logger.info("%s, %s   %s",zhen, robots[i].pos, robots[i].extended_status)
+            #     next_n_pos = robots[i].next_n_pos(5)
+            #     next_n_move: List[Point] = []
+                
+            #     for j, pos in enumerate(next_n_pos):
+            #         if j != 0:
+            #             next_n_move.append(pos - next_n_pos[j-1])
+            #         else:
+            #             next_n_move.append(pos - robots[i].pos)
+            #     if (zhen >= 110 and zhen <= 150):
+            #         error_logger.error("%s", robots[i].pos)
+            #         visualize_next_n_move(robots[i].pos, next_n_move)
         for i in range(robot_num):
             which_one = 0
-            # 碰撞了的化？？？？？？？？
-            if (robots[i].status == 0):
-                robots[i].enable_collision_avoidance(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
-                
-            elif robots[i].extended_status == Robot_Extended_Status.Uninitialized:
+            # 碰撞了的化？？？？？？？？    
+            if robots[i].extended_status == Robot_Extended_Status.Uninitialized:
                 # 该转换符合robot状态机规则，paths此时为空
                 scheduler.back_berth_and_pull(i)
             # elif robots[i].extended_status == Robot_Extended_Status.OnBerth and (which_one == i):
@@ -182,13 +193,17 @@ if __name__ == "__main__":
         for i in range(robot_num):
             robots[i].paths_execution()
 
-        if (boats[0].pos == -1 and boats[0].status == 1 or zhen == 1):
-            print("ship", 0, 0)
-        elif (boats[0].pos == 0 and boats[0].status == 1):
-            back_count = back_count - 1
-            if (back_count == 0):
-                print("go", 0)
-                back_count = boat_capacity
+        for i in range(5):
+            endone = False
+            if (boats[i].pos == -1 and boats[i].status == 1 or zhen == 1):
+                print("ship", i, i)
+            elif (boats[i].pos == i and boats[i].status == 1):
+                back_count = back_count - 1
+                if (back_count == 0 or (zhen > 13000 and not endone)):
+                    if (zhen>13000):
+                        endone = True
+                    print("go", i)
+                    back_count = boat_capacity
 
         print("OK")
         sys.stdout.flush()

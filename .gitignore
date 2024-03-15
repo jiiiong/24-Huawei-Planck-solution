@@ -8,3 +8,5 @@ solution/path_planing/__pycache__/
 
 log_info.txt
 log_error.txt
+solution/release/
+test/
