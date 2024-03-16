@@ -1,7 +1,7 @@
 import queue
 from typing import List, Tuple
 
-from .utils import fileMap2Matrix
+from .utils import fileMap2Matrix, UNREACHABLE
 from .point import Point
 
 def BFS(value_matrix: List[List[int]], source_point: Point) -> Tuple[List[List[Point]], List[List[int]]]:
@@ -15,7 +15,7 @@ def BFS(value_matrix: List[List[int]], source_point: Point) -> Tuple[List[List[P
     frontier = queue.Queue()
     came_from = dict()
     cost_matrix = [[-1] * 200 for _ in range(200)]
-    move_matrix = [ [Point(-2, -2)] * 200 for _ in range(200)]
+    move_matrix = [ [UNREACHABLE] * 200 for _ in range(200)]
 
     frontier.put(source_point)
     came_from[source_point] = None

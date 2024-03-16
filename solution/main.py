@@ -8,12 +8,13 @@ import sys
 from queue import Queue, PriorityQueue
 import random
 import time
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
-from log import logger
+from log import logger, error_logger
+from core import enum_stk_and_recover
 from core import  Robot, Berth, Boat
 from core import Robot_Extended_Status
-from path_planing import Point
+from path_planing import Point, UNREACHABLE
 from path_planing import BFS
 from path_planing import chMap2ValueMatrix
 
@@ -25,9 +26,9 @@ N = 210
 
 # robot = [Robot() for _ in range(robot_num + 10)]
 # berth = [Berth() for _ in range(berth_num + 10)] 为什么要+10
-robot: List[Robot] = [Robot() for _ in range(robot_num)]
-berth: List[Berth] = [Berth() for _ in range(berth_num)]
-boat:  List[Boat]  = [Boat() for _ in range(10)]
+robots: List[Robot] = [Robot() for _ in range(robot_num)]
+berths: List[Berth] = [Berth() for _ in range(berth_num)]
+boats:  List[Boat]  = [Boat() for _ in range(10)]
 
 money = 0
 boat_capacity = 0
@@ -45,6 +46,7 @@ move_matrix_list:  List[ (List[List[Point]]) ] = []
 # List[PriorityQueue[Tuple[int, Point]]]
 berth_gds_priority_queue_list = [PriorityQueue() for _ in range(berth_num)]
 
+check_num = 3
 back_count = 71
 
 def Init():
@@ -56,11 +58,11 @@ def Init():
         berth_list = [int(c) for c in line.split(sep=" ")]
         id = berth_list[0]
         # 以y为行，x为列
-        berth[id].y = berth_list[1] + 2
-        berth[id].x = berth_list[2] + 2
-        berth[id].transport_time = berth_list[3]
-        berth[id].loading_speed = berth_list[4]
-        logger.info("transport time: %d, loading speed: %d,",berth[id].transport_time, berth[id].loading_speed)
+        berths[id].y = berth_list[1] + 2
+        berths[id].x = berth_list[2] + 2
+        berths[id].transport_time = berth_list[3]
+        berths[id].loading_speed = berth_list[4]
+        logger.info("transport time: %d, loading speed: %d,",berths[id].transport_time, berths[id].loading_speed)
     global boat_capacity
     boat_capacity = int(input())
     logger.info("boat capacity: %s", boat_capacity)
@@ -74,7 +76,7 @@ def Init():
 
 def Input():
     id, money = map(int, input().split(" "))
-    logger.info("id: %s", id)
+    #logger.info("id: %s", id)
     num = int(input())
     for i in range(num):
         y, x, val = map(int, input().split())
@@ -82,21 +84,24 @@ def Input():
         #logger.info("%d, %d, %d", y, x, val)
 
         # 暂时测试物品队列用
-        for i in range(1):
+        for i in range(robot_num):
             if (cost_matrix_list[i][y][x] >= 0 and val > 100):
                 berth_gds_priority_queue_list[i].put( (cost_matrix_list[i][y][x], Point(x, y)))
         
     for i in range(robot_num):
-        robot[i].goods, robot[i].y, robot[i].x, robot[i].status = map(int, input().split())
+        robots[i].goods, robots[i].y, robots[i].x, robots[i].status = map(int, input().split())
+        # debug
+        # if check_num == i:
+        #     logger.info("robot status %s", robots[i].status)
     for i in range(5):
-        boat[i].status, boat[i].pos = map(int, input().split())
+        boats[i].status, boats[i].pos = map(int, input().split())
     okk = input()
     return id
 
 def myInit():
     t = time.time()
     value_matrix = chMap2ValueMatrix(ch)
-    for b in berth:
+    for b in berths:
         move_matrix, cost_matrix = BFS(value_matrix, b.pos)
         move_matrix_list.append(move_matrix)
         cost_matrix_list.append(cost_matrix)
@@ -109,28 +114,34 @@ class Scheduler:
     def __init__(self) -> None:
         self.target_pos_list = [Point(-1, -1) for _ in range(robot_num)]
 
-    def init_scheduler(self, robot_id: int):
-        robot[robot_id].robot_id = robot_id
-        robot[robot_id].berth_id = robot_id
-        self.back_berth_and_pull(robot_id)
-    
+    def init_robots(self, robots: List[Robot], berths: List[Berth]):
+        for i, robot in enumerate(robots):
+            robot.robot_id = i
+            robot.berth_id = i
+            robot.berths = berths
+            robot.move_matrix_list = move_matrix_list
+            robot.suppose_pos = robot.pos
+            robot.last_pos = robot.pos
+            # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
+            # logger.info("%s", robot[robot_id].alarming_area)
+   
     def go_to_fetch_from_berth(self, robot_id: int):
-        
         if berth_gds_priority_queue_list[robot_id].empty() is False:
-            target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
-            logger.info("target pos is %s", target_pos)
-            robot[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
-            self.target_pos_list[robot_id] = target_pos
-    
-    # def back_berth(self, robot_id: int):
-    #     if robot[robot_id].pos != berth[robot_id].pos:
-    #         robot[robot_id].extended_status = Robot_Extended_Status.BackBerth
+            target_pos = berth_gds_priority_queue_list[robot_id].get(False)[1]
+            global robots
+            # 避免分配当前港口拿不到的物品
+            if move_matrix_list[robots[robot_id].berth_id][target_pos.y][target_pos.x] != UNREACHABLE:
+                # logger.info("target pos is %s", target_pos)
+                robots[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
+                self.target_pos_list[robot_id] = target_pos
 
     def back_berth_and_pull(self, robot_id: int):
-        if robot[robot_id].pos != berth[robot_id].pos:
-            robot[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
+        robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
 
-    
+def visualize_next_n_move(start_pos: Point, next_n_move: List[Point]):
+        from path_planing.utils import applyNextnMove2ChMap, saveMatrix2File
+        saveMatrix2File(applyNextnMove2ChMap(ch, start_pos, next_n_move))
+
 if __name__ == "__main__":
 
     Init()
@@ -140,29 +151,93 @@ if __name__ == "__main__":
 
     for zhen in range(1, 15001):
         id = Input()
-        for i in range(robot_num):
-            if (zhen == 1):
-                scheduler.init_scheduler(i)
-            if robot[0].extended_status == Robot_Extended_Status.OnBerth:
-                scheduler.go_to_fetch_from_berth(0)
-            elif (robot[0].extended_status == Robot_Extended_Status.GotGoods):
-                scheduler.back_berth_and_pull(0)
-            # move_matrix: List[List[Point]],
-            # robots = [],
-            # berths: List[Berth] = [], 
-            # target_pos: Point = Point(-1, -1)
-            robot[i].run_new(move_matrix=move_matrix_list[i],
-                             robots = robot,
-                             berths = berth,
-                             target_pos = scheduler.target_pos_list[i])
+        # 在第一帧开始前初始化小车的信息（因为小车的坐标和id在第一帧输入后才能确认）
+        # 可以集成到myinit中。先不管
+        if (zhen == 1):
+            scheduler.init_robots(robots, berths)
 
-        if (boat[0].pos == -1 and boat[0].status == 1 or zhen == 1):
-            print("ship", 0, 0)
-        elif (boat[0].pos == 0 and boat[0].status == 1):
-            back_count = back_count - 1
-            if (back_count == 0):
-                print("go", 0)
-                back_count = boat_capacity
+        # 🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗
+        #  🐞
+        logger.info("Z: %s, %s, %s",zhen, robots[3].pos, robots[3].extended_status)
+        for stk in [robots[3].paths_stk, robots[3].original_paths_stk]:
+            poses = []
+            for item in enum_stk_and_recover(stk):
+                poses.append(item)
+            logger.info("%s", poses)
+        for i in range(robot_num):
+            # 🐞
+            if i == check_num:
+                logger.info("A: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+                for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+                    poses = []
+                    for item in enum_stk_and_recover(stk):
+                        poses.append(item)
+                    logger.info("%s", poses)
+            robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+            # 🐞 用，将运行路线打印出来
+            if i == check_num:
+                logger.info("B: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+                for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+                    poses = []
+                    for item in enum_stk_and_recover(stk):
+                        poses.append(item)
+                    logger.info("%s", poses)
+        
+        for i in range(robot_num):
+            # 碰撞了的化？？？？？？？？    
+            if robots[i].extended_status == Robot_Extended_Status.Uninitialized:
+                # 该转换符合robot状态机规则，paths此时为空
+                scheduler.back_berth_and_pull(i)
+            elif robots[i].extended_status == Robot_Extended_Status.OnBerth:
+                # 若OnBerth满足性质，则该状态转换正确
+                scheduler.go_to_fetch_from_berth(i)
+            elif (robots[i].extended_status == Robot_Extended_Status.GotGoods):
+                # 符合规则
+                scheduler.back_berth_and_pull(i)
+            robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+        
+        for i in range(robot_num):
+            # 🐞
+            if i == check_num:
+                logger.info("C: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+                for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+                    poses = []
+                    for item in enum_stk_and_recover(stk):
+                        poses.append(item)
+                    logger.info("%s", poses)
+            robots[i].paths_execution(zhen)
+            
+            # 🐞
+            if i == check_num:
+                logger.info("D: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+                for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+                    poses = []
+                    for item in enum_stk_and_recover(stk):
+                        poses.append(item)
+                    logger.info("%s", poses)
+
+        # 🐞
+        logger.info("E: %s, %s, %s",zhen, robots[3].pos, robots[3].extended_status)
+        for stk in [robots[3].paths_stk, robots[3].original_paths_stk]:
+            poses = []
+            for item in enum_stk_and_recover(stk):
+                poses.append(item)
+            logger.info("%s", poses)
+        logger.info("\n")
+
+        # boats shceduling
+        # 🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢
+        for i in range(5):
+            endone = False
+            if (boats[i].pos == -1 and boats[i].status == 1 or zhen == 1):
+                print("ship", i, i)
+            elif (boats[i].pos == i and boats[i].status == 1):
+                back_count = back_count - 1
+                if (back_count == 0 or (zhen > 13000 and not endone)):
+                    if (zhen>13000):
+                        endone = True
+                    print("go", i)
+                    back_count = boat_capacity
 
         print("OK")
         sys.stdout.flush()

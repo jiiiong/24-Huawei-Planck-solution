@@ -10,6 +10,7 @@ class Robot_Actions():
     RIGHT = Point(1, 0)
     HOLD = Point(0, 0)
 
+UNREACHABLE = Point(-2, -2)
 
 def evalLine(line: Iterable):
     newLine = []
@@ -65,15 +66,37 @@ def applyMoveMatrix2ChMap(ch: List[List[str]], move_matrix: List[List[Point]]) -
                 matrix[y][x] = '→'
     return matrix
 
+def applyNextnMove2ChMap(ch: List[List[str]], start_pos: Point, next_n_move: List[Point]) -> List[List[str]]:
+    matrix = []
+    for line in ch:
+        new_line = []
+        for c in line[0]:
+            new_line.append(c)
+        matrix.append(new_line)
+
+    cur_pos = start_pos
+    for move in next_n_move:
+        c = move
+        if (c == Robot_Actions.UP):
+            matrix[cur_pos.y][cur_pos.x] = '↑'
+        elif (c == Robot_Actions.DOWN):
+            matrix[cur_pos.y][cur_pos.x] = '↓'
+        elif (c == Robot_Actions.LEFT):
+            matrix[cur_pos.y][cur_pos.x] = '←'
+        elif (c == Robot_Actions.RIGHT):
+            matrix[cur_pos.y][cur_pos.x] = '→'
+        cur_pos = cur_pos + move
+    return matrix
+
 def saveMatrix2File(matrix: List[List[Any]]) -> None:
     '''将矩阵[[]]存到文件中'''
     index = 0
-    file_name = Path("solution/test/move_" + str(index))
+    file_name = Path("test/move_" + str(index))
     while file_name.exists():
         index += 1
-        file_name = Path("solution/test/move_" + str(index))
+        file_name = Path("test/move_" + str(index))
 
-    with open(file_name, "w") as fd:
+    with open(file_name, "x") as fd:
         for y in range(len(matrix)):
             line = str().join(matrix[y])
             fd.write(line + "\n")
