@@ -11,6 +11,7 @@ import time
 from typing import List, Tuple, Dict
 
 from log import logger, error_logger
+from core import enum_stk_and_recover
 from core import  Robot, Berth, Boat
 from core import Robot_Extended_Status
 from path_planing import Point, UNREACHABLE
@@ -89,6 +90,9 @@ def Input():
         
     for i in range(robot_num):
         robots[i].goods, robots[i].y, robots[i].x, robots[i].status = map(int, input().split())
+        # debug
+        if check_num == i:
+            logger.info("robot status %s", robots[i].status)
     for i in range(5):
         boats[i].status, boats[i].pos = map(int, input().split())
     okk = input()
@@ -156,13 +160,33 @@ if __name__ == "__main__":
         if (zhen == 1):
             scheduler.init_robots(robots, berths)
 
+        # debug
+        # logger.info("Z: %s, %s, %s",zhen, robots[3].pos, robots[3].extended_status)
+        # for stk in [robots[3].paths_stk, robots[3].original_paths_stk]:
+        #     poses = []
+        #     for item in enum_stk_and_recover(stk):
+        #         poses.append(item)
+        #     logger.info("%s", poses)
+
         for i in range(robot_num):
+            # debug
+            # if i == check_num:
+            #     logger.info("A: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+            #     for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+            #         poses = []
+            #         for item in enum_stk_and_recover(stk):
+            #             poses.append(item)
+            #         logger.info("%s", poses)
             robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
             # # debug 用，将运行路线打印出来
-            if i == check_num:
-                logger.info("%s, %s   %s",zhen, robots[i].pos, robots[i].extended_status)
-                next_n_pos = robots[i].next_n_pos(5)
-                logger.info("%s", next_n_pos)
+            # if i == check_num:
+            #     logger.info("B: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+            #     for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+            #         poses = []
+            #         for item in enum_stk_and_recover(stk):
+            #             poses.append(item)
+            #         logger.info("%s", poses)
+
             #     next_n_move: List[Point] = []
                 
             #     for j, pos in enumerate(next_n_pos):
@@ -195,11 +219,33 @@ if __name__ == "__main__":
             robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
         
         for i in range(robot_num):
-            if i == check_num:
-                logger.info("%s, %s   %s",zhen, robots[i].pos, robots[i].extended_status)
-                next_n_pos = robots[i].next_n_pos(5)
-                logger.info("%s\n", next_n_pos)
-            robots[i].paths_execution()
+            # 😄
+            # if i == check_num:
+            #     logger.info("C: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+            #     for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+            #         poses = []
+            #         for item in enum_stk_and_recover(stk):
+            #             poses.append(item)
+            #         logger.info("%s", poses)
+            robots[i].paths_execution(zhen)
+            
+            # 😄
+            # if i == check_num:
+            #     logger.info("D: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
+            #     for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
+            #         poses = []
+            #         for item in enum_stk_and_recover(stk):
+            #             poses.append(item)
+            #         logger.info("%s", poses)
+
+        # 😄
+        # logger.info("E: %s, %s, %s",zhen, robots[3].pos, robots[3].extended_status)
+        # for stk in [robots[3].paths_stk, robots[3].original_paths_stk]:
+        #     poses = []
+        #     for item in enum_stk_and_recover(stk):
+        #         poses.append(item)
+        #     logger.info("%s", poses)
+        # logger.info("\n")
 
         # boats shceduling
         for i in range(5):

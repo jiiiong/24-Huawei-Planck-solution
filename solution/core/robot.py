@@ -10,7 +10,7 @@ from path_planing import Point, UNREACHABLE
 from path_planing import Robot_Actions
 
 from .berth import Berth
-
+from .utils import enum_stk_and_recover, enum_stk_and_empty, enum_stk
 
 robot_action_value_to_cmd = {
     Robot_Actions.RIGHT : 0,
@@ -237,35 +237,6 @@ class Robot():
         self.paths_stk = LifoQueue()
         self.extended_status = Robot_Extended_Status.CollisionAvoidance
         self.path_planing(move_matrix, robots, berths, target_pos)
-
-    # 退出避障
-    # 将collision期间的paths附加到原来状态的paths上
-    def disable_collision_avoidance_and_append_paths(self, 
-                move_matrix: List[List[Point]],
-                robots: List[Robot] = [],
-                berths: List[Berth] = [], 
-                target_pos: Point = Point(-1, -1)):
-        
-        tmp_stk = LifoQueue()
-        while not self.paths_stk.empty():
-            tmp_stk.put(self.paths_stk.get())
-        self.paths_stk = self.original_paths_stk
-        while not tmp_stk.empty():
-            self.paths_stk.put(tmp_stk.get())
-        self.original_paths_stk = LifoQueue()
-
-        self.extended_status = self.original_extended_status
-        #self.run(move_matrix, robots, berths, target_pos)
-
-    def disable_collision_avoidance(self, 
-                move_matrix: List[List[Point]],
-                robots: List[Robot] = [],
-                berths: List[Berth] = [], 
-                target_pos: Point = Point(-1, -1)):
-        
-        self.paths_stk = self.original_paths_stk
-        self.extended_status = self.original_extended_status
-        #self.run(move_matrix, robots, berths, target_pos)
     
     # 退出避障
     # 将collision期间的paths附加到原来状态的paths上
@@ -275,11 +246,15 @@ class Robot():
                 berths: List[Berth] = [], 
                 target_pos: Point = Point(-1, -1)):
         # 如果处于这些状态，如果paths_stk中还存在其他步骤，那么回归这些状态时，他们的位置在该在的位置的假设将错误
+        if (self.extended_status != Robot_Extended_Status.CollisionAvoidance):
+            error_logger.error("尝试从避障转入避障，错误")
+            return 
         if self.original_extended_status in [Robot_Extended_Status.OnBerth, Robot_Extended_Status.GotGoods]:
             if (not self.paths_stk.empty()):
                 return False
             else:
                 self.paths_stk = self.original_paths_stk
+                self.original_paths_stk = LifoQueue()
         # 对于back、fetch、unableback、等将需要接下来的路直接加入原paths？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
         else:
             tmp_stk = LifoQueue()
@@ -291,6 +266,7 @@ class Robot():
             self.original_paths_stk = LifoQueue()
 
         self.extended_status = self.original_extended_status
+        return True
         #self.run(move_matrix, robots, berths, target_pos)
 
     def collision_check(self, 
@@ -369,32 +345,30 @@ class Robot():
         # elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
         #     self.disable_collision_avoidance(move_matrix, robots, berths, target_pos)
 
-    def gen_recoverable_paths(self, tmp_paths_stk: LifoQueue):
+    def gen_recoverable_paths(self, following_stk: LifoQueue):
+        # 如果呆在原地，则会导致生成两步原地？？？？？？？？？？
         reverse_stk = LifoQueue()
         tmp = LifoQueue()
-        # 构造回溯位置，包括原始位置
-        while not tmp_paths_stk.empty():
-            item = tmp_paths_stk.get()
-            tmp.put(item)
-            reverse_stk.put(item)
-        reverse_stk.put(self.pos)
-        # 构造前进路线
-        while not tmp.empty():
-            tmp_paths_stk.put(tmp.get())
 
-        if (tmp_paths_stk.empty()):
+        # 构造回溯位置，包括原始位置
+        for item in enum_stk_and_recover(following_stk):
+            reverse_stk.put(item)
+        reverse_stk.put(Point(self.pos.x, self.pos.y))
+
+        # 构造前进路线
+        if (following_stk.empty()): # 这里是否出错了？
             pass
         else: # 如果有新规划的路径，必须保留原有的回溯路径
-            tmp_paths_stk.get() # 去除一个重复的终点
-            while (not self.paths_stk.empty()):
-                # 其实找到最后一个更好
-                test = self.paths_stk.get()
-                if test == self.pos:
+
+            following_stk.get() # 去除一个重复的终点
+            for item in enum_stk(self.paths_stk): # 不断枚举直达 stk为空或被外部中断，元素皆不会恢复
+                if item == self.pos:    # 其实找到最后一个更好
                     break
-            while (not reverse_stk.empty()):
-                self.paths_stk.put(reverse_stk.get())
-            while (not tmp_paths_stk.empty()):
-                self.paths_stk.put(tmp_paths_stk.get())
+
+            for item in enum_stk(reverse_stk):
+                self.paths_stk.put(item)
+            for item in enum_stk(following_stk):
+                self.paths_stk.put(item)
 
     def path_planing(self, 
                 move_matrix: List[List[Point]],
@@ -467,15 +441,20 @@ class Robot():
             return True
             #logger.info("DFS cost: %s", timer.click()*1000)
 
-    def paths_execution(self):
-        if self.status == 0:
-            return
+    def paths_execution(self,zhen):
+        # # 有用吗？是否可以删除
+        # # 如果下一帧就是原地动作，是否还有存在的必要
+        # if self.status == 0:
+        #     self.suppose_pos = self.pos
+        #     self.empty_paths = self.paths_stk.empty()
+        #     return
+        
         if not self.paths_stk.empty():
             self.empty_paths = False
             next_pos = self.paths_stk.get(False)
             action = next_pos - self.pos
             if (action not in robot_action_value_to_cmd):
-                error_logger.error("下一步action出错，不在预定的actions中，实际为%s， cur %s", action, self.pos)
+                error_logger.error("帧数：%s，cur_pos: %s, 目标位置: %s", zhen, self.pos, next_pos)
                 # self.extended_status = Robot_Extended_Status.BackBerthAndPull
                 return
         else:
@@ -515,7 +494,8 @@ class Robot():
                 self.paths_stk.put(self.suppose_pos)
             elif self.empty_paths == False:
                 self.paths_stk.put(self.suppose_pos)
-            if self.extended_status != Robot_Extended_Status.CollisionAvoidance:
+            if (self.extended_status != Robot_Extended_Status.CollisionAvoidance#):
+                and self.collision_check(move_matrix, robots, berths, target_pos) == True):
                 self.enable_collision_avoidance(move_matrix, robots, berths, target_pos)
         
         elif self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
