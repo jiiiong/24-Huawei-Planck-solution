@@ -8,7 +8,7 @@ import sys
 from queue import Queue, PriorityQueue
 import random
 import time
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Set
 
 from log import logger, error_logger
 from core import enum_stk_and_recover
@@ -17,6 +17,7 @@ from core import Robot_Extended_Status
 from path_planing import Point, UNREACHABLE
 from path_planing import BFS
 from path_planing import chMap2ValueMatrix
+from path_planing import Mission
 
 
 n = 200
@@ -44,7 +45,7 @@ move_matrix_list:  List[ (List[List[Point]]) ] = []
 
 # global queue for goods
 # List[PriorityQueue[Tuple[int, Point]]]
-berth_gds_priority_queue_list = [PriorityQueue() for _ in range(berth_num)]
+berth_gds_priority_queue_list: List[PriorityQueue] = [PriorityQueue() for _ in range(berth_num)]
 
 check_num = [0]
 back_count = 71
@@ -86,7 +87,7 @@ def Input():
         # 暂时测试物品队列用
         for i in range(robot_num):
             if (cost_matrix_list[i][y][x] >= 0 and val > 100):
-                berth_gds_priority_queue_list[i].put( (cost_matrix_list[i][y][x], Point(x, y)))
+                berth_gds_priority_queue_list[i].put((cost_matrix_list[i][y][x], Point(x, y)))
         
     for i in range(robot_num):
         robots[i].goods, robots[i].y, robots[i].x, robots[i].status = map(int, input().split())
@@ -110,7 +111,9 @@ def myInit():
 
 class Scheduler:
     def __init__(self) -> None:
-        self.target_pos_list = [Point(-1, -1) for _ in range(robot_num)]
+        self.target_pos_list: List[Point] = [Point(-1, -1) for _ in range(robot_num)]
+        # hui 新增一个用来去除重复任务的set
+        self.target_pos_in_mission: Set[Mission] =set()
 
     def init_robots(self, robots: List[Robot], berths: List[Berth]):
         for i, robot in enumerate(robots):
@@ -125,7 +128,14 @@ class Scheduler:
    
     def go_to_fetch_from_berth(self, robot_id: int):
         if berth_gds_priority_queue_list[robot_id].empty() is False:
-            target_pos = berth_gds_priority_queue_list[robot_id].get(False)[1]
+            target_pos: Point = berth_gds_priority_queue_list[robot_id].get(False)[1]
+            # # hui 通过这个target_pos_in_mission来去除重复任务
+            # while target_pos in self.target_pos_in_mission:
+            #     target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
+            # mission_instance = Mission(target_pos, robot_id, robot_id)
+            # self.target_pos_in_mission.add(mission_instance)
+            # logger.info("添加进mission集合的任务 :%s\n",mission_instance)
+
             global robots
             # 避免分配当前港口拿不到的物品
             if move_matrix_list[robots[robot_id].berth_id][target_pos.y][target_pos.x] != UNREACHABLE:
@@ -195,6 +205,10 @@ if __name__ == "__main__":
                 scheduler.go_to_fetch_from_berth(i)
             elif (robots[i].extended_status == Robot_Extended_Status.GotGoods):
                 # 符合规则
+                # if (robots[i].goods == 1):
+                # mission_instance = Mission(scheduler.target_pos_list[i] ,robots[i].robot_id, robots[i].robot_id)
+                # if mission_instance in scheduler.target_pos_in_mission:
+                #     scheduler.target_pos_in_mission.remove(mission_instance)
                 scheduler.back_berth_and_pull(i)
             robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
         
