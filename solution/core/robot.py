@@ -71,12 +71,13 @@ class Robot():
         self.original_paths_stk = LifoQueue()
         # 为记录走过的路用
         self.last_pos = Point(x = startX, y = startY)
-        self.num_paths_predict = 2
+        self.num_paths_predict = 3
 
         # 用于记录避障时走过的路(为了能够原路返回，以队列形式存储)
         self.walked_paths_during_collision_avoidance = Queue()
 
         # 碰撞后恢复用
+        self.last_status = 1
         self.empty_paths = True
         self.suppose_pos = Point(x = startX, y = startY)
 
@@ -165,7 +166,8 @@ class Robot():
                 invalid = True
 
         elif (value == Robot_Extended_Status.CollisionAvoidance):
-            pass
+            if (self._extended_status == Robot_Extended_Status.CollisionAvoidance):
+                invalid = True
         
         if invalid:
             error_logger.error("机器人%s  pos: %s \n    状态转换出错，由%s, 到%s",
@@ -225,50 +227,6 @@ class Robot():
         return poses
         # logger.info("next n for %s, \n%s", robot.robot_id, poses)
 
-    # 启动避障状态，该状态会通过 搜索算法 尽可能远离其他机器人的位置，并记录移动的路径
-    # 启动时会直接重新计算路径
-    def enable_collision_avoidance(self, 
-                move_matrix: List[List[Point]],
-                robots: List[Robot] = [],
-                berths: List[Berth] = [], 
-                target_pos: Point = Point(-1, -1)):
-        self.original_extended_status = self.extended_status
-        self.original_paths_stk = self.paths_stk
-        self.paths_stk = LifoQueue()
-        self.extended_status = Robot_Extended_Status.CollisionAvoidance
-        self.path_planing(move_matrix, robots, berths, target_pos)
-    
-    # 退出避障
-    # 将collision期间的paths附加到原来状态的paths上
-    def try_disable_collision_avoidance(self, 
-                move_matrix: List[List[Point]],
-                robots: List[Robot] = [],
-                berths: List[Berth] = [], 
-                target_pos: Point = Point(-1, -1)):
-        # 如果处于这些状态，如果paths_stk中还存在其他步骤，那么回归这些状态时，他们的位置在该在的位置的假设将错误
-        if (self.extended_status != Robot_Extended_Status.CollisionAvoidance):
-            error_logger.error("尝试从避障转入避障，错误")
-            return 
-        if self.original_extended_status in [Robot_Extended_Status.OnBerth, Robot_Extended_Status.GotGoods]:
-            if (not self.paths_stk.empty()):
-                return False
-            else:
-                self.paths_stk = self.original_paths_stk
-                self.original_paths_stk = LifoQueue()
-        # 对于back、fetch、unableback、等将需要接下来的路直接加入原paths？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-        else:
-            tmp_stk = LifoQueue()
-            while not self.paths_stk.empty():
-                tmp_stk.put(self.paths_stk.get())
-            self.paths_stk = self.original_paths_stk
-            while not tmp_stk.empty():
-                self.paths_stk.put(tmp_stk.get())
-            self.original_paths_stk = LifoQueue()
-
-        self.extended_status = self.original_extended_status
-        return True
-        #self.run(move_matrix, robots, berths, target_pos)
-
     def collision_check(self, 
                 move_matrix: List[List[Point]],
                 robots: List[Robot] = [],
@@ -289,8 +247,13 @@ class Robot():
                 # 将机器人加入surrounding字典，并让其value为优先级
                 self.surronding_robots_with_priority[robot.robot_id] = priority_for_robot_extended_status[robot.extended_status] + robot.robot_id
                 # 如果那个机器人下一帧会与自己碰撞，则加入碰撞机器人队列
-                if (self.next_n_pos(1)[0] == robot.next_n_pos(1)[0]):
-                    self.collision_robots_id.append(robot.robot_id)
+                windows = 1
+                poses1 = self.next_n_pos(windows)
+                poses2 = robot.next_n_pos(windows)
+                for _i in range(windows):
+                    if (poses1[_i] == poses2[_i]):
+                        self.collision_robots_id.append(robot.robot_id)
+                        break
 
         if (len(self.collision_robots_id) > 1):
             return True
@@ -346,29 +309,84 @@ class Robot():
         #     self.disable_collision_avoidance(move_matrix, robots, berths, target_pos)
 
     def gen_recoverable_paths(self, following_stk: LifoQueue):
-        # 如果呆在原地，则会导致生成两步原地？？？？？？？？？？
+        # 如果呆在原地，则会导致生成两步原地？？？？？？？？？？  
+        cur_pos = Point(self.pos.x, self.pos.y)
         reverse_stk = LifoQueue()
-        tmp = LifoQueue()
+
+        if (following_stk.empty()):
+            return
 
         # 构造回溯位置，包括原始位置
         for item in enum_stk_and_recover(following_stk):
             reverse_stk.put(item)
-        reverse_stk.put(Point(self.pos.x, self.pos.y))
+        # 对避障路径为原点进行特殊处理，
+        stay = False
+        if (reverse_stk.qsize() == 1):
+            for item in enum_stk_and_recover(reverse_stk):
+                if item == cur_pos:
+                    stay = True
+        if not stay:
+            reverse_stk.put(cur_pos)
 
-        # 构造前进路线
-        if (following_stk.empty()): # 这里是否出错了？
-            pass
-        else: # 如果有新规划的路径，必须保留原有的回溯路径
-
-            following_stk.get() # 去除一个重复的终点
-            for item in enum_stk(self.paths_stk): # 不断枚举直达 stk为空或被外部中断，元素皆不会恢复
-                if item == self.pos:    # 其实找到最后一个更好
+        following_stk.get() # 去除一个重复的终点
+        # 将新的回归路径拼接到原来的回归路径上
+        last_index = -1
+        for i, item in enumerate(enum_stk_and_recover(self.paths_stk)):
+            if (item == cur_pos):
+                last_index = i
+        if (last_index != -1):
+            for i, item in enumerate(enum_stk(self.paths_stk)):
+                if i == last_index:
                     break
 
-            for item in enum_stk(reverse_stk):
-                self.paths_stk.put(item)
-            for item in enum_stk(following_stk):
-                self.paths_stk.put(item)
+        for item in enum_stk(reverse_stk):
+            self.paths_stk.put(item)
+        for item in enum_stk(following_stk):
+            self.paths_stk.put(item)
+
+    # 启动避障状态，该状态会通过 搜索算法 尽可能远离其他机器人的位置，并记录移动的路径
+    # 启动时会直接重新计算路径
+    def enable_collision_avoidance(self, 
+                move_matrix: List[List[Point]],
+                robots: List[Robot] = [],
+                berths: List[Berth] = [], 
+                target_pos: Point = Point(-1, -1)):
+        self.original_extended_status = self.extended_status
+        self.original_paths_stk = self.paths_stk
+        self.paths_stk = LifoQueue()
+        self.extended_status = Robot_Extended_Status.CollisionAvoidance
+        self.path_planing(move_matrix, robots, berths, target_pos)
+    
+    # 退出避障
+    # 将collision期间的paths附加到原来状态的paths上
+    def try_disable_collision_avoidance(self, 
+                move_matrix: List[List[Point]],
+                robots: List[Robot] = [],
+                berths: List[Berth] = [], 
+                target_pos: Point = Point(-1, -1)):
+        # 如果处于这些状态，如果paths_stk中还存在其他步骤，那么回归这些状态时，他们的位置在该在的位置的假设将错误
+        if (self.extended_status != Robot_Extended_Status.CollisionAvoidance):
+            error_logger.error("尝试从避障转入避障，错误")
+            return 
+        if self.original_extended_status in [Robot_Extended_Status.OnBerth, Robot_Extended_Status.GotGoods]:
+            if (not self.paths_stk.empty()):
+                return False
+            else:
+                self.paths_stk = self.original_paths_stk
+                self.original_paths_stk = LifoQueue()
+        # 对于back、fetch、unableback、等将需要接下来的路直接加入原paths？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+        else:
+            tmp_stk = LifoQueue()
+            while not self.paths_stk.empty():
+                tmp_stk.put(self.paths_stk.get())
+            self.paths_stk = self.original_paths_stk
+            while not tmp_stk.empty():
+                self.paths_stk.put(tmp_stk.get())
+            self.original_paths_stk = LifoQueue()
+
+        self.extended_status = self.original_extended_status
+        return True
+        #self.run(move_matrix, robots, berths, target_pos)
 
     def path_planing(self, 
                 move_matrix: List[List[Point]],
@@ -431,7 +449,8 @@ class Robot():
                         next_pos = self.pos + key
                         break
                 # gen paths
-                tmp_paths_stk.put(next_pos)
+                for _ in range(1):
+                    tmp_paths_stk.put(next_pos)
                 # 尝试能够回溯的避障路径
                 self.gen_recoverable_paths(tmp_paths_stk)
 
@@ -488,12 +507,19 @@ class Robot():
                 robots: List[Robot] = [],
                 berths: List[Berth] = [], 
                 target_pos: Point = Point(-1, -1)):
-        # 如果发生碰撞?????????????????????????????????????????????????????????????????????????????????????????????????????????
-        if self.status == 0:
+        '''在规划、执行后进行，在下一帧进行更新；
+            当前帧的状态更新放在下一帧的最开始，
+            是因为机器人的状态，下一帧才能被更新'''
+
+        if self.status == 0 or self.last_status == 0:# 若当前帧刚解除，但上一帧是眩晕状态，也需要恢复
+        #if self.status == 0: 
+            self.last_status = self.status
+
             if self.pos != self.suppose_pos:
                 self.paths_stk.put(self.suppose_pos)
             elif self.empty_paths == False:
                 self.paths_stk.put(self.suppose_pos)
+
             if (self.extended_status != Robot_Extended_Status.CollisionAvoidance#):
                 and self.collision_check(move_matrix, robots, berths, target_pos) == True):
                 self.enable_collision_avoidance(move_matrix, robots, berths, target_pos)
