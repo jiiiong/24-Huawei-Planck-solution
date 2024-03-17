@@ -47,7 +47,7 @@ move_matrix_list:  List[ (List[List[Point]]) ] = []
 # List[PriorityQueue[Tuple[int, Point]]]
 berth_gds_priority_queue_list: List[PriorityQueue] = [PriorityQueue() for _ in range(berth_num)]
 
-check_num = [0]
+check_num = [6,7]
 back_count = 71
 
 def Init():
@@ -99,6 +99,7 @@ def Input():
 
 def myInit():
     t = time.time()
+    global value_matrix
     value_matrix = chMap2ValueMatrix(ch)
     for b in berths:
         move_matrix, cost_matrix = BFS(value_matrix, b.pos)
@@ -115,7 +116,7 @@ class Scheduler:
         # hui 新增一个用来去除重复任务的set
         self.target_pos_in_mission: Set[Mission] =set()
 
-    def init_robots(self, robots: List[Robot], berths: List[Berth]):
+    def init_robots(self, robots: List[Robot], berths: List[Berth], value_matrix: List[List[int]]):
         for i, robot in enumerate(robots):
             robot.robot_id = i
             robot.berth_id = i
@@ -123,6 +124,7 @@ class Scheduler:
             robot.move_matrix_list = move_matrix_list
             robot.suppose_pos = robot.pos
             robot.last_pos = robot.pos
+            robot.value_matrix = value_matrix 
             # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
             # logger.info("%s", robot[robot_id].alarming_area)
    
@@ -134,7 +136,7 @@ class Scheduler:
                 target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
             mission_instance = Mission(target_pos, robot_id, robot_id)
             self.target_pos_in_mission.add(mission_instance)
-            logger.info("添加进mission集合的任务 :%s\n",mission_instance)
+            #logger.info("添加进mission集合的任务 :%s\n",mission_instance)
 
             global robots
             # 避免分配当前港口拿不到的物品
@@ -162,7 +164,7 @@ if __name__ == "__main__":
         # 在第一帧开始前初始化小车的信息（因为小车的坐标和id在第一帧输入后才能确认）
         # 可以集成到myinit中。先不管
         if (zhen == 1):
-            scheduler.init_robots(robots, berths)
+            scheduler.init_robots(robots, berths,  value_matrix)
 
         # 🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗
 
@@ -177,7 +179,7 @@ if __name__ == "__main__":
             # ## 🐞
             # if i in check_num:
             #     logger.info("robot status %s", robots[i].status)
-            # 🐞之前将self.pos引用传入栈导致出错
+            # #🐞之前将self.pos引用传入栈导致出错
             # if i in check_num:
             #     logger.info("A: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
             #     for stk in [robots[i].paths_stk, robots[i].original_paths_stk]:
@@ -210,6 +212,8 @@ if __name__ == "__main__":
                 if mission_instance in scheduler.target_pos_in_mission:
                     scheduler.target_pos_in_mission.remove(mission_instance)
                 scheduler.back_berth_and_pull(i)
+                
+        for i in range(robot_num):
             robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
         
         for i in range(robot_num):
@@ -220,7 +224,7 @@ if __name__ == "__main__":
             #         poses = []
             #         for item in enum_stk_and_recover(stk):
             #             poses.append(item)
-            #         logger.info("%s\n", poses)
+            #         logger.info("%s", poses)
             robots[i].paths_execution(zhen)
             ## 🐞
             # if i in check_num:

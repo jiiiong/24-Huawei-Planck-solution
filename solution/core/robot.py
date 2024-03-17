@@ -8,6 +8,7 @@ from queue import LifoQueue, PriorityQueue, Queue
 from log import logger, error_logger, My_Timer
 from path_planing import Point, UNREACHABLE
 from path_planing import Robot_Actions
+from path_planing import one_move_avoidance
 
 from .berth import Berth
 from .utils import enum_stk_and_recover, enum_stk_and_empty, enum_stk
@@ -56,6 +57,7 @@ class Robot():
         self.berth_id = -1
         self.berths: List[Berth] = []
         self.move_matrix_list: List[(List[List[Point]])] = []
+        self.value_matrix: List[List[int]] = []
 
         # 状态，每个状态经过规划、避障、执行；状态更新在第二帧调度前进行
         self._extended_status = Robot_Extended_Status.Uninitialized
@@ -72,9 +74,6 @@ class Robot():
         # 为记录走过的路用
         self.last_pos = Point(x = startX, y = startY)
         self.num_paths_predict = 3
-
-        # 用于记录避障时走过的路(为了能够原路返回，以队列形式存储)
-        self.walked_paths_during_collision_avoidance = Queue()
 
         # 碰撞后恢复用
         self.last_status = 1
@@ -181,29 +180,36 @@ class Robot():
         count = 0
         tmp_fifoqueue = LifoQueue()
         tmp_fifoqueue_for_original = LifoQueue()
-        final_pos = self.pos
+        final_pos = Point(self.pos.x, self.pos.y)
+        
+        for stk in [self.paths_stk, self.original_paths_stk]:
+            for next_pos in enum_stk_and_recover(self.paths_stk):
+                if count < n:
+                    poses.append(next_pos)
+                    final_pos = next_pos
+                    count += 1
         # 当前的
-        while (count < n) and (not self.paths_stk.empty()):
-            tmp = self.paths_stk.get()
-            poses.append(tmp)
-            final_pos = tmp
-            tmp_fifoqueue.put(tmp)
-            count += 1
+        # while (count < n) and (not self.paths_stk.empty()):
+        #     tmp = self.paths_stk.get()
+        #     poses.append(tmp)
+        #     final_pos = tmp
+        #     tmp_fifoqueue.put(tmp)
+        #     count += 1
         # 避障时为原来的队列
         # 非避障是为空
-        while (count < n) and (not self.original_paths_stk.empty()):
-            tmp = self.original_paths_stk.get()
-            poses.append(tmp)
-            final_pos = tmp
-            tmp_fifoqueue_for_original.put(tmp)
-            count += 1
+        # while (count < n) and (not self.original_paths_stk.empty()):
+        #     tmp = self.original_paths_stk.get()
+        #     poses.append(tmp)
+        #     final_pos = tmp
+        #     tmp_fifoqueue_for_original.put(tmp)
+        #     count += 1
         while count < n:
             poses.append(final_pos)
             count += 1
-        while (not tmp_fifoqueue_for_original.empty()):
-            self.original_paths_stk.put(tmp_fifoqueue_for_original.get())
-        while (not tmp_fifoqueue.empty()):
-            self.paths_stk.put(tmp_fifoqueue.get())
+        # while (not tmp_fifoqueue_for_original.empty()):
+        #     self.original_paths_stk.put(tmp_fifoqueue_for_original.get())
+        # while (not tmp_fifoqueue.empty()):
+        #     self.paths_stk.put(tmp_fifoqueue.get())
 
         return poses
         # logger.info("next n for %s, \n%s", robot.robot_id, poses)
@@ -243,18 +249,25 @@ class Robot():
         # 检查警戒范围内是否有其他机器人                
         for robot in robots:
             # 如果警戒范围内存在其他机器人
-            if  (self.pos.distance(robot.pos) <= self.alarming_area_size) and (robot.robot_id != self.robot_id) :
+            distance = self.pos.distance(robot.pos)
+            if  (distance <= self.alarming_area_size) and (robot.robot_id != self.robot_id) :
                 # 将机器人加入surrounding字典，并让其value为优先级
                 self.surronding_robots_with_priority[robot.robot_id] = priority_for_robot_extended_status[robot.extended_status] + robot.robot_id
                 # 如果那个机器人下一帧会与自己碰撞，则加入碰撞机器人队列
-                windows = 1
-                poses1 = self.next_n_pos(windows)
-                poses2 = robot.next_n_pos(windows)
-                for _i in range(windows):
-                    if (poses1[_i] == poses2[_i]):
-                        self.collision_robots_id.append(robot.robot_id)
-                        break
-
+                
+                # windows = 1
+                # poses1 = self.next_n_pos(windows)
+                # poses2 = robot.next_n_pos(windows)
+                # for _i in range(windows):
+                # ❌，如果对撞，则会被检测为不碰撞
+                #     if (poses1[_i] == poses2[_i]):
+                #         self.collision_robots_id.append(robot.robot_id)
+                #         break
+                pos1 = self.next_n_pos(1)[0]
+                pos2 = robot.next_n_pos(1)[0]
+                if (pos1 == pos2 or (pos1 == robot.pos and pos2 == self.pos)):
+                    self.collision_robots_id.append(robot.robot_id)
+                    
         if (len(self.collision_robots_id) > 1):
             return True
         else:
@@ -307,6 +320,58 @@ class Robot():
         # 如果没有会撞得，且当前为避障模式，则恢复原来模式 xxxxxxxxx错误，会导致循环
         # elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
         #     self.disable_collision_avoidance(move_matrix, robots, berths, target_pos)
+
+    def find_avoidance_path(self, 
+                move_matrix: List[List[Point]],
+                robots: List[Robot] = [],
+                berths: List[Berth] = [], 
+                target_pos: Point = Point(-1, -1)) -> LifoQueue[Point]:
+        avoidance_paths_stk = LifoQueue()
+
+        # collision_check同时会更新self.surrounding, self.collision_robots_ud
+        if (self.collision_check(move_matrix, robots, berths, target_pos) == False):
+            return avoidance_paths_stk
+        
+        avoidance_matrix_len = 5 # 7/2
+        # 获得障碍图
+        l = self.pos.x - avoidance_matrix_len
+        r = self.pos.x + avoidance_matrix_len
+        t = self.pos.y - avoidance_matrix_len
+        b = self.pos.y + avoidance_matrix_len
+        if l < 0: l = 0
+        if r > 199:  r = 199
+        if t < 0: t = 0
+        if b > 199: b = 199
+
+        avoidance_matrix: List[List[int]] = []
+        col = -1
+        for y in range(t, b+1):
+            avoidance_matrix.append([])
+            col += 1
+            for x in range(l, r+1):
+                avoidance_matrix[col].append(self.value_matrix[y][x])
+        # 将机器人的位置和其路径视为障碍物
+        for robot_id in self.surronding_robots_with_priority:
+            # 不考虑自己
+            if robot_id == self.robot_id:
+                continue
+            robot = robots[robot_id]
+            poses: List[Point] = []
+            poses.append(Point(x = robot.x, y = robot.y))
+            poses.append(robot.next_n_pos(1)[0])
+            for pos in poses:
+                avoidance_matrix[pos.y-t][pos.x-l] = 0
+
+        # 尝试一条避障路径
+        list_avoidance_paths, success = one_move_avoidance(avoidance_matrix,
+                                                           Point(self.pos.x-l, self.pos.y-t))
+        for item in list_avoidance_paths:
+            item = Point(item.x + l, item.y + t)
+            avoidance_paths_stk.put(item)
+        
+        return avoidance_paths_stk
+
+        # 尝试规划避让路径
 
     def gen_recoverable_paths(self, following_stk: LifoQueue):
         # 如果呆在原地，则会导致生成两步原地？？？？？？？？？？  
@@ -439,18 +504,8 @@ class Robot():
                             self.paths_stk.put(tmp_stk.get())
 
             elif self.extended_status == Robot_Extended_Status.CollisionAvoidance:
-
-                tmp_paths_stk = LifoQueue()
-                # gen paths
-                index = random.randrange(0,5,1)
-                next_pos = Point()
-                for key, value in robot_action_value_to_cmd.items():
-                    if value == index:
-                        next_pos = self.pos + key
-                        break
-                # gen paths
-                for _ in range(1):
-                    tmp_paths_stk.put(next_pos)
+                
+                tmp_paths_stk = self.find_avoidance_path(move_matrix, robots, berths, target_pos)
                 # 尝试能够回溯的避障路径
                 self.gen_recoverable_paths(tmp_paths_stk)
 
