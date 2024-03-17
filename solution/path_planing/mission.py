@@ -20,4 +20,5 @@ class Mission():
                 self.pos == other.pos)
     
     def __hash__(self):
-        return hash((self.car_id, self.berth_id, self.pos))
+        return hash((self.pos))
+        #return hash((self.car_id, self.berth_id, self.pos))

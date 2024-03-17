@@ -130,11 +130,11 @@ class Scheduler:
         if berth_gds_priority_queue_list[robot_id].empty() is False:
             target_pos: Point = berth_gds_priority_queue_list[robot_id].get(False)[1]
             # # hui 通过这个target_pos_in_mission来去除重复任务
-            # while target_pos in self.target_pos_in_mission:
-            #     target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
-            # mission_instance = Mission(target_pos, robot_id, robot_id)
-            # self.target_pos_in_mission.add(mission_instance)
-            # logger.info("添加进mission集合的任务 :%s\n",mission_instance)
+            while target_pos in self.target_pos_in_mission:
+                target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
+            mission_instance = Mission(target_pos, robot_id, robot_id)
+            self.target_pos_in_mission.add(mission_instance)
+            logger.info("添加进mission集合的任务 :%s\n",mission_instance)
 
             global robots
             # 避免分配当前港口拿不到的物品
@@ -206,9 +206,9 @@ if __name__ == "__main__":
             elif (robots[i].extended_status == Robot_Extended_Status.GotGoods):
                 # 符合规则
                 # if (robots[i].goods == 1):
-                # mission_instance = Mission(scheduler.target_pos_list[i] ,robots[i].robot_id, robots[i].robot_id)
-                # if mission_instance in scheduler.target_pos_in_mission:
-                #     scheduler.target_pos_in_mission.remove(mission_instance)
+                mission_instance = Mission(scheduler.target_pos_list[i] ,robots[i].robot_id, robots[i].robot_id)
+                if mission_instance in scheduler.target_pos_in_mission:
+                    scheduler.target_pos_in_mission.remove(mission_instance)
                 scheduler.back_berth_and_pull(i)
             robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
         
