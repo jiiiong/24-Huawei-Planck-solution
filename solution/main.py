@@ -50,6 +50,29 @@ berth_gds_priority_queue_list: List[PriorityQueue] = [PriorityQueue() for _ in r
 check_num = [6,7]
 back_count = 71
 
+# hui
+# 找到一个当前堆积货物最多的空闲的港口
+def getIdealBerthId(berths:List[Berth] ,boats:List[Boat]):
+    boatsWorkingBerthList: List[int] = []
+    gdsOfBerth: List[int] = []
+    for i in range(5):
+        boatsWorkingBerthList.append(boats[i].pos)
+    # logger.info("boatsWorkingBerthList:%s",boatsWorkingBerthList)
+    for i in range(10):
+        gdsOfBerth.append(berths[i].num_gds)
+    # logger.info("gdsOfBerth:%s",gdsOfBerth)
+    sorted_berths_with_gds = sorted(enumerate(gdsOfBerth, start=0), key=lambda x: x[1], reverse=False)
+    # 使用列表来实现栈，将排序后的港口ID放入栈中
+    stack = [berth_id for berth_id, _ in sorted_berths_with_gds]
+    # logger.info("stack:%s",stack)
+    IdealBerthId = -1
+    for i in range(10):
+        berthid = stack.pop()
+        if berthid not in boatsWorkingBerthList:
+            IdealBerthId =  berthid
+            return IdealBerthId 
+    return -1
+
 def Init():
     for _ in range(0, n):
         line = input()
@@ -248,15 +271,38 @@ if __name__ == "__main__":
         # 🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢
         for i in range(5):
             endone = False
-            if (boats[i].pos == -1 and boats[i].status == 1 or zhen == 1):
+            if (zhen == 1):
                 print("ship", i, i)
-            elif (boats[i].pos == i and boats[i].status == 1):
-                back_count = back_count - 1
-                if (back_count == 0 or (zhen > 13000 and not endone)):
+                logger.info("init ship  %s %s",i ,i)
+                boats[i].capacity = boat_capacity
+                continue
+            if (boats[i].pos == -1 and boats[i].status == 1 ):
+            # 选取一个当前货物最多的港口过去
+                targetBerthId = getIdealBerthId(berths,boats)
+                # logger.info("targetBerthId:%s",targetBerthId)
+                print("ship", i, targetBerthId)
+                logger.info("ship  %s %s",i ,targetBerthId)
+                boats[i].capacity = boat_capacity
+            elif (0<=boats[i].pos<=9 and boats[i].status == 1):
+                boats[i].capacity = boats[i].capacity - 1 
+                berths[boats[i].pos].num_gds = berths[boats[i].pos].num_gds - 1
+                logger.info("boats[%s].capacity:%s",i,boats[i].capacity)
+                if (boats[i].capacity == 0 or (zhen > 13000 and not endone)):
                     if (zhen>13000):
                         endone = True
                     print("go", i)
-                    back_count = boat_capacity
+                    logger.info("go %s",i)
+                if (berths[boats[i].pos].num_gds ==0):
+                    # 查看一下某个港口的货物被取完的时候各个港口的货物的数量
+                    for j in range(10):
+                        gdsOfBerth: List[int] = []
+                        gdsOfBerth.append(berths[j].num_gds)
+                        logger.info("gdsOfBerth:%s",gdsOfBerth)
+                    # 当某个港口货物被搬完之后发现另外的港口的货物数量非常少,感觉也没什么迁移过去的必要
+                    # 起始感觉应该让船去另一个港口而不是回虚拟点卖货
+                    print("go", i)
+                    logger.info("go %s",i)      
+                    # back_count = boat_capacity
 
         print("OK")
         sys.stdout.flush()
