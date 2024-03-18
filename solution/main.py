@@ -12,7 +12,7 @@ from typing import List, Tuple, Dict, Set
 
 from log import logger, error_logger
 from core import enum_stk_and_recover
-from core import  Robot, Berth, Boat
+from core import  Robot, Berth, Boat, Goods
 from core import Robot_Extended_Status
 from path_planing import Point, UNREACHABLE
 from path_planing import BFS
@@ -73,6 +73,60 @@ def getIdealBerthId(berths:List[Berth] ,boats:List[Boat]):
             return IdealBerthId 
     return -1
 
+class Scheduler:
+    def __init__(self) -> None:
+        self.target_pos_list: List[Point] = [Point(-1, -1) for _ in range(robot_num)]
+        # hui 新增一个用来去除重复任务的set
+        self.target_pos_in_mission: Set[Mission] =set()
+        self.cost_matrix_list = cost_matrix_list
+
+    def init_robots(self, robots: List[Robot], berths: List[Berth], value_matrix: List[List[int]]):
+        for i, robot in enumerate(robots):
+            robot.robot_id = i
+            robot.berth_id = 0
+            robot.berths = berths
+            robot.move_matrix_list = move_matrix_list
+            robot.suppose_pos = robot.pos
+            robot.last_pos = robot.pos
+            robot.value_matrix = value_matrix 
+            # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
+            # logger.info("%s", robot[robot_id].alarming_area)
+   
+    def go_to_fetch_from_berth(self, robot_id: int):
+        berth  = berths[robot_id]
+        if berth.gds_priority_queue.empty() is False:
+            goods: Goods = berth.gds_priority_queue.get(False)[1]
+            while (goods.fetched == True and not berth.gds_priority_queue.empty()):
+                goods = berth.gds_priority_queue.get(False)[1]
+            # # hui 通过这个target_pos_in_mission来去除重复任务
+            # while target_pos in self.target_pos_in_mission:
+            #     target_pos = berth.gds_priority_queue.get()[1]
+            # mission_instance = Mission(target_pos, robot_id, robot_id)
+            # self.target_pos_in_mission.add(mission_instance)
+            #logger.info("添加进mission集合的任务 :%s\n",mission_instance)
+
+            global robots
+            # 避免分配当前港口拿不到的物品
+            if move_matrix_list[robots[robot_id].berth_id][goods.pos.y][goods.pos.x] != UNREACHABLE:
+                # logger.info("target pos is %s", target_pos)
+                robots[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
+                self.target_pos_list[robot_id] = goods.pos
+                goods.fetched = True
+
+    def back_berth_and_pull(self, robot_id: int):
+        robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
+
+    def schedule_gds(self, goods: Goods):
+        id_cost_list: List[Tuple[int, int]] = []
+        for berth_id in range(berth_num):
+            cost = cost_matrix_list[berth_id][goods.pos.y][goods.pos.x]
+            id_cost_list.append((berth_id, cost))
+
+        # 将货物放入当前最近的3个港口中
+        id_cost_list.sort(key=lambda x: x[1])
+        for order in range(3):
+            berths[id_cost_list[order][0]].gds_priority_queue.put((id_cost_list[order][1], goods))
+
 def Init():
     for _ in range(0, n):
         line = input()
@@ -98,27 +152,26 @@ def Init():
     print("OK")
     sys.stdout.flush()
 
-def Input():
+def Input(schduler: Scheduler):
     id, money = map(int, input().split(" "))
     #logger.info("id: %s", id)
     num = int(input())
     for i in range(num):
         y, x, val = map(int, input().split())
         gds[y][x] = val
-        #logger.info("%d, %d, %d", y, x, val)
-
+        # logger.info("%d, %d, %d", y, x, val)
         # 暂时测试物品队列用
-        for i in range(robot_num):
-            if (cost_matrix_list[i][y][x] >= 0 and val > 100):
-                berth_gds_priority_queue_list[i].put((cost_matrix_list[i][y][x], Point(x, y)))
-        
+        scheduler.schedule_gds(Goods(Point(x,y), val))
+        logger.info(" ".join([str(berth.gds_priority_queue.qsize()) for berth in berths]))
+
+
     for i in range(robot_num):
         robots[i].goods, robots[i].y, robots[i].x, robots[i].status = map(int, input().split())
 
     for i in range(5):
         boats[i].status, boats[i].pos = map(int, input().split())
     okk = input()
-    return id
+    return id,
 
 def myInit():
     t = time.time()
@@ -133,43 +186,6 @@ def myInit():
     t = time.time() - t
     # logger.info("myInit time: %ds", t)
 
-class Scheduler:
-    def __init__(self) -> None:
-        self.target_pos_list: List[Point] = [Point(-1, -1) for _ in range(robot_num)]
-        # hui 新增一个用来去除重复任务的set
-        self.target_pos_in_mission: Set[Mission] =set()
-
-    def init_robots(self, robots: List[Robot], berths: List[Berth], value_matrix: List[List[int]]):
-        for i, robot in enumerate(robots):
-            robot.robot_id = i
-            robot.berth_id = i
-            robot.berths = berths
-            robot.move_matrix_list = move_matrix_list
-            robot.suppose_pos = robot.pos
-            robot.last_pos = robot.pos
-            robot.value_matrix = value_matrix 
-            # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
-            # logger.info("%s", robot[robot_id].alarming_area)
-   
-    def go_to_fetch_from_berth(self, robot_id: int):
-        if berth_gds_priority_queue_list[robot_id].empty() is False:
-            target_pos: Point = berth_gds_priority_queue_list[robot_id].get(False)[1]
-            # # hui 通过这个target_pos_in_mission来去除重复任务
-            while target_pos in self.target_pos_in_mission:
-                target_pos = berth_gds_priority_queue_list[robot_id].get()[1]
-            mission_instance = Mission(target_pos, robot_id, robot_id)
-            self.target_pos_in_mission.add(mission_instance)
-            #logger.info("添加进mission集合的任务 :%s\n",mission_instance)
-
-            global robots
-            # 避免分配当前港口拿不到的物品
-            if move_matrix_list[robots[robot_id].berth_id][target_pos.y][target_pos.x] != UNREACHABLE:
-                # logger.info("target pos is %s", target_pos)
-                robots[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
-                self.target_pos_list[robot_id] = target_pos
-
-    def back_berth_and_pull(self, robot_id: int):
-        robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
 
 def visualize_next_n_move(start_pos: Point, next_n_move: List[Point]):
         from path_planing.utils import applyNextnMove2ChMap, saveMatrix2File
@@ -183,7 +199,7 @@ if __name__ == "__main__":
     scheduler = Scheduler()
 
     for zhen in range(1, 15001):
-        id = Input()
+        id = Input(scheduler)
         # 在第一帧开始前初始化小车的信息（因为小车的坐标和id在第一帧输入后才能确认）
         # 可以集成到myinit中。先不管
         if (zhen == 1):
@@ -231,13 +247,13 @@ if __name__ == "__main__":
             elif (robots[i].extended_status == Robot_Extended_Status.GotGoods):
                 # 符合规则
                 # if (robots[i].goods == 1):
-                mission_instance = Mission(scheduler.target_pos_list[i] ,robots[i].robot_id, robots[i].robot_id)
+                mission_instance = Mission(scheduler.target_pos_list[i] ,robots[i].robot_id, robots[i].berth_id)
                 if mission_instance in scheduler.target_pos_in_mission:
                     scheduler.target_pos_in_mission.remove(mission_instance)
                 scheduler.back_berth_and_pull(i)
                 
         for i in range(robot_num):
-            robots[i].run(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+            robots[i].run(move_matrix_list[robots[i].berth_id], robots, berths, scheduler.target_pos_list[i])
         
         for i in range(robot_num):
             # # 🐞
@@ -273,7 +289,7 @@ if __name__ == "__main__":
             endone = False
             if (zhen == 1):
                 print("ship", i, i)
-                logger.info("init ship  %s %s",i ,i)
+                #logger.info("init ship  %s %s",i ,i)
                 boats[i].capacity = boat_capacity
                 continue
             if (boats[i].pos == -1 and boats[i].status == 1 ):
@@ -281,27 +297,27 @@ if __name__ == "__main__":
                 targetBerthId = getIdealBerthId(berths,boats)
                 # logger.info("targetBerthId:%s",targetBerthId)
                 print("ship", i, targetBerthId)
-                logger.info("ship  %s %s",i ,targetBerthId)
+                # logger.info("ship  %s %s",i ,targetBerthId)
                 boats[i].capacity = boat_capacity
             elif (0<=boats[i].pos<=9 and boats[i].status == 1):
                 boats[i].capacity = boats[i].capacity - 1 
                 berths[boats[i].pos].num_gds = berths[boats[i].pos].num_gds - 1
-                logger.info("boats[%s].capacity:%s",i,boats[i].capacity)
+                # logger.info("boats[%s].capacity:%s",i,boats[i].capacity)
                 if (boats[i].capacity == 0 or (zhen > 13000 and not endone)):
                     if (zhen>13000):
                         endone = True
                     print("go", i)
-                    logger.info("go %s",i)
+                    # logger.info("go %s",i)
                 if (berths[boats[i].pos].num_gds ==0):
                     # 查看一下某个港口的货物被取完的时候各个港口的货物的数量
                     for j in range(10):
                         gdsOfBerth: List[int] = []
                         gdsOfBerth.append(berths[j].num_gds)
-                        logger.info("gdsOfBerth:%s",gdsOfBerth)
+                        ##logger.info("gdsOfBerth:%s",gdsOfBerth)
                     # 当某个港口货物被搬完之后发现另外的港口的货物数量非常少,感觉也没什么迁移过去的必要
                     # 起始感觉应该让船去另一个港口而不是回虚拟点卖货
                     print("go", i)
-                    logger.info("go %s",i)      
+                    # logger.info("go %s",i)      
                     # back_count = boat_capacity
 
         print("OK")
