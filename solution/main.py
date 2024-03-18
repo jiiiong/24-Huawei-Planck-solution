@@ -5,7 +5,7 @@
 # debugpy.breakpoint()
 
 import sys
-from queue import Queue, PriorityQueue
+from queue import Queue, PriorityQueue, LifoQueue
 import random
 import time
 from typing import List, Tuple, Dict, Set
@@ -77,13 +77,14 @@ class Scheduler:
     def __init__(self) -> None:
         self.target_pos_list: List[Point] = [Point(-1, -1) for _ in range(robot_num)]
         # hui 新增一个用来去除重复任务的set
-        self.target_pos_in_mission: Set[Mission] =set()
+        self.target_pos_in_mission: Set[Mission] = set()
         self.cost_matrix_list = cost_matrix_list
 
     def init_robots(self, robots: List[Robot], berths: List[Berth], value_matrix: List[List[int]]):
         for i, robot in enumerate(robots):
             robot.robot_id = i
-            robot.berth_id = 0
+            robot.berth_id = i
+            robot.robots = robots
             robot.berths = berths
             robot.move_matrix_list = move_matrix_list
             robot.suppose_pos = robot.pos
@@ -91,13 +92,15 @@ class Scheduler:
             robot.value_matrix = value_matrix 
             # robot[robot_id].cal_alarming_area(robot[robot_id].alarming_area_size)
             # logger.info("%s", robot[robot_id].alarming_area)
-   
+    
+    def init_berths(self):
+        for i, berth in enumerate(berths):
+            berth.cost_matrix = self.cost_matrix_list[i]
+
     def go_to_fetch_from_berth(self, robot_id: int):
-        berth  = berths[robot_id]
-        if berth.gds_priority_queue.empty() is False:
-            goods: Goods = berth.gds_priority_queue.get(False)[1]
-            while (goods.fetched == True and not berth.gds_priority_queue.empty()):
-                goods = berth.gds_priority_queue.get(False)[1]
+        global robots
+        berth  = berths[robots[robot_id].berth_id]
+        success, goods = berth.fetch_goods()
             # # hui 通过这个target_pos_in_mission来去除重复任务
             # while target_pos in self.target_pos_in_mission:
             #     target_pos = berth.gds_priority_queue.get()[1]
@@ -105,8 +108,8 @@ class Scheduler:
             # self.target_pos_in_mission.add(mission_instance)
             #logger.info("添加进mission集合的任务 :%s\n",mission_instance)
 
-            global robots
             # 避免分配当前港口拿不到的物品
+        if success:
             if move_matrix_list[robots[robot_id].berth_id][goods.pos.y][goods.pos.x] != UNREACHABLE:
                 # logger.info("target pos is %s", target_pos)
                 robots[robot_id].extended_status = Robot_Extended_Status.GotoFetchFromBerth
@@ -117,15 +120,19 @@ class Scheduler:
         robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
 
     def schedule_gds(self, goods: Goods):
-        id_cost_list: List[Tuple[int, int]] = []
+        if goods.price < 180:
+            return
+        id_cost_list: List[Tuple[int, float]] = []
         for berth_id in range(berth_num):
-            cost = cost_matrix_list[berth_id][goods.pos.y][goods.pos.x]
+            cost = self.cost_matrix_list[berth_id][goods.pos.y][goods.pos.x]
             id_cost_list.append((berth_id, cost))
-
+            # berth = berths[berth_id]
+            # cost = goods.price / (cost_matrix_list[berth_id][goods.pos.y][goods.pos.x] + berth.loading_speed + berth.transport_time)
+            # id_cost_list.append((berth_id, -cost))
         # 将货物放入当前最近的3个港口中
         id_cost_list.sort(key=lambda x: x[1])
-        for order in range(3):
-            berths[id_cost_list[order][0]].gds_priority_queue.put((id_cost_list[order][1], goods))
+        for order in range(2):
+            berths[id_cost_list[order][0]].add_goods(goods)
 
 def Init():
     for _ in range(0, n):
@@ -140,10 +147,10 @@ def Init():
         berths[id].x = berth_list[2] + 2
         berths[id].transport_time = berth_list[3]
         berths[id].loading_speed = berth_list[4]
-        # logger.info("transport time: %d, loading speed: %d,",berths[id].transport_time, berths[id].loading_speed)
+        logger.info("transport time: %d, loading speed: %d,",berths[id].transport_time, berths[id].loading_speed)
     global boat_capacity
     boat_capacity = int(input())
-    # logger.info("boat capacity: %s", boat_capacity)
+    logger.info("boat capacity: %s", boat_capacity)
     okk = input()
 
     # 初始化所有港口的BFS
@@ -152,17 +159,17 @@ def Init():
     print("OK")
     sys.stdout.flush()
 
-def Input(schduler: Scheduler):
+def Input(scheduler: Scheduler, zhen: int):
     id, money = map(int, input().split(" "))
-    #logger.info("id: %s", id)
     num = int(input())
+    logger.info("%d",num)
     for i in range(num):
         y, x, val = map(int, input().split())
         gds[y][x] = val
         # logger.info("%d, %d, %d", y, x, val)
         # 暂时测试物品队列用
-        scheduler.schedule_gds(Goods(Point(x,y), val))
-        logger.info(" ".join([str(berth.gds_priority_queue.qsize()) for berth in berths]))
+        scheduler.schedule_gds(Goods(gen_zhen=zhen, pos=Point(x,y), price=val))
+        # logger.info(" ".join([str(berth.gds_priority_queue.qsize()) for berth in berths]))
 
 
     for i in range(robot_num):
@@ -186,7 +193,6 @@ def myInit():
     t = time.time() - t
     # logger.info("myInit time: %ds", t)
 
-
 def visualize_next_n_move(start_pos: Point, next_n_move: List[Point]):
         from path_planing.utils import applyNextnMove2ChMap, saveMatrix2File
         saveMatrix2File(applyNextnMove2ChMap(ch, start_pos, next_n_move))
@@ -194,26 +200,36 @@ def visualize_next_n_move(start_pos: Point, next_n_move: List[Point]):
 if __name__ == "__main__":
 
     Init()
-    # logger.info("----------------init----------------------")
-    
+
     scheduler = Scheduler()
+    # 必须在input之前
+    scheduler.init_berths()
+
 
     for zhen in range(1, 15001):
-        id = Input(scheduler)
+        id = Input(scheduler, zhen)
         # 在第一帧开始前初始化小车的信息（因为小车的坐标和id在第一帧输入后才能确认）
         # 可以集成到myinit中。先不管
+        error_logger.error("\t".join([str(round(berth.get_estimated_rate() * 100, 3)) for berth in berths]))
+            
         if (zhen == 1):
             scheduler.init_robots(robots, berths,  value_matrix)
+        
+        if (zhen == 4000):
+            arrive_rate_list = [(i, berth.get_estimated_rate()) for i, berth in enumerate(berths)]
+            arrive_rate_list.sort(key = lambda x : x[1], reverse=True)
+            robots[arrive_rate_list[9][0]].berth_id = arrive_rate_list[0][0]
+            robots[arrive_rate_list[9][0]].extended_status = Robot_Extended_Status.BackBerthAndPull
+            robots[arrive_rate_list[9][0]].paths_stk = LifoQueue()
+            robots[arrive_rate_list[9][0]].path_planing(move_matrix_list[robots[arrive_rate_list[9][0]].berth_id])
+            robots[arrive_rate_list[8][0]].berth_id = arrive_rate_list[1][0]
+            robots[arrive_rate_list[8][0]].extended_status = Robot_Extended_Status.BackBerthAndPull
+            robots[arrive_rate_list[8][0]].paths_stk = LifoQueue()
+            robots[arrive_rate_list[8][0]].path_planing(move_matrix_list[robots[arrive_rate_list[1][0]].berth_id])
+            
+
 
         # 🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗🚗
-
-        #  🐞
-        # logger.info("Z: %s, %s, %s",zhen, robots[3].pos, robots[3].extended_status)
-        # for stk in [robots[3].paths_stk, robots[3].original_paths_stk]:
-        #     poses = []
-        #     for item in enum_stk_and_recover(stk):
-        #         poses.append(item)
-        #     logger.info("%s", poses)
         for i in range(robot_num):
             # ## 🐞
             # if i in check_num:
@@ -226,7 +242,7 @@ if __name__ == "__main__":
             #         for item in enum_stk_and_recover(stk):
             #             poses.append(item)
             #         logger.info("%s", poses)
-            robots[i].update_extended_status(move_matrix_list[i], robots, berths, scheduler.target_pos_list[i])
+            robots[i].update_extended_status(move_matrix_list[i], scheduler.target_pos_list[i])
             ## 🐞 用，将运行路线打印出来
             # if i in check_num:
             #     logger.info("B: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
@@ -253,7 +269,7 @@ if __name__ == "__main__":
                 scheduler.back_berth_and_pull(i)
                 
         for i in range(robot_num):
-            robots[i].run(move_matrix_list[robots[i].berth_id], robots, berths, scheduler.target_pos_list[i])
+            robots[i].run(move_matrix_list[robots[i].berth_id], scheduler.target_pos_list[i])
         
         for i in range(robot_num):
             # # 🐞
@@ -320,5 +336,10 @@ if __name__ == "__main__":
                     # logger.info("go %s",i)      
                     # back_count = boat_capacity
 
+        if (zhen == 15000):
+            logger.info(" ".join([str(berth.total_earn) for berth in berths]))
+            logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in berths]))
+
         print("OK")
+        
         sys.stdout.flush()
