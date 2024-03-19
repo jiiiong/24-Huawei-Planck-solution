@@ -27,7 +27,7 @@ class Env:
         self.ch: List[List[str]] = []#每行只有一个元素
         self.gds:List[List[int]] = [[0 for _ in range(N)] for _ in range(N)]
 
-        self.global_time:List[int] = [0]
+        self.global_zhen_ref:List[int] = [0]
         # for path_planing 
         self.value_matrix:  List[List[int]]   = [[] for _ in range(10)] # 用来表示每个位置的开销，0代表不可通行
         self.cost_matrix_list:List[ (List[List[int]]) ]   = []
@@ -40,10 +40,10 @@ class Env:
 
     @property
     def global_zhen(self):
-        return self.global_time[0]
+        return self.global_zhen_ref[0]
     @global_zhen.setter
     def global_zhen(self, value):
-        self.global_time[0] = value
+        self.global_zhen_ref[0] = value
     
     def init_env(self, robots, berths, boats):
         self.robots:List[Robot] = robots

@@ -115,6 +115,10 @@ class Robot():
             elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance): 
                 ###############################可能还需要保证不再碰撞
                 pass
+            elif (self.paths_stk.empty()
+                  # 保证港口可达
+                  and self.env.move_matrix_list[self.berth_id][self.y][self.x] != UNREACHABLE):
+                pass
             else:
                 invalid = True
         # 目标状态为Onberth时
@@ -193,9 +197,7 @@ class Robot():
 
         return poses
 
-    def collision_check(self, 
-                move_matrix: List[List[Point]],
-                target_pos: Point = Point(-1, -1)):
+    def collision_check(self):
         timer = My_Timer()
         
         # 每一帧都初始化 附近的机器人 and 会碰撞的机器人
@@ -232,13 +234,12 @@ class Robot():
         else:
             return False
 
-    def collision_avoid(self, 
-                move_matrix: List[List[Point]],
-                target_pos: Point = Point(-1, -1)):
+    def collision_avoid(self, target_pos: Point = Point(-1, -1)):
         # 表示是否规划成功
+        move_matrix = self.env.move_matrix_list[self.berth_id]
         okk = True
         # 如果存在会碰撞的机器人
-        if (self.collision_check(move_matrix, target_pos)):
+        if (self.collision_check()):
             max_priority = -1
             max_id = -1
             for id in self.collision_robots_id:
@@ -266,7 +267,7 @@ class Robot():
                     # 如果机器人不撞了，则认为可以解除避障
                     # collision check修复了避障时无法看见原来路径的错误！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
                     if (robots[id].extended_status == Robot_Extended_Status.CollisionAvoidance
-                        and robots[id].collision_check(move_matrix, target_pos) is False
+                        and robots[id].collision_check() is False
                         ):# and robots[id].paths_stk.empty()
                         robots[id].try_disable_collision_avoidance(move_matrix, target_pos)
                     # 该最高优先级的部分区域已经让路，如何考虑其他区域？
@@ -278,13 +279,11 @@ class Robot():
         # elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
         #     self.disable_collision_avoidance(move_matrix, robots, berths, target_pos)
 
-    def find_avoidance_path(self, 
-                move_matrix: List[List[Point]],
-                target_pos: Point = Point(-1, -1)) -> LifoQueue[Point]:
+    def find_avoidance_path(self):
+        
         avoidance_paths_stk = LifoQueue()
-
         # collision_check同时会更新self.surrounding, self.collision_robots_ud
-        if (self.collision_check(move_matrix, target_pos) == False):
+        if (self.collision_check() == False):
             return avoidance_paths_stk
         
         avoidance_matrix_len = 5 # 7/2
@@ -373,7 +372,7 @@ class Robot():
         self.original_paths_stk = self.paths_stk
         self.paths_stk = LifoQueue()
         self.extended_status = Robot_Extended_Status.CollisionAvoidance
-        self.path_planing(move_matrix, target_pos)
+        self.path_planing(target_pos)
     
     # 退出避障
     # 将collision期间的paths附加到原来状态的paths上
@@ -404,10 +403,8 @@ class Robot():
         return True
         #self.run(move_matrix, robots, berths, target_pos)
 
-    def path_planing(self, 
-                move_matrix: List[List[Point]],
-                target_pos: Point = Point(-2, -2)):  
-            
+    def path_planing(self, target_pos: Point = Point(-2, -2)):  
+            move_matrix = self.env.move_matrix_list[self.berth_id]
             berths = self.env.berths
             timer = My_Timer()
             
@@ -455,7 +452,7 @@ class Robot():
 
             elif self.extended_status == Robot_Extended_Status.CollisionAvoidance:
                 
-                tmp_paths_stk = self.find_avoidance_path(move_matrix, target_pos)
+                tmp_paths_stk = self.find_avoidance_path()
                 # 尝试能够回溯的避障路径
                 self.gen_recoverable_paths(tmp_paths_stk)
 
@@ -492,14 +489,12 @@ class Robot():
         if (action != Robot_Actions.HOLD):
             print("move", self.robot_id, robot_action_value_to_cmd[action])
 
-    def run(self, 
-                move_matrix: List[List[Point]],
-                target_pos: Point = Point(-1, -1)):
+    def run(self, target_pos: Point = Point(-1, -1)):
         # robot根据状态执行每一帧的动作
         while(1):
-            if self.path_planing(move_matrix, target_pos) is False:
+            if self.path_planing(target_pos) is False:
                 continue
-            if self.collision_avoid(move_matrix, target_pos) is False:
+            if self.collision_avoid(target_pos) is False:
                 continue
             else:
                 break
@@ -522,7 +517,7 @@ class Robot():
                 self.paths_stk.put(self.suppose_pos)
 
             if (self.extended_status != Robot_Extended_Status.CollisionAvoidance#):
-                and self.collision_check(move_matrix, target_pos) == True):
+                and self.collision_check() == True):
                 self.enable_collision_avoidance(move_matrix, target_pos)
         
         elif self.extended_status == Robot_Extended_Status.GotoFetchFromBerth:
@@ -556,7 +551,7 @@ class Robot():
             # 每一帧开始时，检测是否可能还会碰撞
             # 考虑避障期间会移动，若paths非空，则表明未归位，是否可以回归状态并将这些位置添加到原状态的paths上
             if (#self.paths_stk.empty() # 没有需要避障的道路and 
-                self.collision_check(move_matrix, target_pos) == False):
+                self.collision_check() == False):
                     self.try_disable_collision_avoidance(move_matrix, target_pos)
         
         elif self.extended_status == Robot_Extended_Status.OnBerth:
@@ -564,3 +559,13 @@ class Robot():
 
         elif self.extended_status == Robot_Extended_Status.Uninitialized:
             pass
+
+    def change_berth(self, new_berth_id):
+        move_matrix = self.env.move_matrix_list[new_berth_id]
+        if (move_matrix[self.y][self.x] != UNREACHABLE):
+            self.berth_id = new_berth_id
+            self.paths_stk = LifoQueue()
+            self.extended_status = Robot_Extended_Status.BackBerthAndPull
+            self.path_planing(self.env.berths[new_berth_id].pos)
+        else:
+            error_logger.error("new berth unreachable")

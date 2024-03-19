@@ -18,7 +18,6 @@ from core import Robot_Extended_Status
 from path_planing import Point, UNREACHABLE
 from path_planing import BFS
 from path_planing import chMap2ValueMatrix
-from path_planing import Mission
 from scheduler import Scheduler
 
 
@@ -60,8 +59,8 @@ def Init(env: Env):
         berth_list = [int(c) for c in line.split(sep=" ")]
         id = berth_list[0]
         # 以y为行，x为列
-        env.berths[id].y = berth_list[1] + 2
-        env.berths[id].x = berth_list[2] + 2
+        env.berths[id].y = berth_list[1] + 1
+        env.berths[id].x = berth_list[2] + 1
         env.berths[id].transport_time = berth_list[3]
         env.berths[id].loading_speed = berth_list[4]
         logger.info("transport time: %d, loading speed: %d,",env.berths[id].transport_time, env.berths[id].loading_speed)
@@ -78,6 +77,7 @@ def Init(env: Env):
 
 def Input(scheduler: Scheduler, zhen: int):
     id, money = map(int, input().split(" "))
+    logger.info("%s  %s", money, 0)
     num = int(input())
     #logger.info("%d",num)
     for i in range(num):
@@ -85,7 +85,7 @@ def Input(scheduler: Scheduler, zhen: int):
         env.gds[y][x] = val
         # logger.info("%d, %d, %d", y, x, val)
         # 暂时测试物品队列用
-        scheduler.schedule_gds(Goods(gen_zhen=zhen, global_time=env.global_time, pos=Point(x,y), price=val))
+        scheduler.schedule_gds(Goods(gen_zhen=zhen, global_zhen_ref=env.global_zhen_ref, pos=Point(x,y), price=val))
         # logger.info(" ".join([str(berth.gds_priority_queue.qsize()) for berth in berths]))
 
 
@@ -108,6 +108,11 @@ def myInit(env: Env):
         # saveMatrix2File(applyMoveMatrix2ChMap(ch, move_matrix))
     t = time.time() - t
     # logger.info("myInit time: %ds", t)
+
+def berths_zhen_handler():
+    if (env.global_zhen % 10 == 0):
+        for berth in env.berths:
+            berth.clear_queue()
 
 def robots_zhen_handler():
     robot_num = env.robot_num
@@ -149,7 +154,7 @@ def robots_zhen_handler():
             scheduler.back_berth_and_pull(i)
             
     for i in range(robot_num):
-        robots[i].run(move_matrix_list[robots[i].berth_id], scheduler.target_pos_list[i])
+        robots[i].run(scheduler.target_pos_list[i])
     
     for i in range(robot_num):
         # # 🐞
@@ -241,16 +246,19 @@ if __name__ == "__main__":
 
     for zhen in range(1, 15001):
         # 更新环境变量中的全局时间
-        env.global_zhen = zhen
+        env.global_zhen_ref[0] = zhen
         # 获取输出，并调度物品
         id = Input(scheduler, zhen)
         error_logger.error("\t".join([str(round(berth.get_estimated_rate() * 100, 3)) for berth in env.berths]))
+        #logger.info(" ".join([str(berth.total_cost_available_goods/(berth.gds_priority_queue.qsize()+1)) for berth in env.berths]))
 
         if (zhen == 1):
             scheduler.init_robots()
         
-        if (zhen == 4000):
+        if (zhen == 8000):
             scheduler.schedule_robots()
+
+        berths_zhen_handler()
 
         robots_zhen_handler()
 
@@ -259,6 +267,6 @@ if __name__ == "__main__":
         if (zhen == 14990):
             logger.info(" ".join([str(berth.total_earn) for berth in env.berths]))
             logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
-        print("OK")
         
+        print("OK")
         sys.stdout.flush()

@@ -32,14 +32,8 @@ class Scheduler:
         cur_berth_id = robots[cur_robot_id].berth_id
         cur_berth  = berths[cur_berth_id]
         success, goods = cur_berth.fetch_goods()
-            # # hui 通过这个target_pos_in_mission来去除重复任务
-            # while target_pos in self.target_pos_in_mission:
-            #     target_pos = berth.gds_priority_queue.get()[1]
-            # mission_instance = Mission(target_pos, robot_id, robot_id)
-            # self.target_pos_in_mission.add(mission_instance)
-            #logger.info("添加进mission集合的任务 :%s\n",mission_instance)
 
-            # 避免分配当前港口拿不到的物品
+        # 避免分配当前港口拿不到的物品
         if success:
             if self.env.move_matrix_list[cur_berth_id][goods.y][goods.x] != UNREACHABLE:
                 # logger.info("target pos is %s", target_pos)
@@ -51,8 +45,8 @@ class Scheduler:
         self.env.robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
 
     def schedule_gds(self, goods: Goods):
-        if goods.price < 180:
-            return
+        # if goods.price < 180:
+        #     return
         cost_matrix_list = self.env.cost_matrix_list
         bid_cost_list: List[Tuple[int, float]] = []
         for berth_id in range(self.env.berth_num):
@@ -74,19 +68,16 @@ class Scheduler:
         arrive_rate_list = [(i, berth.get_estimated_rate()) for i, berth in enumerate(berths)]
         arrive_rate_list.sort(key = lambda x : x[1], reverse=True)
         logger.info("from %s to %s", robots[arrive_rate_list[9][0]].berth_id, arrive_rate_list[0][0])
-        robots[arrive_rate_list[9][0]].berth_id = arrive_rate_list[0][0]
-        robots[arrive_rate_list[9][0]].extended_status = Robot_Extended_Status.BackBerthAndPull
-        robots[arrive_rate_list[9][0]].paths_stk = LifoQueue()
-        robots[arrive_rate_list[9][0]].path_planing(move_matrix_list[robots[arrive_rate_list[9][0]].berth_id])
+        robots[arrive_rate_list[9][0]].change_berth(arrive_rate_list[0][0])
 
         logger.info("from %s to %s", robots[arrive_rate_list[8][0]].berth_id, arrive_rate_list[1][0])
-        robots[arrive_rate_list[8][0]].berth_id = arrive_rate_list[1][0]
-        robots[arrive_rate_list[8][0]].extended_status = Robot_Extended_Status.BackBerthAndPull
-        robots[arrive_rate_list[8][0]].paths_stk = LifoQueue()
-        robots[arrive_rate_list[8][0]].path_planing(move_matrix_list[robots[arrive_rate_list[1][0]].berth_id])
+        robots[arrive_rate_list[8][0]].change_berth(arrive_rate_list[1][0])
 
         logger.info("from %s to %s", robots[arrive_rate_list[7][0]].berth_id, arrive_rate_list[2][0])
-        robots[arrive_rate_list[7][0]].berth_id = arrive_rate_list[2][0]
-        robots[arrive_rate_list[7][0]].extended_status = Robot_Extended_Status.BackBerthAndPull
-        robots[arrive_rate_list[7][0]].paths_stk = LifoQueue()
-        robots[arrive_rate_list[7][0]].path_planing(move_matrix_list[robots[arrive_rate_list[2][0]].berth_id])
+        robots[arrive_rate_list[7][0]].change_berth(arrive_rate_list[2][0])
+
+        # logger.info("from %s to %s", robots[arrive_rate_list[6][0]].berth_id, arrive_rate_list[3][0])
+        # robots[arrive_rate_list[6][0]].change_berth(arrive_rate_list[3][0])
+
+        # logger.info("from %s to %s", robots[arrive_rate_list[5][0]].berth_id, arrive_rate_list[4][0])
+        # robots[arrive_rate_list[5][0]].change_berth(arrive_rate_list[4][0])
