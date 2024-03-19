@@ -77,7 +77,7 @@ def Init(env: Env):
 
 def Input(scheduler: Scheduler, zhen: int):
     id, money = map(int, input().split(" "))
-    logger.info("%s  %s", money, 0)
+    # logger.info("%s  %s", money, 0)
     num = int(input())
     #logger.info("%d",num)
     for i in range(num):
@@ -110,7 +110,7 @@ def myInit(env: Env):
     # logger.info("myInit time: %ds", t)
 
 def berths_zhen_handler():
-    if (env.global_zhen % 10 == 0):
+    if (env.global_zhen % 50 == 0):
         for berth in env.berths:
             berth.clear_queue()
 
@@ -255,7 +255,7 @@ if __name__ == "__main__":
         if (zhen == 1):
             scheduler.init_robots()
         
-        if (zhen == 8000):
+        if (zhen == 4000):
             scheduler.schedule_robots()
 
         berths_zhen_handler()
