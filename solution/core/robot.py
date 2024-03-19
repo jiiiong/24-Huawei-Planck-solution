@@ -10,6 +10,7 @@ from path_planing import Point, UNREACHABLE
 from path_planing import Robot_Actions
 from path_planing import one_move_avoidance
 
+from .env import Env
 from .berth import Berth
 from .utils import enum_stk_and_recover, enum_stk_and_empty, enum_stk
 
@@ -53,12 +54,9 @@ class Robot():
         self.mby = mby
 
         # 在第一帧开始前初始化的内容
+        self.env = Env()
         self.robot_id = -1
         self.berth_id = -1
-        self.robots: List[Robot] = []
-        self.berths: List[Berth] = []
-        self.move_matrix_list: List[(List[List[Point]])] = []
-        self.value_matrix: List[List[int]] = []
 
         # 状态，每个状态经过规划、避障、执行；状态更新在第二帧调度前进行
         self._extended_status = Robot_Extended_Status.Uninitialized
@@ -100,7 +98,9 @@ class Robot():
         return self._extended_status
     @extended_status.setter
     # 检测状态转换是否正确，仅做转换错误的输出，不做实际限制
+    
     def extended_status(self, value: Robot_Extended_Status):
+        berths = self.env.berths
         invalid = False
         msg = ""
 
@@ -122,14 +122,14 @@ class Robot():
             # 上一个状态为BackBerthAndPull，且到达目的地
             if (self.extended_status == Robot_Extended_Status.BackBerthAndPull 
                 and self.paths_stk.empty() 
-                and self.pos == self.berths[self.berth_id].pos):
+                and self.pos == berths[self.berth_id].pos):
                 pass
             elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance
                   and self.paths_stk.empty()):
                 pass
             elif (self.extended_status == Robot_Extended_Status.GotoFetchFromBerth 
                 and self.paths_stk.empty() 
-                and self.pos == self.berths[self.berth_id].pos):
+                and self.pos == berths[self.berth_id].pos):
                 pass
             else:
                 invalid = True
@@ -137,7 +137,7 @@ class Robot():
         elif (value == Robot_Extended_Status.GotoFetchFromBerth):
             if (self.extended_status == Robot_Extended_Status.OnBerth
                 and self.paths_stk.empty()
-                and self.pos == self.berths[self.berth_id].pos):
+                and self.pos == berths[self.berth_id].pos):
                 pass
             elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
                 pass
@@ -158,7 +158,7 @@ class Robot():
         # 目标状态为UnableBackBerth
         elif (value == Robot_Extended_Status.UnableBackBerth):
             if (self.extended_status == Robot_Extended_Status.BackBerthAndPull
-                and self.move_matrix_list[self.berth_id][self.pos.y][self.pos.x] == UNREACHABLE):
+                and self.env.move_matrix_list[self.berth_id][self.pos.y][self.pos.x] == UNREACHABLE):
                 pass
             elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
                 pass
@@ -179,8 +179,6 @@ class Robot():
     def next_n_pos(self, n:int = 1) -> List[Point]:
         poses: List[Point] = []
         count = 0
-        tmp_fifoqueue = LifoQueue()
-        tmp_fifoqueue_for_original = LifoQueue()
         final_pos = Point(self.pos.x, self.pos.y)
         
         for stk in [self.paths_stk, self.original_paths_stk]:
@@ -189,31 +187,11 @@ class Robot():
                     poses.append(next_pos)
                     final_pos = next_pos
                     count += 1
-        # 当前的
-        # while (count < n) and (not self.paths_stk.empty()):
-        #     tmp = self.paths_stk.get()
-        #     poses.append(tmp)
-        #     final_pos = tmp
-        #     tmp_fifoqueue.put(tmp)
-        #     count += 1
-        # 避障时为原来的队列
-        # 非避障是为空
-        # while (count < n) and (not self.original_paths_stk.empty()):
-        #     tmp = self.original_paths_stk.get()
-        #     poses.append(tmp)
-        #     final_pos = tmp
-        #     tmp_fifoqueue_for_original.put(tmp)
-        #     count += 1
         while count < n:
             poses.append(final_pos)
             count += 1
-        # while (not tmp_fifoqueue_for_original.empty()):
-        #     self.original_paths_stk.put(tmp_fifoqueue_for_original.get())
-        # while (not tmp_fifoqueue.empty()):
-        #     self.paths_stk.put(tmp_fifoqueue.get())
 
         return poses
-        # logger.info("next n for %s, \n%s", robot.robot_id, poses)
 
     def collision_check(self, 
                 move_matrix: List[List[Point]],
@@ -226,8 +204,9 @@ class Robot():
         # [robot_id, ...]
         self.collision_robots_id = [self.robot_id]
 
-        # 检查警戒范围内是否有其他机器人                
-        for robot in self.robots:
+        # 检查警戒范围内是否有其他机器人 
+        robots = self.env.robots               
+        for robot in robots:
             # 如果警戒范围内存在其他机器人
             distance = self.pos.distance(robot.pos)
             if  (distance <= self.alarming_area_size) and (robot.robot_id != self.robot_id) :
@@ -266,13 +245,13 @@ class Robot():
                 if self.surronding_robots_with_priority[id] > max_priority:
                     max_id = id
                     max_priority = self.surronding_robots_with_priority[id]
-
+            robots = self.env.robots
             for id in self.collision_robots_id:
                 # 当前robot非优先级最高
                 if (id != max_id):
                     # 如果还未进入避障状态，启动避障状态，并重新计算路径
-                    if (self.robots[id].extended_status != Robot_Extended_Status.CollisionAvoidance):
-                        self.robots[id].enable_collision_avoidance(move_matrix, target_pos)
+                    if (robots[id].extended_status != Robot_Extended_Status.CollisionAvoidance):
+                        robots[id].enable_collision_avoidance(move_matrix, target_pos)
                     # 如果已经进入避障状态，是否保证path已经规划
                     # 如果是这一帧启动的，则必然已经规划过，但是不一定针对当前max_id进行的规划
                     # 如果是上一帧启动的，则其规划是针对上一帧的，需要重新计算
@@ -286,10 +265,10 @@ class Robot():
                     # 如果正在避障，不可以直接解除避障状态，因为他可能正在必然当前不可见的更高优先级的robot
                     # 如果机器人不撞了，则认为可以解除避障
                     # collision check修复了避障时无法看见原来路径的错误！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-                    if (self.robots[id].extended_status == Robot_Extended_Status.CollisionAvoidance
-                        and self.robots[id].collision_check(move_matrix, target_pos) is False
+                    if (robots[id].extended_status == Robot_Extended_Status.CollisionAvoidance
+                        and robots[id].collision_check(move_matrix, target_pos) is False
                         ):# and robots[id].paths_stk.empty()
-                        self.robots[id].try_disable_collision_avoidance(move_matrix, target_pos)
+                        robots[id].try_disable_collision_avoidance(move_matrix, target_pos)
                     # 该最高优先级的部分区域已经让路，如何考虑其他区域？
                     # 暂时不考虑？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
                     else:
@@ -325,13 +304,13 @@ class Robot():
             avoidance_matrix.append([])
             col += 1
             for x in range(l, r+1):
-                avoidance_matrix[col].append(self.value_matrix[y][x])
+                avoidance_matrix[col].append(self.env.value_matrix[y][x])
         # 将机器人的位置和其路径视为障碍物
         for robot_id in self.surronding_robots_with_priority:
             # 不考虑自己
             if robot_id == self.robot_id:
                 continue
-            robot = self.robots[robot_id]
+            robot = self.env.robots[robot_id]
             poses: List[Point] = []
             poses.append(Point(x = robot.x, y = robot.y))
             poses.append(robot.next_n_pos(1)[0])
@@ -429,6 +408,7 @@ class Robot():
                 move_matrix: List[List[Point]],
                 target_pos: Point = Point(-2, -2)):  
             
+            berths = self.env.berths
             timer = My_Timer()
             
             # GotoFetchFromBerth只能由OnBerth状态转入，OnBerth时Paths为空
@@ -442,11 +422,11 @@ class Robot():
                     self.extended_status = Robot_Extended_Status.OnBerth
                     return False # 中途改变状态，重新规划路径
                 elif (self.paths_stk.empty()
-                    and (self.berths[self.berth_id].pos != target_pos)): 
+                    and (berths[self.berth_id].pos != target_pos)): 
                     cur_pos = target_pos
                     self.paths_stk.put(cur_pos)
                     cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
-                    while (cur_pos != self.berths[self.berth_id].pos):
+                    while (cur_pos != berths[self.berth_id].pos):
                         self.paths_stk.put(cur_pos)
                         # logger.info("debug %s | %s", cur_pos, berths[berth_id].pos)
                         cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
@@ -460,11 +440,11 @@ class Robot():
                 # 实际上，每一帧都可以为重新计算路径，但为了节省计算，仅在第一次进入时计算paths，“此时paths=空可以为判断条件”
                 # 值得注意的是，若转入该状态时已经到达，此时计算路径会导致生成一个冗余的原地pos，“排除这种情况”
                 # 若因为某些原因，paths全部走完为空时没有转换到其他状态，再次进入这个状态会保证仍然正确
-                elif self.paths_stk.empty() and (self.pos != self.berths[self.berth_id].pos):
+                elif self.paths_stk.empty() and (self.pos != berths[self.berth_id].pos):
                         tmp_stk = LifoQueue()
                         cur_pos = self.pos
                         cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
-                        while (cur_pos != self.berths[self.berth_id].pos): # 此时self.pos就是在berth上
+                        while (cur_pos != berths[self.berth_id].pos): # 此时self.pos就是在berth上
                             tmp_stk.put(cur_pos)
                             #logger.info("debug %s | %s", cur_pos, berths[berth_id].pos)
                             cur_pos = cur_pos + move_matrix[cur_pos.y][cur_pos.x]
@@ -531,7 +511,7 @@ class Robot():
         '''在规划、执行后进行，在下一帧进行更新；
             当前帧的状态更新放在下一帧的最开始，
             是因为机器人的状态，下一帧才能被更新'''
-
+        berths = self.env.berths
         if self.status == 0 or self.last_status == 0:# 若当前帧刚解除，但上一帧是眩晕状态，也需要恢复
         #if self.status == 0: 
             self.last_status = self.status
@@ -565,8 +545,8 @@ class Robot():
                 self.extended_status = Robot_Extended_Status.OnBerth
                 if self.goods == 1:
                     print("pull", self.robot_id)
-                    self.berths[self.berth_id].num_gds += 1
-                    self.berths[self.berth_id].total_earn += 180
+                    berths[self.berth_id].num_gds += 1
+                    berths[self.berth_id].total_earn += 180
         
         # 如果发生碰撞，则不会移动，所以不需要担心避障时碰撞导致无法记录路径
         elif self.extended_status == Robot_Extended_Status.CollisionAvoidance:

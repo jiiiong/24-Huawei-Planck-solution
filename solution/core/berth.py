@@ -1,7 +1,8 @@
 from __future__ import annotations
 from typing import List, Tuple
-from queue import PriorityQueue, Queue
+from queue import PriorityQueue, Queue, LifoQueue
 
+from core import Env
 from path_planing import Point
 from log import logger
 
@@ -20,7 +21,8 @@ class Berth:
         self.total_earn = 0
         self.total_value_of_allocated_goods = 0
 
-        self.cost_matrix: List[List[int]] = []
+        self.berth_id: int = 0
+        self.env: Env = Env()
 
         # 基于排队论模型的优先级计算
         self.arrival_rate_estimator = ArrivalRateEstimator()
@@ -46,16 +48,20 @@ class Berth:
 
     def add_goods(self, goods: Goods):
             
-            self.gds_priority_queue.put((self.cost_matrix[goods.pos.y][goods.pos.x], goods))
+            cost_matrix = self.env.cost_matrix_list[self.berth_id]
+            self.gds_priority_queue.put((cost_matrix[goods.pos.y][goods.pos.x], goods))
             self.total_value_of_allocated_goods += goods.price
             self.arrival_rate_estimator.update(goods.gen_zhen)
     
     def fetch_goods(self) -> Tuple[bool, Goods] : 
         success = False
-        goods: Goods = Goods(-1) # 无效的，只是为了注释正确
+        goods: Goods = Goods(-1, [0]) # 无效的，只是为了注释正确
+        cost_matrix = self.env.cost_matrix_list[self.berth_id]
         if not self.gds_priority_queue.empty():
             goods= self.gds_priority_queue.get(False)[1]
-            while (goods.fetched == True and not self.gds_priority_queue.empty()):
+            while (goods.fetched == True
+                   and not self.gds_priority_queue.empty()
+                   and (1000 - (goods.global_time[0] - goods.gen_zhen) < cost_matrix[goods.y][goods.x] + 10)):
                 goods = self.gds_priority_queue.get(False)[1]
             # 如果能取到还未被取的
             if goods.fetched == False:
@@ -63,14 +69,30 @@ class Berth:
         return success, goods
 
 class Goods:
-    def __init__(self, gen_zhen:int, pos: Point = Point(-1, -1), price: int = 0):
+    def __init__(self, gen_zhen:int, global_time: List[int], pos: Point = Point(-1, -1), price: int = 0):
         self.pos = pos
         self.price = price
         
         self.fetched = False
 
         self.gen_zhen = gen_zhen
+        self.global_time = global_time
         self.left_zhen = 200
+
+    @property
+    def x(self):
+        return self.pos.x
+    @x.setter
+    def x(self, value):
+        self.pos.x = value
+
+    @property
+    def y(self):
+        return self.pos.y
+    @y.setter
+    def y(self, value):
+        self.pos.y = value
+
     # def __repr__(self) -> str:
     #     return repr(self.pos)
     def __lt__(self, b):
