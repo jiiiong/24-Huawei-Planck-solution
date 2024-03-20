@@ -29,6 +29,8 @@ from scheduler import Scheduler
 #         from path_planing.utils import applyNextnMove2ChMap, saveMatrix2File
 #         saveMatrix2File(applyNextnMove2ChMap(ch, start_pos, next_n_move))
 
+# hui
+# 找到一个当前堆积货物最多的空闲的港口
 def getIdealBerthId(berths:List[Berth] ,boats:List[Boat]):
     boatsWorkingBerthList: List[int] = []
     gdsOfBerth: List[int] = []
@@ -110,9 +112,15 @@ def myInit(env: Env):
     # logger.info("myInit time: %ds", t)
 
 def berths_zhen_handler():
-    if (env.global_zhen % 50 == 0):
+    if (env.global_zhen % 100 == 0):
         for berth in env.berths:
             berth.clear_queue()
+            #if berth.berth_id == 5: 
+        # earn = []
+        # for berth in env.berths:
+        #     # earn.append(berth.earn_when_n[0])
+        #     earn.append(berth.num_gds)
+        # logger.info(" ".join([str(item) for item in earn]))
 
 def robots_zhen_handler():
     robot_num = env.robot_num
@@ -131,6 +139,8 @@ def robots_zhen_handler():
         #         for item in enum_stk_and_recover(stk):
         #             poses.append(item)
         #         logger.info("%s", poses)
+        if not i in check_num:
+            continue
         robots[i].update_extended_status(move_matrix_list[i], scheduler.target_pos_list[i])
         ## 🐞 用，将运行路线打印出来
         # if i in check_num:
@@ -143,6 +153,8 @@ def robots_zhen_handler():
     
     for i in range(robot_num):
         # 碰撞了的化？？？？？？？？    
+        if not i in check_num:
+            continue
         if robots[i].extended_status == Robot_Extended_Status.Uninitialized:
             # 该转换符合robot状态机规则，paths此时为空
             scheduler.back_berth_and_pull(i)
@@ -154,9 +166,13 @@ def robots_zhen_handler():
             scheduler.back_berth_and_pull(i)
             
     for i in range(robot_num):
+        if not i in check_num:
+            continue
         robots[i].run(scheduler.target_pos_list[i])
     
     for i in range(robot_num):
+        if not i in check_num:
+            continue
         # # 🐞
         # if i in check_num:
         #     logger.info("C: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
@@ -205,13 +221,14 @@ def boats_zhen_handler():
             boats[i].capacity = boat_capacity
         elif (0<=boats[i].pos<=9 and boats[i].status == 1):
             boats[i].capacity = boats[i].capacity - 1 
-            berths[boats[i].pos].num_gds = berths[boats[i].pos].num_gds - 1
+            berths[boats[i].pos].num_gds = max(berths[boats[i].pos].num_gds - 1,0)
             # logger.info("boats[%s].capacity:%s",i,boats[i].capacity)
-            if (boats[i].capacity == 0 or (zhen > 13000 and not endone)):
-                if (zhen>13000):
-                    endone = True
+            last_time = 14999-zhen
+            if (boats[i].capacity == 0):
                 print("go", i)
-                # logger.info("go %s",i)
+            if (last_time <=berths[boats[i].pos].transport_time):
+                    # 最后时刻还在港口装货的话，需要卡点回虚拟点卖货
+                    print("go", i)
             if (berths[boats[i].pos].num_gds ==0):
                 # 查看一下某个港口的货物被取完的时候各个港口的货物的数量
                 for j in range(10):
@@ -225,7 +242,8 @@ def boats_zhen_handler():
                 # back_count = boat_capacity
 
 # 定义全局变量
-check_num = [6,7]
+check_num = [i for i in range(10)]
+# check_num = [5]
 
 if __name__ == "__main__":
 
@@ -250,12 +268,16 @@ if __name__ == "__main__":
         # 获取输出，并调度物品
         id = Input(scheduler, zhen)
         error_logger.error("\t".join([str(round(berth.get_estimated_rate() * 100, 3)) for berth in env.berths]))
-        #logger.info(" ".join([str(berth.total_cost_available_goods/(berth.gds_priority_queue.qsize()+1)) for berth in env.berths]))
+        earn = []
+        for berth in env.berths:
+            # earn.append(berth.earn_when_n[0])
+            earn.append(berth.num_gds)
+        logger.info(" ".join([str(item) for item in earn]))
 
         if (zhen == 1):
             scheduler.init_robots()
         
-        if (zhen == 4000):
+        if (zhen == 11000):
             scheduler.schedule_robots()
 
         berths_zhen_handler()
@@ -266,7 +288,7 @@ if __name__ == "__main__":
 
         if (zhen == 14990):
             logger.info(" ".join([str(berth.total_earn) for berth in env.berths]))
-            logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
+        #     logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
         
         print("OK")
         sys.stdout.flush()

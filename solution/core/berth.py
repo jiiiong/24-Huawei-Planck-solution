@@ -23,11 +23,10 @@ class Berth:
 
         self.num_available_goods: int = 0
         self.total_cost_available_goods: int = 0
-        self.num_to_fetch: int = 0
-        self.total_cost_to_fetch: int = 0
 
         # 基于排队论模型的优先级计算
         self.arrival_rate_estimator = ArrivalRateEstimator()
+        self.earn_when_n: List[float] = [0.0, 0.0, 0.0]
 
     @property
     def x(self):
@@ -55,7 +54,10 @@ class Berth:
         self.total_cost_available_goods = total_cost_available_goods
         for item in elements:
             pq.put(item)
-
+        # 计算该队列在只有n个机器人时能够赚多少
+        for i, _ in enumerate(self.earn_when_n):
+            self.earn_when_n[i] = self.cal_earn_berfore_end_when_n_robots(elements, i+1)
+        
     def get_estimated_rate(self) -> float:
         rate = self.arrival_rate_estimator.estimated_rate
         if rate is None: return 0
@@ -82,10 +84,27 @@ class Berth:
             # 如果能取到还未被取的
             if goods.fetched == False:
                 success = True
+
+        # logger.info("fetched goods: %s", goods)
         return success, goods
 
-    # def get_point_for_n_robots(self, n:int):
-    #     for goods in self.gds_priority_queue.queue
+    def cal_earn_berfore_end_when_n_robots(self, pq: List[Tuple[float, Goods]], n:int):
+        earn = 0
+        limit_time = 15000 - self.env.global_zhen
+        ordered_n_elapsed_time = [0 for _ in range(n)]
+        for item in pq:
+            ordered_n_elapsed_time.sort()
+            goods = item[1]
+            if (goods.remaining_zhen > (ordered_n_elapsed_time[0] + goods.cost + 5)
+                and goods.fetched == False): # 表示货物在经过elapsed_time后，还能被取到
+                ordered_n_elapsed_time[0] += 2*goods.cost + 5    # 表示取货需要花费2*goods.cost + 5长的时间
+                if ordered_n_elapsed_time[0] > limit_time:   # 如果超时
+                    break
+                earn += item[1].price
+        alpha = 0.5
+        earn = self.earn_when_n[n-1] * alpha + earn * (1-alpha)
+        return earn
+
 class Goods:
     def __init__(self, gen_zhen:int, global_zhen_ref: List[int], pos: Point = Point(-1, -1), price: int = 0):
         self.pos = pos
@@ -99,6 +118,10 @@ class Goods:
     @property
     def elapsed_zhen(self):
         return self.global_zhen_ref[0] - self.gen_zhen
+    
+    @property
+    def remaining_zhen(self):
+        return 1000 - self.global_zhen_ref[0] + self.gen_zhen
 
     @property
     def x(self):
@@ -114,8 +137,9 @@ class Goods:
     def y(self, value):
         self.pos.y = value
 
-    # def __repr__(self) -> str:
-    #     return repr(self.pos)
+    def __repr__(self) -> str:
+        return "cost: " + str(self.cost) + ", price: " + str(self.price)
+    
     def __lt__(self, b):
         return True
 

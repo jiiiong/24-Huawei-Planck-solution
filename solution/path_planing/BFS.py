@@ -14,7 +14,7 @@ def BFS(value_matrix: List[List[int]], source_point: Point) -> Tuple[List[List[P
     '''
     frontier = queue.Queue()
     came_from = dict()
-    cost_matrix = [[-1] * 200 for _ in range(200)]
+    cost_matrix = [[2147483647] * 200 for _ in range(200)]
     move_matrix = [ [UNREACHABLE] * 200 for _ in range(200)]
 
     frontier.put(source_point)

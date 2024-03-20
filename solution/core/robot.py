@@ -4,6 +4,7 @@ import random
 from enum import Enum
 from typing import List, Dict
 from queue import LifoQueue, PriorityQueue, Queue
+import copy
 
 from log import logger, error_logger, My_Timer
 from path_planing import Point, UNREACHABLE
@@ -304,21 +305,30 @@ class Robot():
             col += 1
             for x in range(l, r+1):
                 avoidance_matrix[col].append(self.env.value_matrix[y][x])
-        # 将机器人的位置和其路径视为障碍物
-        for robot_id in self.surronding_robots_with_priority:
-            # 不考虑自己
-            if robot_id == self.robot_id:
-                continue
-            robot = self.env.robots[robot_id]
-            poses: List[Point] = []
-            poses.append(Point(x = robot.x, y = robot.y))
-            poses.append(robot.next_n_pos(1)[0])
-            for pos in poses:
-                avoidance_matrix[pos.y-t][pos.x-l] = 0
+        
 
-        # 尝试一条避障路径
-        list_avoidance_paths, success = one_move_avoidance(avoidance_matrix,
-                                                           Point(self.pos.x-l, self.pos.y-t))
+        success = False
+        predict_steps = 2
+        list_avoidance_paths = []
+        while (success == False and predict_steps > 0):
+            ins_avoidance_matrix = copy.deepcopy(avoidance_matrix)
+            # 将机器人的位置和其路径视为障碍物
+            for robot_id in self.surronding_robots_with_priority:
+                # 不考虑自己
+                if robot_id == self.robot_id:
+                    continue
+                robot = self.env.robots[robot_id]
+                poses: List[Point] = []
+                poses.append(Point(x = robot.x, y = robot.y))
+                poses += robot.next_n_pos(predict_steps)
+                for pos in poses:
+                    ins_avoidance_matrix[pos.y-t][pos.x-l] = 0
+
+            # 尝试一条避障路径
+            list_avoidance_paths, success = one_move_avoidance(ins_avoidance_matrix,
+                                                            Point(self.pos.x-l, self.pos.y-t))
+            predict_steps -= 1
+        
         for item in list_avoidance_paths:
             item = Point(item.x + l, item.y + t)
             avoidance_paths_stk.put(item)
