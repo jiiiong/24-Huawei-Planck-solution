@@ -95,5 +95,43 @@ def BFS_file(file, source_point: Point) -> Tuple[List[List[Point]], List[List[in
 
     return move_matrix, cost_matrix
         
+def BFS_divide(value_matrix: List[List[int]], source_point_list: List[Point]):
+    '''
+    '''
+    frontier_list = [queue.Queue() for _ in range(len(source_point_list))]
+    cur_num_list = [ 0 for _ in range(len(source_point_list))]
+    occupied_set = set()
+    divide_matrix = [ [-1] * 200 for _ in range(200)]
 
+    # 初始化原点
+    for i, source_point in enumerate(source_point_list):
+        frontier_list[i].put(source_point)
+        cur_num_list[i] += 1
+        occupied_set.add(source_point)
+        divide_matrix[source_point.y][source_point.x] = i
+
+    while (sum(cur_num_list) > 0):
+        for i, source_point in enumerate(source_point_list):
+
+            # 未考虑初始点为障碍物时的情况
+            while not frontier_list[i].empty() and cur_num_list[i] >= 0:
+
+                cur = frontier_list[i].get()
+                cur_num_list[i] -= 1
+
+                for offset in [(-1, 0), (1, 0), (0 , -1), (0, 1)]:
+                    offset = Point(offset[0], offset[1])
+                    next:Point = cur + offset
+                    if (0<=next.y and next.y<200 and 0<=next.x and next.x<200
+                        and value_matrix[next.y][next.x] != 0
+                        and next not in occupied_set):
+
+                        frontier_list[i].put(next)
+
+                        occupied_set.add(next)
+                        divide_matrix[next.y][next.x] = i
+            # 遍历完当前的，更新下一步需要遍历的
+            cur_num_list[i] = frontier_list[i].qsize()
+
+    return divide_matrix
 

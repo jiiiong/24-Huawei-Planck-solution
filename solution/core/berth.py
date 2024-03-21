@@ -1,8 +1,9 @@
 from __future__ import annotations
-from typing import List, Tuple
+from typing import List, Tuple, Set
 from queue import PriorityQueue, Queue, LifoQueue
 
 from core import Env
+from core import Boat
 from path_planing import Point
 from log import logger, error_logger
 
@@ -14,7 +15,7 @@ class Berth:
         self.transport_time = transport_time
         self.loading_speed = loading_speed
         self.gds_priority_queue = PriorityQueue()
-        self.num_gds = 0
+        self.cur_num_gds = 0
         self.total_earn = 0
         self.total_value_of_allocated_goods = 0
 
@@ -25,9 +26,15 @@ class Berth:
         self.total_cost_available_goods: int = 0
 
         # 基于排队论模型的优先级计算
-        self.arrival_rate_estimator = ArrivalRateEstimator()
         self.earn_when_n: List[float] = [0.0, 0.0, 0.0]
-
+        self.total_num_gds = 0
+        self.increase_rate = 0
+        self.boats_id_set: Set = set()
+    
+    @property
+    def have_boats(self):
+        return False if len(self.boats_id_set) == 0 else True
+    
     @property
     def x(self):
         return self.pos.x
@@ -58,10 +65,6 @@ class Berth:
         for i, _ in enumerate(self.earn_when_n):
             self.earn_when_n[i] = self.cal_earn_berfore_end_when_n_robots(elements, i+1)
         
-    def get_estimated_rate(self) -> float:
-        rate = self.arrival_rate_estimator.estimated_rate
-        if rate is None: return 0
-        else: return rate
 
     def add_goods(self, goods: Goods):
             
@@ -69,7 +72,6 @@ class Berth:
             goods.cost = cost
             self.gds_priority_queue.put((-goods.price/(2 * cost), goods))
             self.total_value_of_allocated_goods += goods.price
-            self.arrival_rate_estimator.update(goods.gen_zhen)
             self.total_cost_available_goods +=  cost
 
     def fetch_goods(self) -> Tuple[bool, Goods] : 
@@ -104,6 +106,12 @@ class Berth:
         alpha = 0.5
         earn = self.earn_when_n[n-1] * alpha + earn * (1-alpha)
         return earn
+
+    def cal_increase_rate(self): # 最开始几帧
+        return self.total_num_gds / self.env.global_zhen
+    
+    def predict_num_of_goods_after_n(self, n):
+        return self.cur_num_gds + self.cal_increase_rate() * n
 
 class Goods:
     def __init__(self, gen_zhen:int, global_zhen_ref: List[int], pos: Point = Point(-1, -1), price: int = 0):
@@ -142,31 +150,3 @@ class Goods:
     
     def __lt__(self, b):
         return True
-
-class ArrivalRateEstimator:
-    def __init__(self, alpha: float=0.99):
-        self.alpha = alpha
-        self.estimated_rate = 0
-        self.prev_arrival_time = 0
-        self.cur_rate = 0
-
-    def update(self, arrival_time: float):
-        inter_arrival_time = arrival_time - self.prev_arrival_time
-        if inter_arrival_time == 0: # 同一帧生成多个
-            self.estimated_rate += (1 - self.alpha) * self.cur_rate
-        else:
-            self.cur_rate = 1 / inter_arrival_time
-            self.estimated_rate = self.alpha * self.estimated_rate + (1 - self.alpha) * (1 / inter_arrival_time)
-            self.prev_arrival_time = arrival_time
-
-        # if self.prev_arrival_time is None:
-        #     self.prev_arrival_time = arrival_time
-        #     self.estimated_rate = 0
-        # else:
-        #     inter_arrival_time = arrival_time - self.prev_arrival_time
-        #     if self.estimated_rate is None:
-        #         self.estimated_rate = 1 / inter_arrival_time
-        #     else:
-        #         self.estimated_rate = self.alpha * self.estimated_rate + (1 - self.alpha) * (1 / inter_arrival_time)
-        #     self.prev_arrival_time = arrival_time
-

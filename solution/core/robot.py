@@ -260,6 +260,7 @@ class Robot():
                     # 问题在于究竟针对谁进行避障，暂时先不考虑？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
                     else:
                         pass
+                        # robots[id].path_planing()
             # 另起一行，为的是在执行最高优先级之前，所有低优先级的路径已经规划好    
             for id in self.collision_robots_id:
                 # 最高优先级的对象
@@ -273,8 +274,8 @@ class Robot():
                         robots[id].try_disable_collision_avoidance(move_matrix, target_pos)
                     # 该最高优先级的部分区域已经让路，如何考虑其他区域？
                     # 暂时不考虑？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-                    else:
-                        pass
+                    # elif(robots[id].collision_check() is False):
+                    #     robots[id].enable_collision_avoidance(move_matrix, target_pos)
         return okk
         # 如果没有会撞得，且当前为避障模式，则恢复原来模式 xxxxxxxxx错误，会导致循环
         # elif (self.extended_status == Robot_Extended_Status.CollisionAvoidance):
@@ -550,7 +551,8 @@ class Robot():
                 self.extended_status = Robot_Extended_Status.OnBerth
                 if self.goods == 1:
                     print("pull", self.robot_id)
-                    berths[self.berth_id].num_gds += 1
+                    berths[self.berth_id].cur_num_gds += 1
+                    berths[self.berth_id].total_num_gds += 1
                     berths[self.berth_id].total_earn += 180
         
         # 如果发生碰撞，则不会移动，所以不需要担心避障时碰撞导致无法记录路径
@@ -570,7 +572,7 @@ class Robot():
         elif self.extended_status == Robot_Extended_Status.Uninitialized:
             pass
 
-    def change_berth(self, new_berth_id):
+    def change_berth(self, new_berth_id: int):
         move_matrix = self.env.move_matrix_list[new_berth_id]
         if (move_matrix[self.y][self.x] != UNREACHABLE):
             self.berth_id = new_berth_id

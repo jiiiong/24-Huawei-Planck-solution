@@ -16,7 +16,7 @@ from core import enum_stk_and_recover
 from core import  Robot, Berth, Boat, Goods
 from core import Robot_Extended_Status
 from path_planing import Point, UNREACHABLE
-from path_planing import BFS
+from path_planing import BFS, BFS_divide
 from path_planing import chMap2ValueMatrix
 from scheduler import Scheduler
 
@@ -38,7 +38,7 @@ def getIdealBerthId(berths:List[Berth] ,boats:List[Boat]):
         boatsWorkingBerthList.append(boats[i].pos)
     # logger.info("boatsWorkingBerthList:%s",boatsWorkingBerthList)
     for i in range(10):
-        gdsOfBerth.append(berths[i].num_gds)
+        gdsOfBerth.append(berths[i].cur_num_gds)
     # logger.info("gdsOfBerth:%s",gdsOfBerth)
     sorted_berths_with_gds = sorted(enumerate(gdsOfBerth, start=0), key=lambda x: x[1], reverse=False)
     # 使用列表来实现栈，将排序后的港口ID放入栈中
@@ -66,8 +66,8 @@ def Init(env: Env):
         env.berths[id].transport_time = berth_list[3]
         env.berths[id].loading_speed = berth_list[4]
         logger.info("transport time: %d, loading speed: %d,",env.berths[id].transport_time, env.berths[id].loading_speed)
-    global boat_capacity
     boat_capacity = int(input())
+    env.boat_capacity = boat_capacity
     logger.info("boat capacity: %s", boat_capacity)
     okk = input()
 
@@ -102,6 +102,7 @@ def Input(scheduler: Scheduler, zhen: int):
 def myInit(env: Env):
     t = time.time()
     env.value_matrix = chMap2ValueMatrix(env.ch)
+    env.divide_matrix = BFS_divide(env.value_matrix, [berth.pos for berth in env.berths])
     for b in env.berths:
         move_matrix, cost_matrix = BFS(env.value_matrix, b.pos)
         env.move_matrix_list.append(move_matrix)
@@ -119,7 +120,7 @@ def berths_zhen_handler():
         # earn = []
         # for berth in env.berths:
         #     # earn.append(berth.earn_when_n[0])
-        #     earn.append(berth.num_gds)
+        #     earn.append(berth.cur_num_gds)
         # logger.info(" ".join([str(item) for item in earn]))
 
 def robots_zhen_handler():
@@ -201,45 +202,73 @@ def robots_zhen_handler():
     # logger.info("\n")
 
 def boats_zhen_handler():
-    boats = env.boats
-    berths = env.berths
+    mine = True
+    if mine:
+        scheduler.schedule_boats_2()
 
-    # 🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢
-    for i in range(5):
-        endone = False
-        if (zhen == 1):
-            print("ship", i, i)
-            #logger.info("init ship  %s %s",i ,i)
-            boats[i].capacity = boat_capacity
-            continue
-        if (boats[i].pos == -1 and boats[i].status == 1 ):
-        # 选取一个当前货物最多的港口过去
-            targetBerthId = getIdealBerthId(berths,boats)
-            # logger.info("targetBerthId:%s",targetBerthId)
-            print("ship", i, targetBerthId)
-            # logger.info("ship  %s %s",i ,targetBerthId)
-            boats[i].capacity = boat_capacity
-        elif (0<=boats[i].pos<=9 and boats[i].status == 1):
-            boats[i].capacity = boats[i].capacity - 1 
-            berths[boats[i].pos].num_gds = max(berths[boats[i].pos].num_gds - 1,0)
-            # logger.info("boats[%s].capacity:%s",i,boats[i].capacity)
-            last_time = 14999-zhen
-            if (boats[i].capacity == 0):
-                print("go", i)
-            if (last_time <=berths[boats[i].pos].transport_time):
-                    # 最后时刻还在港口装货的话，需要卡点回虚拟点卖货
+    if not mine:
+        boats = env.boats
+        berths = env.berths
+        boat_capacity = env.boat_capacity
+        # 🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢🚢
+        for i in range(5):
+            endone = False
+            if (zhen == 1):
+                print("ship", i, i)
+                #logger.info("init ship  %s %s",i ,i)
+                boats[i].capacity = boat_capacity
+                continue
+            if (boats[i].pos == -1 and boats[i].status == 1 ):
+            # 选取一个当前货物最多的港口过去
+                targetBerthId = getIdealBerthId(berths,boats)
+                # logger.info("targetBerthId:%s",targetBerthId)
+                print("ship", i, targetBerthId)
+                error_logger.error("zhen: %s ship %s %s start", zhen, i,targetBerthId)
+                # logger.info("ship  %s %s",i ,targetBerthId)
+                boats[i].capacity = boat_capacity
+            elif (0<=boats[i].pos<=9 and boats[i].status == 1):
+                # 
+                if(boats[i].capacity>=berths[boats[i].pos].loading_speed and berths[boats[i].pos].cur_num_gds>=berths[boats[i].pos].loading_speed):
+                    boats[i].capacity = boats[i].capacity - berths[boats[i].pos].loading_speed
+                    berths[boats[i].pos].cur_num_gds = max(berths[boats[i].pos].cur_num_gds - berths[boats[i].pos].loading_speed,0)
+                elif(boats[i].capacity>=1 and berths[boats[i].pos].cur_num_gds>=1):
+                    boats[i].capacity = boats[i].capacity - 1
+                    berths[boats[i].pos].cur_num_gds = max(berths[boats[i].pos].cur_num_gds - 1,0)
+                # logger.info("boats[%s].capacity:%s",i,boats[i].capacity)
+                last_time = 14999-zhen
+                if (boats[i].capacity == 0):
                     print("go", i)
-            if (berths[boats[i].pos].num_gds ==0):
-                # 查看一下某个港口的货物被取完的时候各个港口的货物的数量
-                for j in range(10):
-                    gdsOfBerth: List[int] = []
-                    gdsOfBerth.append(berths[j].num_gds)
-                    ##logger.info("gdsOfBerth:%s",gdsOfBerth)
-                # 当某个港口货物被搬完之后发现另外的港口的货物数量非常少,感觉也没什么迁移过去的必要
-                # 起始感觉应该让船去另一个港口而不是回虚拟点卖货
-                print("go", i)
-                # logger.info("go %s",i)      
-                # back_count = boat_capacity
+                    error_logger.error("zhen: %s go %s full berth:%s", zhen, i,boats[i].pos)
+                if (last_time <=berths[boats[i].pos].transport_time):
+                        # 最后时刻还在港口装货的话，需要卡点回虚拟点卖货
+                        error_logger.error("zhen: %s go %s time berth:boats[i].pos", zhen, i,boats[i].pos)
+                        print("go", i)
+                if (berths[boats[i].pos].cur_num_gds ==0):
+                    targetBerthId = getIdealBerthId(berths,boats)
+                    gds_nums = berths[targetBerthId].cur_num_gds
+                    gds_could_get = max(boats[i].capacity,gds_nums)
+                    offset = 25
+                    change = (offset+5+71-boats[i].capacity + gds_could_get)/(500+berths[boats[i].pos].transport_time)
+                    back = (71-boats[i].capacity)/(berths[boats[i].pos].transport_time)
+                    if(zhen<10000):
+                        if(change>back ):
+                            print("ship", i, targetBerthId)
+                            error_logger.error("zhen: %s ship %s berth_%s_out_of_gds boat_cap:%s", zhen, i,boats[i].pos,boats[i].capacity)
+                        else:
+                            print("go",i)
+                            error_logger.error("zhen: %s go %s berth_%s_out_of_gds boat_cap:%s", zhen, i,boats[i].pos,boats[i].capacity)
+                    # 大于10000帧之后的动作
+                    # error_logger.error("zhen: %s go %s berth_%s_out_of_gds boat_cap:%s", zhen, i,boats[i].pos,boats[i].capacity)
+                    # print("go", i)
+
+                    if(zhen<12000 and zhen>10000):
+                        error_logger.error("zhen: %s go %s berth_%s_out_of_gds", zhen, i,boats[i].pos)
+                        print("go", i)
+                    else:
+                        pass
+                    
+                    # logger.info("go %s",i)      
+                    # back_count = boat_capacity
 
 # 定义全局变量
 check_num = [i for i in range(10)]
@@ -267,18 +296,21 @@ if __name__ == "__main__":
         env.global_zhen_ref[0] = zhen
         # 获取输出，并调度物品
         id = Input(scheduler, zhen)
-        error_logger.error("\t".join([str(round(berth.get_estimated_rate() * 100, 3)) for berth in env.berths]))
+
         earn = []
         for berth in env.berths:
             # earn.append(berth.earn_when_n[0])
-            earn.append(berth.num_gds)
+            earn.append(berth.cur_num_gds)
         logger.info(" ".join([str(item) for item in earn]))
 
         if (zhen == 1):
             scheduler.init_robots()
+            scheduler.init_boats()
         
-        if (zhen == 11000):
-            scheduler.schedule_robots()
+        # if (zhen == 10000):
+        #     scheduler.schedule_robots()
+            # for robot in env.robots:
+            #     logger.info("id：%s, berth_id %s", robot.robot_id, robot.berth_id)
 
         berths_zhen_handler()
 
@@ -286,9 +318,9 @@ if __name__ == "__main__":
 
         boats_zhen_handler()
 
-        if (zhen == 14990):
-            logger.info(" ".join([str(berth.total_earn) for berth in env.berths]))
-        #     logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
+        # if (zhen == 14990):
+        #     logger.info(" ".join([str(berth.total_earn) for berth in env.berths]))
+        # #     logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
         
         print("OK")
         sys.stdout.flush()

@@ -32,7 +32,7 @@ def evalLine(line: Iterable):
         newLine.append(val)
     return newLine
 
-def fileMap2Matrix(mapFile) -> List[List[int]]:
+def fileMap2Matrix(mapFile: str) -> List[List[int]]:
     with open(mapFile,"r") as fd:
         lines = fd.readlines()
         value_matrix = []
@@ -66,6 +66,14 @@ def applyMoveMatrix2ChMap(ch: List[List[str]], move_matrix: List[List[Point]]) -
                 matrix[y][x] = '→'
     return matrix
 
+def applyDivideMatrix2ChMap(matrix: List[List[int]], divide_matrix: List[List[int]]) -> List[List[int]]:
+
+    for y, line in enumerate(divide_matrix):
+        for x, c in enumerate(line):
+            if (c != -1):
+                matrix[y][x] = c
+    return matrix
+
 def applyNextnMove2ChMap(ch: List[List[str]], start_pos: Point, next_n_move: List[Point]) -> List[List[str]]:
     matrix = []
     for line in ch:
@@ -96,7 +104,7 @@ def saveMatrix2File(matrix: List[List[Any]]) -> None:
         index += 1
         file_name = Path("test/move_" + str(index))
 
-    with open(file_name, "x") as fd:
+    with open(file_name, "w+") as fd:
         for y in range(len(matrix)):
-            line = str().join(matrix[y])
+            line = str().join([str(item) for item in matrix[y]])
             fd.write(line + "\n")

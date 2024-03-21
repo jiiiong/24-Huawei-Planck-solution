@@ -30,9 +30,9 @@ class Env:
         self.global_zhen_ref:List[int] = [0]
         # for path_planing 
         self.value_matrix:  List[List[int]]   = [[] for _ in range(10)] # 用来表示每个位置的开销，0代表不可通行
+        self.divide_matrix: List[List[int]] = []
         self.cost_matrix_list:List[ (List[List[int]]) ]   = []
         self.move_matrix_list:  List[ (List[List[Point]]) ] = []
-
         # global queue for goods
         # List[PriorityQueue[Tuple[int, Point]]]
         self.berth_gds_priority_queue_list:List[PriorityQueue] = [PriorityQueue() for _ in range(self.berth_num)]
@@ -45,6 +45,10 @@ class Env:
     def global_zhen(self, value):
         self.global_zhen_ref[0] = value
     
+    @property
+    def left_zhen(self):
+        return 15000 - self.global_zhen_ref[0]
+
     def init_env(self, robots, berths, boats):
         self.robots:List[Robot] = robots
         self.berths:List[Berth] = berths
