@@ -204,7 +204,7 @@ def robots_zhen_handler():
 def boats_zhen_handler():
     mine = True
     if mine:
-        scheduler.schedule_boats_2()
+        scheduler.schedule_boats_4()
 
     if not mine:
         boats = env.boats
@@ -318,9 +318,9 @@ if __name__ == "__main__":
 
         boats_zhen_handler()
 
-        # if (zhen == 14990):
-        #     logger.info(" ".join([str(berth.total_earn) for berth in env.berths]))
-        # #     logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
+        if (zhen == 14990):
+            logger.info(" ".join([str(berth.total_earn) for berth in env.berths]))
+        #     logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
         
         print("OK")
         sys.stdout.flush()
