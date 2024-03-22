@@ -16,11 +16,16 @@ class Boat:
         # 所属港口
         self.current_berth_id = -1
         # 自虚拟点出发后已过时间
-        self.current_elapsed_time = 0
         self.last_run = False
 
         # 周期算法
-        self.associated_berths: List[Berth] = []
+        self.associated_berths_list: List[Berth] = []
+        self.phase_limited_time_list: List[int] = []
+        self.phase_start_time: int = 0
+        self.current_elapsed_time: int = 0
+        self.num_available_rounds: int = -1
+        self.cost_per_round: int = -1
+        
     @property
     def used_capacity(self):
         return self.total_capacity - self.capacity

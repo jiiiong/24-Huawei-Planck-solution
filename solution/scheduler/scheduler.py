@@ -61,6 +61,7 @@ class Scheduler:
 
     def init_boats(self):
         boats = self.env.boats
+        berths = self.env.berths
 
         # 初始化boat
         for i, boat in enumerate(boats):
@@ -72,22 +73,40 @@ class Scheduler:
             boat.last_run = False
         
         # 初始化最近的港口id列表
-        self.tran_time_ordered_list = [(berth.berth_id, berth.transport_time) for berth in self.env.berths]
+        self.tran_time_ordered_list = [(berth.berth_id, berth.transport_time) for berth in berths]
         self.tran_time_ordered_list.sort(key=lambda x:x[1])
         self.tran_time_ordered_berths_id_list = [tup[0] for tup in self.tran_time_ordered_list]
 
-        # self.boat_berths_map: Dict[int, List[int]]  = {}
-        # for i in range(10):
-        #     berths_id_list = []
-        #     for j in range(10):
-        #         if j != i: berths_id_list.append(j)
-        #     self.boat_berths_map[i] = berths_id_list
-        
+        # 排序后，前端后端两两组合港口
         berths_cost_time = [(berth_id, berth.transport_time + int(self.env.boat_capacity/berth.loading_speed)+1 )
-                            for berth_id, berth in enumerate(self.env.berths)]
-        
-        berths_cost_time.sort(key=lambda x:x[1])
+                            for berth_id, berth in enumerate(berths)]
+        berths_cost_time.sort(key=lambda x:x[1], reverse=True)
 
+        # boat_berths_map = {
+        #     0: [berths_cost_time[0][0], berths_cost_time[9][0]],
+        #     1: [berths_cost_time[1][0], berths_cost_time[8][0]],
+        #     2: [berths_cost_time[2][0], berths_cost_time[7][0]],
+        #     3: [berths_cost_time[3][0], berths_cost_time[6][0]],
+        #     4: [berths_cost_time[4][0], berths_cost_time[5][0]]}
+        
+        # 初始化每条船周期调度所需的参数
+        for boat_id, boat in enumerate(boats):
+            berth_0 =  berths[berths_cost_time[boat_id][0]]
+            berth_1 =  berths[berths_cost_time[len(berths_cost_time)-boat_id-1][0]]
+            boat.associated_berths_list.append(berth_0)
+            boat.phase_limited_time_list.append(berth_0.transport_time + int(boat.total_capacity/berth_0.loading_speed) + 1)
+            boat.associated_berths_list.append(berth_1)
+            boat.phase_limited_time_list.append(boat.phase_limited_time_list[0] + 500 + int(boat.total_capacity/berth_1.loading_speed) + 1)
+            boat.phase_start_time = 0
+            error_logger.error("%s : [%s, %s],", boat_id, berth_0.berth_id, berth_1.berth_id)
+            ####################>?????????????????????????????????????????????????????????????????????????考虑小车超时造成的影响
+            # 每一轮所需的时间
+            boat.cost_per_round = (berth_0.transport_time + int(boat.total_capacity/berth_0.loading_speed) + 1
+                                 + 500
+                                 + berth_1.transport_time + int(boat.total_capacity/berth_1.loading_speed) + 1)
+            boat.num_available_rounds = int(15000 / boat.cost_per_round)
+            error_logger.error("boat_id: %s, rounds: %s", boat.boat_id, boat.num_available_rounds)
+            error_logger.error("boat_id: %s, delay: %s", boat.boat_id, 15000 - boat.cost_per_round * boat.num_available_rounds)
 
         self.boat_berths_map = {
             0: [berths_cost_time[0][0], berths_cost_time[9][0]],
@@ -96,8 +115,6 @@ class Scheduler:
             3: [berths_cost_time[3][0], berths_cost_time[6][0]],
             4: [berths_cost_time[4][0], berths_cost_time[5][0]],
         }
-
-        
 
     def go_to_fetch_from_berth(self, cur_robot_id: int):
         global robots
@@ -369,103 +386,6 @@ class Scheduler:
                     error_logger.error("zhen: %s, boat_id: %s, go ",
                         self.env.global_zhen, cur_boat.boat_id )
 
-    def schedule_boats_5(self):
-        boats = self.env.boats
-        berths = self.env.berths
-        boat_capacity = self.env.boat_capacity
-        # 遍历调度每一艘轮船
-        for cur_boat_id, berths_id_list in self.boat_berths_map.items():
-            cur_boat = boats[cur_boat_id]
-            # 如果已经到达虚拟点
-            if (self.env.global_zhen <= 15000 
-                                        - (berths[berths_id_list[0]].transport_time + berths[berths_id_list[1]].transport_time 
-                                            + 500
-                                            + int(boat_capacity/berths[berths_id_list[0]].loading_speed) 
-                                            + int(boat_capacity/berths[berths_id_list[1]].loading_speed)
-                                        ) *5 ):
-                continue
-            
-            if (self.env.left_zhen == berths[berths_id_list[0]].transport_time + berths[berths_id_list[1]].transport_time \
-                                     + 500 + berths[berths_id_list[1]].transport_time + 
-                                     + int(boat_capacity/berths[berths_id_list[0]].loading_speed) + int(boat_capacity/berths[berths_id_list[1]].loading_speed)
-                and not cur_boat.last_run == True):
-
-                # print("go", cur_boat_id)
-                cur_boat.last_run = True
-                error_logger.error("!!zhen: %s, boat_id: %s, go ",
-                        self.env.global_zhen, cur_boat.boat_id )
-                # for robot in self.env.robots:
-                #     if robot.berth_id == berths_id_list[1]:
-                #         robot.change_berth(berths_id_list[0])
-
-            elif cur_boat.status == 1 and cur_boat.pos == -1: 
-                # 将轮船调度到第一个目标点
-                cur_boat.capacity = self.env.boat_capacity
-                print("ship", cur_boat_id, berths_id_list[0])
-                error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
-                        self.env.global_zhen, cur_boat.boat_id, -1, berths_id_list[0])
-            # 已经到达第一个目标港口
-            elif cur_boat.status == 1 and cur_boat.pos == berths_id_list[0]: 
-                berth = berths[berths_id_list[0]]
-                # 计算港口这 一帧 能装载的货物数量
-                num_loaded_gds = min(berth.cur_num_gds, berth.loading_speed)
-                # 但考虑床的容量，不一定能装那么多
-                num_loaded_gds = min(num_loaded_gds, cur_boat.capacity)
-                ##########################？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？装货在每一帧的最后结算
-                #》》》》》》》》》》？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？所以实际上下一帧才可以 减少，暂时不管
-                # 计算港口剩余货量
-                berth.cur_num_gds -= num_loaded_gds
-                # 计算boat的剩余容量
-                cur_boat.capacity -= num_loaded_gds
-                
-
-                if cur_boat.last_run == True:
-                    if self.env.left_zhen < berths[berths_id_list[1]].transport_time + self.env.boat_capacity + 500:
-                        print("ship", cur_boat_id, berths_id_list[1])
-                        # # 调度机器人
-                        # if (cur_boat.last_run == True):
-                        #     for robot in self.env.robots:
-                        #         if robot.berth_id == berths_id_list[0]:
-                        #             robot.change_berth(berths_id_list[1])
-                        #             error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
-                        #                                 self.env.global_zhen, cur_boat.boat_id, berths_id_list[0], berths_id_list[1])
-                # 调度部分***************
-                # 如果满货了, 或快没时间了
-                elif cur_boat.capacity == 0 or self.env.left_zhen < berths[berths_id_list[0]].transport_time: 
-                    # print("go", cur_boat_id)
-                    error_logger.error("zhen: %s, boat_id: %s, go ",
-                        self.env.global_zhen, cur_boat.boat_id )
-                # 如果没货了，则调度船到第二个港口
-                elif berth.cur_num_gds == 0:
-                    print("ship", cur_boat_id, berths_id_list[1])
-
-
-            # 到达第二个目标港口
-            elif cur_boat.status == 1 and cur_boat.pos == berths_id_list[1]: 
-                berth = berths[berths_id_list[1]]
-                # 计算港口这 一帧 能装载的货物数量
-                num_loaded_gds = min(berth.cur_num_gds, berth.loading_speed)
-                # 但考虑床的容量，不一定能装那么多
-                num_loaded_gds = min(num_loaded_gds, cur_boat.capacity)
-                
-                ##########################？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？装货在每一帧的最后结算
-                #》》》》》》》》》》？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？所以实际上下一帧才可以 减少，暂时不管
-                # 计算港口剩余货量
-                berth.cur_num_gds -= num_loaded_gds
-                # 计算boat的剩余容量
-                cur_boat.capacity -= num_loaded_gds
-                
-                # 调度部分***************
-                # 如果满货了,或者 港口无货了
-                if cur_boat.last_run == True:
-                    if self.env.left_zhen < berths[berths_id_list[1]].transport_time + 2:
-                        print("go", cur_boat_id)
-                        
-                elif cur_boat.capacity == 0 or berth.cur_num_gds == 0 or self.env.left_zhen < berths[berths_id_list[1]].transport_time + 2: 
-                    print("go", cur_boat_id)
-                    error_logger.error("zhen: %s, boat_id: %s, go ",
-                        self.env.global_zhen, cur_boat.boat_id )
-
     def schedule_boats_4(self):
         boats = self.env.boats
         berths = self.env.berths
@@ -562,6 +482,96 @@ class Scheduler:
                     print("go", cur_boat_id)
                     error_logger.error("zhen: %s, boat_id: %s, go ",
                         self.env.global_zhen, cur_boat.boat_id )
+
+    def schedule_boats_5(self):
+        boats = self.env.boats
+        berths = self.env.berths
+        boat_capacity = self.env.boat_capacity
+        # 遍历调度每一艘轮船
+        for cur_boat in boats:
+            berth_0 = cur_boat.associated_berths_list[0]
+            berth_1 = cur_boat.associated_berths_list[1]
+            # 如果已经到达虚拟点
+            if (self.env.global_zhen < 15000 - cur_boat.cost_per_round * cur_boat.num_available_rounds):
+                continue
+            
+            if (cur_boat.num_available_rounds == 1 and cur_boat.last_run is False):
+                cur_boat.last_run = True
+                error_logger.error("zhen: %s, boat_id: %s last_run_start ",
+                        self.env.global_zhen, cur_boat.boat_id)
+
+            # phase0 开始
+            if cur_boat.status == 1 and cur_boat.pos == -1: 
+                # 清空容量
+                cur_boat.capacity = cur_boat.total_capacity
+                # 将轮船调度到第一个目标点，开始phase0
+                print("ship", cur_boat.boat_id, berth_0.berth_id)
+                    # 设置phase0 开始时间
+                cur_boat.phase_start_time = self.env.global_zhen
+                error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                        self.env.global_zhen, cur_boat.boat_id, -1, berth_0.berth_id)
+            
+            # 已经到达第一个目标港口
+            elif cur_boat.status == 1 and cur_boat.pos == berth_0.berth_id: 
+                
+                # 装货部分
+                # 计算港口这 一帧 能装载的货物数量
+                num_loaded_gds = min(berth_0.cur_num_gds, berth_0.loading_speed)
+                # 但考虑床的容量，不一定能装那么多
+                num_loaded_gds = min(num_loaded_gds, cur_boat.capacity)
+                ##########################？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？装货在每一帧的最后结算
+                #》》》》》》》》》》？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？所以实际上下一帧才可以 减少，暂时不管
+                # 计算港口剩余货量
+                berth_0.cur_num_gds -= num_loaded_gds
+                # 计算boat的剩余容量
+                cur_boat.capacity -= num_loaded_gds
+                
+                # 调度部分
+                phase0_elapsed_time = self.env.global_zhen - cur_boat.phase_start_time + 1
+                phase0_limited_time = cur_boat.phase_limited_time_list[0]
+                # 如果剩余时间，只够回去
+                if self.env.left_zhen <= berth_0.transport_time + 1 and self.env.left_zhen <= 500+berth_1.transport_time+1:
+                    print("go", cur_boat.boat_id)
+                # phase0花费时间等于或者超时
+                elif phase0_elapsed_time >= phase0_limited_time:
+                    print("ship", cur_boat.boat_id, berth_1.berth_id)
+                    error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                        self.env.global_zhen, cur_boat.boat_id, -1, berth_1.berth_id)
+                    # phase2 开始
+                    
+                if cur_boat.last_run == True:
+                    pass
+                    # # 调度机器人
+                    # if (cur_boat.last_run == True):
+                    #     for robot in self.env.robots:
+                    #         if robot.berth_id == berths_id_list[0]:
+                    #             robot.change_berth(berths_id_list[1])
+                    #             error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                    #                                 self.env.global_zhen, cur_boat.boat_id, berths_id_list[0], berths_id_list[1])
+                
+            # 到达第二个目标港口
+            elif cur_boat.status == 1 and cur_boat.pos == berth_1.berth_id: 
+                berth_1 = cur_boat.associated_berths_list[1]
+
+                num_loaded_gds = min(berth_1.cur_num_gds, berth_1.loading_speed)
+                num_loaded_gds = min(num_loaded_gds, cur_boat.capacity)
+                berth_1.cur_num_gds -= num_loaded_gds
+                cur_boat.capacity -= num_loaded_gds
+                
+                # 调度部分***************
+                # 如果满货了,或者 港口无货了
+                phase1_elapsed_time = self.env.global_zhen - cur_boat.phase_start_time
+                phase1_limited_time = cur_boat.phase_limited_time_list[1]
+                if self.env.left_zhen <= berth_1.transport_time + 10:
+                    print("go ", cur_boat.boat_id)
+                    error_logger.error("zhen: %s, boat_id: %s, go ",
+                                       self.env.global_zhen, cur_boat.boat_id)
+                # phase1花费时间等于或者超时
+                elif phase1_elapsed_time >= phase1_limited_time:
+                    print("go ", cur_boat.boat_id)
+                    error_logger.error("zhen: %s, boat_id: %s, go ",
+                                       self.env.global_zhen, cur_boat.boat_id)
+                    cur_boat.num_available_rounds -= 1
 
     def schedule_robots(self):
         robots = self.env.robots

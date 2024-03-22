@@ -65,10 +65,10 @@ def Init(env: Env):
         env.berths[id].x = berth_list[2] + 1
         env.berths[id].transport_time = berth_list[3]
         env.berths[id].loading_speed = berth_list[4]
-        logger.info("transport time: %d, loading speed: %d,",env.berths[id].transport_time, env.berths[id].loading_speed)
+        error_logger.error("boat_id: %s, transport time: %d, loading speed: %d", id, env.berths[id].transport_time, env.berths[id].loading_speed)
     boat_capacity = int(input())
     env.boat_capacity = boat_capacity
-    logger.info("boat capacity: %s", boat_capacity)
+    error_logger.error("boat capacity: %s", boat_capacity)
     okk = input()
 
     # 初始化所有港口的BFS
@@ -77,17 +77,19 @@ def Init(env: Env):
     print("OK")
     sys.stdout.flush()
 
-def Input(scheduler: Scheduler, zhen: int):
+def Input(scheduler: Scheduler):
     id, money = map(int, input().split(" "))
+    env.global_zhen = id
     # logger.info("%s  %s", money, 0)
     num = int(input())
     #logger.info("%d",num)
     for i in range(num):
         y, x, val = map(int, input().split())
         env.gds[y][x] = val
+        env.total_map_gds_value += val
         # logger.info("%d, %d, %d", y, x, val)
         # 暂时测试物品队列用
-        scheduler.schedule_gds(Goods(gen_zhen=zhen, global_zhen_ref=env.global_zhen_ref, pos=Point(x,y), price=val))
+        scheduler.schedule_gds(Goods(gen_zhen=id, global_zhen_ref=env.global_zhen_ref, pos=Point(x,y), price=val))
         # logger.info(" ".join([str(berth.gds_priority_queue.qsize()) for berth in berths]))
 
 
@@ -202,7 +204,7 @@ def robots_zhen_handler():
     # logger.info("\n")
 
 def boats_zhen_handler():
-    scheduler.schedule_boats_4()
+    scheduler.schedule_boats_5()
 
 
 # 定义全局变量
@@ -216,7 +218,7 @@ if __name__ == "__main__":
         # 为了解决循环依赖问题
     robots:List[Robot] = [Robot() for _ in range(env.robot_num)]
     berths:List[Berth] = [Berth() for _ in range(env.berth_num)]
-    boats:List[Boat]   = [Boat() for _ in range(10)]
+    boats:List[Boat]   = [Boat() for _ in range(5)]
     env.init_env(robots, berths, boats)
         # 使用第一次输出初始化各种地图
     Init(env)
@@ -228,15 +230,16 @@ if __name__ == "__main__":
 
     for zhen in range(1, 15001):
         # 更新环境变量中的全局时间
-        env.global_zhen_ref[0] = zhen
         # 获取输出，并调度物品
-        id = Input(scheduler, zhen)
+        id = Input(scheduler)
+        zhen = id[0]
 
         earn = []
         for berth in env.berths:
             # earn.append(berth.earn_when_n[0])
             earn.append(berth.cur_num_gds)
-        logger.info(" ".join([str(item) for item in earn]))
+        logger.info("%s %s", zhen, " ".join([str(item) for item in earn]))
+        
 
         if (zhen == 1):
             scheduler.init_robots()
@@ -253,8 +256,9 @@ if __name__ == "__main__":
 
         boats_zhen_handler()
 
-        if (zhen == 14500):
-            logger.info(" ".join([str(berth.total_earn) for berth in env.berths]))
+        if (zhen == 14999):
+           error_logger.error("港口堆积价值：print(" + "+".join([str(berth.total_earn) for berth in env.berths]) + ")")
+           error_logger.error("全局货物价值：%s", env.total_map_gds_value)
         #     logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
         
         print("OK")
