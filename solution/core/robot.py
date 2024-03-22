@@ -12,7 +12,6 @@ from path_planing import Robot_Actions
 from path_planing import one_move_avoidance
 
 from .env import Env
-from .berth import Berth
 from .utils import enum_stk_and_recover, enum_stk_and_empty, enum_stk
 
 robot_action_value_to_cmd = {

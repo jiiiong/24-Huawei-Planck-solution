@@ -1,0 +1,246 @@
+zhen: 1481, boat_id: 1, ship from -1 to 7 
+zhen: 1876, boat_id: 4, ship from -1 to 2 
+zhen: 2071, boat_id: 2, ship from -1 to 0 
+zhen: 2301, boat_id: 3, ship from -1 to 5 
+zhen: 2366, boat_id: 0, ship from -1 to 3 
+zhen: 2469, boat_id: 1, ship from 7 to 6 
+zhen: 2883, boat_id: 2, ship from 0 to 8 
+zhen: 2929, boat_id: 4, ship from 2 to 4 
+zhen: 3000, boat_id: 1, go 
+zhen: 3272, boat_id: 3, ship from 5 to 1 
+zhen: 3288, boat_id: 0, ship from 3 to 9 
+zhen: 3420, boat_id: 2, go 
+zhen: 3443, boat_id: 4, go 
+zhen: 3791, boat_id: 3, go 
+zhen: 3833, boat_id: 0, go 
+zhen: 4098, boat_id: 1, ship from -1 to 7 
+zhen: 4479, boat_id: 4, ship from -1 to 2 
+zhen: 4610, boat_id: 2, ship from -1 to 0 
+zhen: 4812, boat_id: 3, ship from -1 to 5 
+zhen: 4838, boat_id: 0, ship from -1 to 3 
+zhen: 5093, boat_id: 1, ship from 7 to 6 
+zhen: 5423, boat_id: 2, ship from 0 to 8 
+zhen: 5530, boat_id: 4, ship from 2 to 4 
+zhen: 5624, boat_id: 1, go 
+zhen: 5753, boat_id: 0, ship from 3 to 9 
+zhen: 5782, boat_id: 3, ship from 5 to 1 
+zhen: 5951, boat_id: 2, go 
+zhen: 6041, boat_id: 4, go 
+zhen: 6281, boat_id: 0, go 
+zhen: 6295, boat_id: 3, go 
+zhen: 6722, boat_id: 1, ship from -1 to 7 
+zhen: 7077, boat_id: 4, ship from -1 to 2 
+zhen: 7141, boat_id: 2, ship from -1 to 0 
+zhen: 7286, boat_id: 0, ship from -1 to 3 
+zhen: 7316, boat_id: 3, ship from -1 to 5 
+zhen: 7717, boat_id: 1, ship from 7 to 6 
+zhen: 7954, boat_id: 2, ship from 0 to 8 
+zhen: 8129, boat_id: 4, ship from 2 to 4 
+zhen: 8194, boat_id: 0, ship from 3 to 9 
+zhen: 8250, boat_id: 1, go 
+zhen: 8288, boat_id: 3, ship from 5 to 1 
+zhen: 8481, boat_id: 2, go 
+zhen: 8640, boat_id: 4, go 
+zhen: 8723, boat_id: 0, go 
+zhen: 8800, boat_id: 3, go 
+zhen: 9348, boat_id: 1, ship from -1 to 7 
+zhen: 9671, boat_id: 2, ship from -1 to 0 
+zhen: 9676, boat_id: 4, ship from -1 to 2 
+zhen: 9728, boat_id: 0, ship from -1 to 3 
+zhen: 9821, boat_id: 3, ship from -1 to 5 
+zhen: 10341, boat_id: 1, ship from 7 to 6 
+zhen: 10483, boat_id: 2, ship from 0 to 8 
+zhen: 10644, boat_id: 0, ship from 3 to 9 
+zhen: 10727, boat_id: 4, ship from 2 to 4 
+zhen: 10792, boat_id: 3, ship from 5 to 1 
+zhen: 10876, boat_id: 1, go 
+zhen: 11013, boat_id: 2, go 
+zhen: 11174, boat_id: 0, go 
+!!zhen: 11198, boat_id: 1, go 
+!!zhen: 11224, boat_id: 2, go 
+zhen: 11237, boat_id: 4, go 
+zhen: 11305, boat_id: 3, go 
+!!zhen: 11339, boat_id: 4, go 
+!!zhen: 11439, boat_id: 3, go 
+!!zhen: 11468, boat_id: 0, go 
+zhen: 12296, boat_id: 1, ship from -1 to 7 
+zhen: 12375, boat_id: 4, ship from -1 to 2 
+zhen: 12414, boat_id: 2, ship from -1 to 0 
+zhen: 12460, boat_id: 3, ship from -1 to 5 
+zhen: 12473, boat_id: 0, ship from -1 to 3 
+new berth unreachable
+zhen: 13226, boat_id: 2, ship from 0 to 8 
+new berth unreachable
+zhen: 13297, boat_id: 1, ship from 7 to 6 
+new berth unreachable
+zhen: 13387, boat_id: 0, ship from 3 to 9 
+zhen: 13426, boat_id: 4, ship from 2 to 4 
+帧数：13427，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 44
+帧数：13428，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 45
+帧数：13429，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 46
+帧数：13430，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 47
+帧数：13431，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 48
+帧数：13432，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 49
+new berth unreachable
+zhen: 13432, boat_id: 3, ship from 5 to 1 
+帧数：13433，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 50
+帧数：13434，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 51
+帧数：13435，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 52
+帧数：13436，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 53
+帧数：13437，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 54
+帧数：13438，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 55
+帧数：13439，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 56
+帧数：13440，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 57
+帧数：13441，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 58
+帧数：13442，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 59
+帧数：13443，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 60
+帧数：13444，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 61
+帧数：13445，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 62
+帧数：13446，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 63
+帧数：13447，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 64
+帧数：13448，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 65
+帧数：13449，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 66
+帧数：13450，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 67
+帧数：13451，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 68
+帧数：13452，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 69
+帧数：13453，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 70
+帧数：13454，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 71
+帧数：13455，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 72
+帧数：13456，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 73
+帧数：13457，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 74
+帧数：13458，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 75
+帧数：13459，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 76
+帧数：13460，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 77
+帧数：13461，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 78
+帧数：13462，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 79
+帧数：13463，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 80
+帧数：13464，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 81
+帧数：13465，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 82
+帧数：13466，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 83
+帧数：13467，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 84
+帧数：13468，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 85
+帧数：13469，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 86
+帧数：13470，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 87
+帧数：13471，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 88
+帧数：13472，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 89
+帧数：13473，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 90
+帧数：13474，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 91
+帧数：13475，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 92
+帧数：13476，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 93
+帧数：13477，cur_pos: x = 118, y = 42, 目标位置: x = 118, y = 94
+帧数：13478，cur_pos: x = 118, y = 42, 目标位置: x = 119, y = 94
+帧数：13479，cur_pos: x = 118, y = 42, 目标位置: x = 120, y = 94
+帧数：13480，cur_pos: x = 118, y = 42, 目标位置: x = 121, y = 94
+帧数：13481，cur_pos: x = 118, y = 42, 目标位置: x = 122, y = 94
+帧数：13482，cur_pos: x = 118, y = 42, 目标位置: x = 123, y = 94
+帧数：13483，cur_pos: x = 118, y = 42, 目标位置: x = 124, y = 94
+帧数：13484，cur_pos: x = 118, y = 42, 目标位置: x = 125, y = 94
+帧数：13485，cur_pos: x = 118, y = 42, 目标位置: x = 126, y = 94
+帧数：13486，cur_pos: x = 118, y = 42, 目标位置: x = 127, y = 94
+帧数：13487，cur_pos: x = 118, y = 42, 目标位置: x = 128, y = 94
+帧数：13488，cur_pos: x = 118, y = 42, 目标位置: x = 129, y = 94
+帧数：13489，cur_pos: x = 118, y = 42, 目标位置: x = 130, y = 94
+帧数：13490，cur_pos: x = 118, y = 42, 目标位置: x = 131, y = 94
+帧数：13491，cur_pos: x = 118, y = 42, 目标位置: x = 132, y = 94
+帧数：13492，cur_pos: x = 118, y = 42, 目标位置: x = 133, y = 94
+帧数：13493，cur_pos: x = 118, y = 42, 目标位置: x = 134, y = 94
+帧数：13494，cur_pos: x = 118, y = 42, 目标位置: x = 135, y = 94
+帧数：13495，cur_pos: x = 118, y = 42, 目标位置: x = 136, y = 94
+帧数：13496，cur_pos: x = 118, y = 42, 目标位置: x = 137, y = 94
+帧数：13497，cur_pos: x = 118, y = 42, 目标位置: x = 138, y = 94
+帧数：13498，cur_pos: x = 118, y = 42, 目标位置: x = 139, y = 94
+帧数：13499，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 94
+帧数：13500，cur_pos: x = 118, y = 42, 目标位置: x = 141, y = 94
+帧数：13501，cur_pos: x = 118, y = 42, 目标位置: x = 142, y = 94
+帧数：13502，cur_pos: x = 118, y = 42, 目标位置: x = 143, y = 94
+帧数：13503，cur_pos: x = 118, y = 42, 目标位置: x = 144, y = 94
+帧数：13504，cur_pos: x = 118, y = 42, 目标位置: x = 145, y = 94
+帧数：13505，cur_pos: x = 118, y = 42, 目标位置: x = 146, y = 94
+帧数：13506，cur_pos: x = 118, y = 42, 目标位置: x = 147, y = 94
+帧数：13507，cur_pos: x = 118, y = 42, 目标位置: x = 148, y = 94
+帧数：13508，cur_pos: x = 118, y = 42, 目标位置: x = 149, y = 94
+帧数：13509，cur_pos: x = 118, y = 42, 目标位置: x = 150, y = 94
+帧数：13510，cur_pos: x = 118, y = 42, 目标位置: x = 151, y = 94
+帧数：13511，cur_pos: x = 118, y = 42, 目标位置: x = 151, y = 95
+帧数：13512，cur_pos: x = 118, y = 42, 目标位置: x = 151, y = 96
+帧数：13513，cur_pos: x = 118, y = 42, 目标位置: x = 152, y = 96
+机器人1  pos: x = 118, y = 42 
+    状态转换出错，由Robot_Extended_Status.BackBerthAndPull, 到Robot_Extended_Status.OnBerth
+机器人1  pos: x = 118, y = 42 
+    状态转换出错，由Robot_Extended_Status.OnBerth, 到Robot_Extended_Status.GotoFetchFromBerth
+帧数：13514，cur_pos: x = 118, y = 42, 目标位置: x = 151, y = 96
+帧数：13515，cur_pos: x = 118, y = 42, 目标位置: x = 151, y = 95
+帧数：13516，cur_pos: x = 118, y = 42, 目标位置: x = 151, y = 94
+帧数：13517，cur_pos: x = 118, y = 42, 目标位置: x = 150, y = 94
+帧数：13518，cur_pos: x = 118, y = 42, 目标位置: x = 149, y = 94
+帧数：13519，cur_pos: x = 118, y = 42, 目标位置: x = 148, y = 94
+帧数：13520，cur_pos: x = 118, y = 42, 目标位置: x = 147, y = 94
+帧数：13521，cur_pos: x = 118, y = 42, 目标位置: x = 146, y = 94
+帧数：13522，cur_pos: x = 118, y = 42, 目标位置: x = 145, y = 94
+帧数：13523，cur_pos: x = 118, y = 42, 目标位置: x = 144, y = 94
+帧数：13524，cur_pos: x = 118, y = 42, 目标位置: x = 143, y = 94
+帧数：13525，cur_pos: x = 118, y = 42, 目标位置: x = 142, y = 94
+帧数：13526，cur_pos: x = 118, y = 42, 目标位置: x = 141, y = 94
+帧数：13527，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 94
+帧数：13528，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 93
+帧数：13529，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 92
+帧数：13530，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 91
+帧数：13531，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 90
+帧数：13532，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 89
+帧数：13533，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 88
+帧数：13534，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 87
+帧数：13535，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 86
+帧数：13536，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 85
+帧数：13537，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 84
+帧数：13538，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 83
+帧数：13539，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 82
+帧数：13540，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 81
+帧数：13541，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 80
+帧数：13542，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 79
+帧数：13543，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 78
+帧数：13544，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 77
+帧数：13545，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 76
+帧数：13546，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 75
+帧数：13547，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 74
+帧数：13548，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 73
+帧数：13549，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 72
+帧数：13550，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 71
+帧数：13551，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 70
+帧数：13552，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 69
+帧数：13553，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 68
+帧数：13554，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 67
+帧数：13555，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 66
+帧数：13556，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 65
+帧数：13557，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 64
+帧数：13558，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 63
+帧数：13559，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 62
+帧数：13560，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 61
+帧数：13561，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 60
+帧数：13562，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 59
+帧数：13563，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 58
+帧数：13564，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 57
+帧数：13565，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 56
+帧数：13566，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 55
+帧数：13567，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 54
+帧数：13568，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 53
+帧数：13569，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 52
+帧数：13570，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 51
+帧数：13571，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 50
+帧数：13572，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 49
+帧数：13573，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 48
+帧数：13574，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 47
+帧数：13575，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 46
+帧数：13576，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 45
+帧数：13577，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 44
+帧数：13578，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 43
+帧数：13579，cur_pos: x = 118, y = 42, 目标位置: x = 140, y = 42
+帧数：13580，cur_pos: x = 118, y = 42, 目标位置: x = 141, y = 42
+帧数：13581，cur_pos: x = 118, y = 42, 目标位置: x = 141, y = 41
+帧数：13582，cur_pos: x = 118, y = 42, 目标位置: x = 141, y = 40
+帧数：13583，cur_pos: x = 118, y = 42, 目标位置: x = 141, y = 39
+帧数：13584，cur_pos: x = 118, y = 42, 目标位置: x = 141, y = 38
+zhen: 14999, boat_id: 0, ship from -1 to 3 
+zhen: 14999, boat_id: 1, ship from -1 to 7 
+zhen: 14999, boat_id: 2, ship from -1 to 0 
+zhen: 14999, boat_id: 3, ship from -1 to 5 
+zhen: 14999, boat_id: 4, ship from -1 to 2 

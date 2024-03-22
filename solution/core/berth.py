@@ -3,7 +3,6 @@ from typing import List, Tuple, Set
 from queue import PriorityQueue, Queue, LifoQueue
 
 from core import Env
-from core import Boat
 from path_planing import Point
 from log import logger, error_logger
 

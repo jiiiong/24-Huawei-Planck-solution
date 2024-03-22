@@ -1,4 +1,6 @@
+from typing import List
 from .env import Env
+from .berth import Berth
 
 class Boat:
     def __init__(self, num=0, pos=0, status=0, capacity=0):
@@ -16,6 +18,9 @@ class Boat:
         # 自虚拟点出发后已过时间
         self.current_elapsed_time = 0
         self.last_run = False
+
+        # 周期算法
+        self.associated_berths: List[Berth] = []
     @property
     def used_capacity(self):
         return self.total_capacity - self.capacity
