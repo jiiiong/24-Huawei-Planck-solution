@@ -184,3 +184,13 @@
 
 {"status":"Successful","score":264650}
 
+{"status":"Successful","score":210354}
+
+{"status":"Successful","score":241725}
+
+{"status":"Successful","score":261745}
+
+{"status":"Successful","score":244049}
+
+{"status":"Successful","score":203732}
+

@@ -153,7 +153,9 @@ class Scheduler:
                 goods.fetched = True
 
     def back_berth_and_pull(self, robot_id: int):
-        self.env.robots[robot_id].extended_status = Robot_Extended_Status.BackBerthAndPull
+        robot = self.env.robots[robot_id]
+        robot.extended_status = Robot_Extended_Status.BackBerthAndPull
+        robot.path_planing(self.env.berths[robot_id].pos)
 
     def schedule_gds(self, goods: Goods):
         

@@ -79,6 +79,9 @@ class Robot():
         self.empty_paths = True
         self.suppose_pos = Point(x = startX, y = startY)
 
+        # 解决单行道问题
+        self.responsible_robot_id: int = -1
+
     # 兼容原有代码用
     @property
     def x(self):
@@ -186,7 +189,7 @@ class Robot():
         final_pos = Point(self.pos.x, self.pos.y)
         
         for stk in [self.paths_stk, self.original_paths_stk]:
-            for next_pos in enum_stk_and_recover(self.paths_stk):
+            for next_pos in enum_stk_and_recover(stk):
                 if count < n:
                     poses.append(next_pos)
                     final_pos = next_pos
@@ -213,7 +216,12 @@ class Robot():
             distance = self.pos.distance(robot.pos)
             if  (distance <= self.alarming_area_size) and (robot.robot_id != self.robot_id) :
                 # 将机器人加入surrounding字典，并让其value为优先级
-                self.surronding_robots_with_priority[robot.robot_id] = priority_for_robot_extended_status[robot.extended_status] + robot.robot_id
+                if (robot.extended_status == Robot_Extended_Status.CollisionAvoidance) and (robot.responsible_robot_id != self.robot_id):
+                    self.surronding_robots_with_priority[robot.robot_id] = 600 + robot.robot_id
+                elif (robot.extended_status == Robot_Extended_Status.CollisionAvoidance) and (robot.responsible_robot_id == self.robot_id):
+                    self.surronding_robots_with_priority[robot.robot_id] = -100 + robot.robot_id
+                else:
+                    self.surronding_robots_with_priority[robot.robot_id] = priority_for_robot_extended_status[robot.extended_status] + robot.robot_id
                 # 如果那个机器人下一帧会与自己碰撞，则加入碰撞机器人队列
                 
                 # windows = 1
@@ -273,7 +281,8 @@ class Robot():
                         robots[id].try_disable_collision_avoidance(move_matrix, target_pos)
                     # 该最高优先级的部分区域已经让路，如何考虑其他区域？
                     # 暂时不考虑？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-                    # elif(robots[id].collision_check() is False):
+                    # elif(robots[id].extended_status != Robot_Extended_Status.CollisionAvoidance
+                    #      and robots[id].collision_check() is True):
                     #     robots[id].enable_collision_avoidance(move_matrix, target_pos)
         return okk
         # 如果没有会撞得，且当前为避障模式，则恢复原来模式 xxxxxxxxx错误，会导致循环
@@ -379,6 +388,24 @@ class Robot():
     def enable_collision_avoidance(self, 
                 move_matrix: List[List[Point]],
                 target_pos: Point = Point(-1, -1)):
+        
+        robots = self.env.robots
+        max_priority = -1
+        max_priority_robot_id = -1
+        for robot in robots:
+            distance = self.pos.distance(robot.pos)
+            if  (distance <= self.alarming_area_size) and (robot.robot_id != self.robot_id) :
+                # 将机器人加入surrounding字典，并让其value为优先级
+                if (robot.extended_status == Robot_Extended_Status.CollisionAvoidance) and (robot.responsible_robot_id != self.robot_id):
+                    current_priority = 600 + robot.robot_id
+                elif (robot.extended_status == Robot_Extended_Status.CollisionAvoidance) and (robot.responsible_robot_id == self.robot_id):
+                    current_priority = -100 + robot.robot_id
+                else:
+                    current_priority = priority_for_robot_extended_status[robot.extended_status] + robot.robot_id
+                if current_priority > max_priority:
+                    max_priority_robot_id = robot.robot_id
+        
+        self.responsible_robot_id = max_priority_robot_id
         self.original_extended_status = self.extended_status
         self.original_paths_stk = self.paths_stk
         self.paths_stk = LifoQueue()
@@ -581,3 +608,16 @@ class Robot():
             self.path_planing(self.env.berths[new_berth_id].pos)
         else:
             error_logger.error("new berth unreachable")
+
+    def debug_robot(self):
+        # pass
+        logger.info("at zhen %d", self.env.global_zhen)
+        logger.info("robot %d, at (%d, %d) with state %d Extstate %s", self.robot_id, self.pos.x, self.pos.y, self.status, self.extended_status)
+        logger.info("   previous Extstate: %s", self.original_extended_status)
+        if self.paths_stk.empty():
+            logger.info("   path_stk empty")
+        next_pose = self.next_n_pos(1)[0]
+        logger.info("   next pos is (%d, %d)", next_pose.x, next_pose.y)
+        if self.original_paths_stk.empty():
+            logger.info("   original_paths_stk empty")
+        

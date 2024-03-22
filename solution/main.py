@@ -139,6 +139,10 @@ def robots_zhen_handler():
         if not i in check_num:
             continue
         robots[i].update_extended_status(move_matrix_list[i], scheduler.target_pos_list[i])
+       
+        if i in [1, 2, 7]:
+            robots[i].debug_robot()
+
         ## 🐞 用，将运行路线打印出来
         # if i in check_num:
         #     logger.info("B: %s, %s, %s",zhen, robots[i].pos, robots[i].extended_status)
@@ -161,11 +165,14 @@ def robots_zhen_handler():
         elif (robots[i].extended_status == Robot_Extended_Status.GotGoods):
             # 符合规则
             scheduler.back_berth_and_pull(i)
-            
+        if i in [1, 2, 7]:
+            robots[i].debug_robot()
     for i in range(robot_num):
         if not i in check_num:
             continue
         robots[i].run(scheduler.target_pos_list[i])
+        if i in [1, 2, 7]:
+            robots[i].debug_robot()
     
     for i in range(robot_num):
         if not i in check_num:
