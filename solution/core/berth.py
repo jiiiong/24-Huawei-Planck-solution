@@ -29,6 +29,9 @@ class Berth:
         self.total_num_gds = 0
         self.increase_rate = 0
         self.boats_id_set: Set = set()
+
+        # 可支援的港口
+        self.friend_berths: List[Berth] = []
     
     @property
     def have_boats(self):
@@ -60,11 +63,11 @@ class Berth:
         self.total_cost_available_goods = total_cost_available_goods
         for item in elements:
             pq.put(item)
-        # 计算该队列在只有n个机器人时能够赚多少
-        for i, _ in enumerate(self.earn_when_n):
-            self.earn_when_n[i] = self.cal_earn_berfore_end_when_n_robots(elements, i+1)
-        
 
+        # # 计算该队列在只有n个机器人时能够赚多少
+        # for i, _ in enumerate(self.earn_when_n):
+        #     self.earn_when_n[i] = self.cal_earn_berfore_end_when_n_robots(elements, i+1)
+        
     def add_goods(self, goods: Goods):
             
             cost = self.env.cost_matrix_list[self.berth_id][goods.pos.y][goods.pos.x]
@@ -75,19 +78,84 @@ class Berth:
 
     def fetch_goods(self) -> Tuple[bool, Goods] : 
         success = False
-        goods: Goods = Goods(-1, [0]) # 无效的，只是为了注释正确
+        fetched_goods: Goods = Goods(-1, [0]) # 无效的，只是为了注释正确
         cost_matrix = self.env.cost_matrix_list[self.berth_id]
+        
+        # 尝试在自己的优先级队列中取物品
         if not self.gds_priority_queue.empty():
-            goods= self.gds_priority_queue.get(False)[1]
-            while ( (goods.fetched == True or (1000 - (goods.elapsed_zhen) < cost_matrix[goods.y][goods.x] + 5))
+            fetched_goods= self.gds_priority_queue.get(False)[1]
+            while ( (fetched_goods.fetched == True or (1000 - (fetched_goods.elapsed_zhen) < cost_matrix[fetched_goods.y][fetched_goods.x] + 5))
                    and not self.gds_priority_queue.empty()):
-                goods = self.gds_priority_queue.get(False)[1]
+                fetched_goods = self.gds_priority_queue.get(False)[1]
             # 如果能取到还未被取的
-            if goods.fetched == False:
+            if fetched_goods.fetched == False:
                 success = True
 
-        # logger.info("fetched goods: %s", goods)
-        return success, goods
+        # 如果没有在当前队列取到货，则尝试帮朋友港口取会过期的货
+        if success == False:
+            # 用于筛选最优的friend berths会丢失的货
+            best_losing_gds_queue: PriorityQueue = PriorityQueue()
+            
+            # 用于暂存所有friend berths的优先级队列的队列
+            pq_list_list: List[List[Tuple[float, Goods]]] = []            
+            for i, friend_berth in enumerate(self.friend_berths):
+                # 当前friend berth的优先级队列
+                pq_list: List[Tuple[float, Goods]] = []
+                pq = friend_berth.gds_priority_queue
+                while not pq.empty():
+                    item: Tuple[float, Goods] = pq.get()
+                    if item[1].elapsed_zhen < 1000: # 丢弃超时的
+                        pq_list.append(item)
+                # 加入pq_list_list用于恢复
+                pq_list_list.append(pq_list)
+
+                # 寻找friend berth无法拿到的货物
+                elapsed_time = 0 # 受到friend berth当前小车取货状态的影响，一般来说大于0
+                for j, item in enumerate(pq_list):
+                    tmp_gds = item[1]
+                    # 哪些货物能够被friend berth取到 
+                    go_time = elapsed_time + tmp_gds.cost + 2
+                    go_back_time =  elapsed_time + 2 * tmp_gds.cost + 4
+                    if (go_time < tmp_gds.remaining_zhen # 物品消失前能取到
+                        and go_back_time < self.env.left_zhen - friend_berth.transport_time - 5): # 能赶上最后一趟
+                        elapsed_time = go_back_time # 取货来回需要两倍，额外考虑避让的时间
+                    # 对于无法被取到的物品，如果没被取过，并且自己能够取到
+                    else: 
+                        cost = cost_matrix[tmp_gds.pos.y][tmp_gds.pos.y]
+                        if (tmp_gds.fetched == False and (cost_matrix[tmp_gds.pos.y][tmp_gds.pos.x] + 5 < tmp_gds.remaining_zhen)):
+                            losing_gds = (-tmp_gds.price/(2 * cost), tmp_gds, i, j)
+                            best_losing_gds_queue.put(losing_gds) # 需要保存对应的friend_berth和item的索引
+            
+            # 如果可以拿到一个别人拿不到的货物
+            if not best_losing_gds_queue.empty():
+                (_, fetched_goods, i_friend_berth, j_item) = best_losing_gds_queue.get()
+                pq_list_list[i_friend_berth][j_item][1].fetched = True
+                success = True
+            
+            # 恢复friend_berth的队列
+            for i, friend_berth in enumerate(self.friend_berths):
+                pq_list = pq_list_list[i]
+                for item in pq_list:
+                    friend_berth.gds_priority_queue.put(item)
+            
+        return success, fetched_goods
+
+    # def fetch_goods(self) -> Tuple[bool, Goods] : 
+    #     success = False
+    #     goods: Goods = Goods(-1, [0]) # 无效的，只是为了注释正确
+    #     cost_matrix = self.env.cost_matrix_list[self.berth_id]
+    #     if not self.gds_priority_queue.empty():
+    #         goods= self.gds_priority_queue.get(False)[1]
+    #         while ( (goods.fetched == True or (1000 - (goods.elapsed_zhen) < cost_matrix[goods.y][goods.x] + 5))
+    #                and not self.gds_priority_queue.empty()):
+    #             goods = self.gds_priority_queue.get(False)[1]
+    #         # 如果能取到还未被取的
+    #         if goods.fetched == False:
+    #             success = True
+
+    #     # logger.info("fetched goods: %s", goods)
+    #     return success, goods
+
 
     def cal_earn_berfore_end_when_n_robots(self, pq: List[Tuple[float, Goods]], n:int):
         earn = 0

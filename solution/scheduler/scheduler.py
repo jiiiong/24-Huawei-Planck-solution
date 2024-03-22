@@ -59,6 +59,23 @@ class Scheduler:
             berth.berth_id = berth_id
             berth.env = self.env
 
+        for berth_id, berth in enumerate(self.env.berths): 
+            # 计算可支援的港口
+            distance_ordered_tuple: List[Tuple[Berth, int]] = []
+            cost_matrix = self.env.cost_matrix_list[berth_id]
+            for friend_berth in self.env.berths:
+                cost = cost_matrix[friend_berth.pos.y][friend_berth.pos.x]
+                if (friend_berth.berth_id != berth_id) and (cost != 2147483647):
+                    
+                    distance_ordered_tuple.append((friend_berth, cost))
+            distance_ordered_tuple.sort(key=lambda tup: tup[1])
+            distance_ordered_friends_berths = [friend_berth for friend_berth, cost in distance_ordered_tuple]
+
+            num_friend_berths = min(2, len(distance_ordered_friends_berths))
+            for order in range(num_friend_berths):
+                #error_logger.error("friend_berth for %s is %s", berth_id, distance_ordered_friends_berths[order].berth_id)
+                berth.friend_berths.append(distance_ordered_friends_berths[order])
+
     def init_boats(self):
         boats = self.env.boats
         berths = self.env.berths
@@ -98,7 +115,7 @@ class Scheduler:
             boat.associated_berths_list.append(berth_1)
             boat.phase_limited_time_list.append(boat.phase_limited_time_list[0] + 500 + int(boat.total_capacity/berth_1.loading_speed) + 1)
             boat.phase_start_time = 0
-            error_logger.error("%s : [%s, %s],", boat_id, berth_0.berth_id, berth_1.berth_id)
+            
             ####################>?????????????????????????????????????????????????????????????????????????考虑小车超时造成的影响
             # 每一轮所需的时间
             boat.cost_per_round = (berth_0.transport_time + int(boat.total_capacity/berth_0.loading_speed) + 1
@@ -107,6 +124,9 @@ class Scheduler:
             boat.num_available_rounds = int(15000 / boat.cost_per_round)
             error_logger.error("boat_id: %s, rounds: %s", boat.boat_id, boat.num_available_rounds)
             error_logger.error("boat_id: %s, delay: %s", boat.boat_id, 15000 - boat.cost_per_round * boat.num_available_rounds)
+
+        for boat_id, boat in enumerate(boats):
+            error_logger.error("%s : [%s, %s],", boat_id, boat.associated_berths_list[0].berth_id, boat.associated_berths_list[1].berth_id)
 
         self.boat_berths_map = {
             0: [berths_cost_time[0][0], berths_cost_time[9][0]],
@@ -148,9 +168,26 @@ class Scheduler:
             bid_cost_list.append((berth_id, cost))
         bid_cost_list.sort(key=lambda x: x[1])
         # 将货物放入当前最近的3个港口中
-        for order in range(3):
+        for order in range(1):
             berth_id = bid_cost_list[order][0]
             self.env.berths[berth_id].add_goods(goods)
+
+    # def schedule_gds(self, goods: Goods):
+        
+    #     # delegated_berth_id = self.env.divide_matrix[goods.y][goods.x]
+    #     # if (delegated_berth_id != -1):
+    #     #     self.env.berths[delegated_berth_id].add_goods(goods)
+
+    #     cost_matrix_list = self.env.cost_matrix_list
+    #     bid_cost_list: List[Tuple[int, float]] = []
+    #     for berth_id in range(self.env.berth_num):
+    #         cost = cost_matrix_list[berth_id][goods.y][goods.x]
+    #         bid_cost_list.append((berth_id, cost))
+    #     bid_cost_list.sort(key=lambda x: x[1])
+    #     # 将货物放入当前最近的3个港口中
+    #     for order in range(3):
+    #         berth_id = bid_cost_list[order][0]
+    #         self.env.berths[berth_id].add_goods(goods)
 
     def best_move_for_boat_at_vp(self, cur_boat: Boat):
         # 转移港口分数
@@ -492,7 +529,7 @@ class Scheduler:
             berth_0 = cur_boat.associated_berths_list[0]
             berth_1 = cur_boat.associated_berths_list[1]
             # 如果已经到达虚拟点
-            if (self.env.global_zhen < 15000 - cur_boat.cost_per_round * cur_boat.num_available_rounds):
+            if (self.env.global_zhen < 15000 - cur_boat.cost_per_round * cur_boat.num_available_rounds - 10):
                 continue
             
             if (cur_boat.num_available_rounds == 1 and cur_boat.last_run is False):
@@ -530,16 +567,11 @@ class Scheduler:
                 phase0_elapsed_time = self.env.global_zhen - cur_boat.phase_start_time + 1
                 phase0_limited_time = cur_boat.phase_limited_time_list[0]
                 # 如果剩余时间，只够回去
-                if self.env.left_zhen <= berth_0.transport_time + 1 and self.env.left_zhen <= 500+berth_1.transport_time+1:
-                    print("go", cur_boat.boat_id)
-                # phase0花费时间等于或者超时
-                elif phase0_elapsed_time >= phase0_limited_time:
-                    print("ship", cur_boat.boat_id, berth_1.berth_id)
-                    error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
-                        self.env.global_zhen, cur_boat.boat_id, -1, berth_1.berth_id)
-                    # phase2 开始
-                    
                 if cur_boat.last_run == True:
+                    if self.env.left_zhen <= 500 + berth_1.transport_time + int(cur_boat.capacity/berth_1.loading_speed) + 1:
+                        print("ship", cur_boat.boat_id, berth_1.berth_id)
+                        error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                            self.env.global_zhen, cur_boat.boat_id, -1, berth_1.berth_id)
                     pass
                     # # 调度机器人
                     # if (cur_boat.last_run == True):
@@ -548,6 +580,14 @@ class Scheduler:
                     #             robot.change_berth(berths_id_list[1])
                     #             error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
                     #                                 self.env.global_zhen, cur_boat.boat_id, berths_id_list[0], berths_id_list[1])
+                elif self.env.left_zhen <= berth_0.transport_time + 1 and self.env.left_zhen <= 500+berth_1.transport_time+1:
+                    print("go", cur_boat.boat_id)
+                # phase0花费时间等于或者超时
+                elif phase0_elapsed_time >= phase0_limited_time:
+                    print("ship", cur_boat.boat_id, berth_1.berth_id)
+                    error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                        self.env.global_zhen, cur_boat.boat_id, -1, berth_1.berth_id)
+                    # phase2 开始
                 
             # 到达第二个目标港口
             elif cur_boat.status == 1 and cur_boat.pos == berth_1.berth_id: 
@@ -562,7 +602,12 @@ class Scheduler:
                 # 如果满货了,或者 港口无货了
                 phase1_elapsed_time = self.env.global_zhen - cur_boat.phase_start_time
                 phase1_limited_time = cur_boat.phase_limited_time_list[1]
-                if self.env.left_zhen <= berth_1.transport_time + 10:
+                if cur_boat.last_run == True:
+                    if self.env.left_zhen <= berth_1.transport_time + 5:
+                        print("go ", cur_boat.boat_id)
+                        error_logger.error("zhen: %s, boat_id: %s, go ",
+                                            self.env.global_zhen, cur_boat.boat_id)
+                elif self.env.left_zhen <= berth_1.transport_time:
                     print("go ", cur_boat.boat_id)
                     error_logger.error("zhen: %s, boat_id: %s, go ",
                                        self.env.global_zhen, cur_boat.boat_id)
@@ -606,17 +651,3 @@ class Scheduler:
                         closest_berth = next_berth
             if robot is not None:
                 robot.change_berth(closest_berth.berth_id)
-        # logger.info("from %s to %s", robots[arrive_rate_list[0][0]].berth_id, arrive_rate_list[0][0])
-        # robots[arrive_rate_list[9][0]].change_berth(arrive_rate_list[0][0])
-
-        # logger.info("from %s to %s", robots[arrive_rate_list[8][0]].berth_id, arrive_rate_list[1][0])
-        # robots[arrive_rate_list[8][0]].change_berth(arrive_rate_list[1][0])
-
-        # logger.info("from %s to %s", robots[arrive_rate_list[7][0]].berth_id, arrive_rate_list[2][0])
-        # robots[arrive_rate_list[7][0]].change_berth(arrive_rate_list[2][0])
-
-        # logger.info("from %s to %s", robots[arrive_rate_list[6][0]].berth_id, arrive_rate_list[3][0])
-        # robots[arrive_rate_list[6][0]].change_berth(arrive_rate_list[3][0])
-
-        # logger.info("from %s to %s", robots[arrive_rate_list[5][0]].berth_id, arrive_rate_list[4][0])
-        # robots[arrive_rate_list[5][0]].change_berth(arrive_rate_list[4][0])

@@ -99,7 +99,7 @@ def Input(scheduler: Scheduler):
     for i in range(5):
         env.boats[i].status, env.boats[i].pos = map(int, input().split())
     okk = input()
-    return id,
+    return id, money
 
 def myInit(env: Env):
     t = time.time()
@@ -118,12 +118,6 @@ def berths_zhen_handler():
     if (env.global_zhen % 100 == 0):
         for berth in env.berths:
             berth.clear_queue()
-            #if berth.berth_id == 5: 
-        # earn = []
-        # for berth in env.berths:
-        #     # earn.append(berth.earn_when_n[0])
-        #     earn.append(berth.cur_num_gds)
-        # logger.info(" ".join([str(item) for item in earn]))
 
 def robots_zhen_handler():
     robot_num = env.robot_num
@@ -231,8 +225,8 @@ if __name__ == "__main__":
     for zhen in range(1, 15001):
         # 更新环境变量中的全局时间
         # 获取输出，并调度物品
-        id = Input(scheduler)
-        zhen = id[0]
+        id, money = Input(scheduler)
+        zhen = id
 
         earn = []
         for berth in env.berths:
@@ -257,9 +251,10 @@ if __name__ == "__main__":
         boats_zhen_handler()
 
         if (zhen == 14999):
-           error_logger.error("港口堆积价值：print(" + "+".join([str(berth.total_earn) for berth in env.berths]) + ")")
            error_logger.error("全局货物价值：%s", env.total_map_gds_value)
-        #     logger.info(" ".join([str(berth.total_value_of_allocated_goods) for berth in env.berths]))
+           error_logger.error("港口堆积价值：" + str(sum([berth.total_earn for berth in env.berths])) + 
+                              " python -c \"print(" + "+".join([str(berth.total_earn) for berth in env.berths]) + ")\"")
+           error_logger.error("收获比例：%s", money / sum([berth.total_earn for berth in env.berths]))
         
         print("OK")
         sys.stdout.flush()
