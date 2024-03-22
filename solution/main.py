@@ -202,8 +202,13 @@ def boats_zhen_handler():
 
 
 # 定义全局变量
-check_num = [i for i in range(10)]
+check_num = []
 # check_num = [5]
+
+record_robot_list = []
+
+
+init_robot_list = []
 
 if __name__ == "__main__":
 
@@ -238,11 +243,18 @@ if __name__ == "__main__":
         if (zhen == 1):
             scheduler.init_robots()
             scheduler.init_boats()
-        
-        # if (zhen == 10000):
-        #     scheduler.schedule_robots()
-            # for robot in env.robots:
-            #     logger.info("id：%s, berth_id %s", robot.robot_id, robot.berth_id)
+            
+        if zhen < 20 and zhen % 2 == 1:
+            robot_on_run_id = -1
+            shortest_length = 9999
+            for robot in env.robots:
+                if robot.robot_id not in record_robot_list:
+                    if shortest_length > env.cost_matrix_list[robot.berth_id][robot.y][robot.x]:
+                        shortest_length = env.cost_matrix_list[robot.berth_id][robot.y][robot.x]
+                        robot_on_run_id = robot.robot_id
+            record_robot_list.append(robot_on_run_id)
+            check_num.append(robot_on_run_id)
+            logger.info("append %d with dist %d", robot_on_run_id, shortest_length)
 
         berths_zhen_handler()
 

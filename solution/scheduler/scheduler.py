@@ -71,7 +71,7 @@ class Scheduler:
             distance_ordered_tuple.sort(key=lambda tup: tup[1])
             distance_ordered_friends_berths = [friend_berth for friend_berth, cost in distance_ordered_tuple]
 
-            num_friend_berths = min(2, len(distance_ordered_friends_berths))
+            num_friend_berths = min(5, len(distance_ordered_friends_berths))
             for order in range(num_friend_berths):
                 #error_logger.error("friend_berth for %s is %s", berth_id, distance_ordered_friends_berths[order].berth_id)
                 berth.friend_berths.append(distance_ordered_friends_berths[order])

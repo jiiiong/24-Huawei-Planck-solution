@@ -7,9 +7,11 @@ def enum_stk_and_recover(stk: LifoQueue):
             item = stk.get()
             tmp.put(item)
             yield item
+        return
     finally:
         while not tmp.empty():
             stk.put(tmp.get())
+            
 
 def enum_stk_and_empty(stk: LifoQueue):
     try:

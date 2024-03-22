@@ -26,7 +26,7 @@ class Berth:
 
         # 基于排队论模型的优先级计算
         self.earn_when_n: List[float] = [0.0, 0.0, 0.0]
-        self.total_num_gds = 0
+        self.total_num_gds = 1
         self.increase_rate = 0
         self.boats_id_set: Set = set()
 
@@ -110,10 +110,11 @@ class Berth:
                 pq_list_list.append(pq_list)
 
                 # 寻找friend berth无法拿到的货物
-                elapsed_time = 0 # 受到friend berth当前小车取货状态的影响，一般来说大于0
+                # elapsed_time = 0 # 受到friend berth当前小车取货状态的影响，一般来说大于0
+                elapsed_time = int(1/friend_berth.cal_increase_rate()) # 受到friend berth当前小车取货状态的影响，一般来说大于0
                 for j, item in enumerate(pq_list):
                     tmp_gds = item[1]
-                    # 哪些货物能够被friend berth取到 
+                    # 哪些货物能够被friend berth取到
                     go_time = elapsed_time + tmp_gds.cost + 2
                     go_back_time =  elapsed_time + 2 * tmp_gds.cost + 4
                     if (go_time < tmp_gds.remaining_zhen # 物品消失前能取到
@@ -121,8 +122,10 @@ class Berth:
                         elapsed_time = go_back_time # 取货来回需要两倍，额外考虑避让的时间
                     # 对于无法被取到的物品，如果没被取过，并且自己能够取到
                     else: 
-                        cost = cost_matrix[tmp_gds.pos.y][tmp_gds.pos.y]
-                        if (tmp_gds.fetched == False and (cost_matrix[tmp_gds.pos.y][tmp_gds.pos.x] + 5 < tmp_gds.remaining_zhen)):
+                        cost = cost_matrix[tmp_gds.pos.y][tmp_gds.pos.x]
+                        if (tmp_gds.fetched == False 
+                            and (cost + 5 < tmp_gds.remaining_zhen)
+                            and cost < (248 - (1/(8 * friend_berth.cal_increase_rate())))):
                             losing_gds = (-tmp_gds.price/(2 * cost), tmp_gds, i, j)
                             best_losing_gds_queue.put(losing_gds) # 需要保存对应的friend_berth和item的索引
             
@@ -175,7 +178,7 @@ class Berth:
         return earn
 
     def cal_increase_rate(self): # 最开始几帧
-        return self.total_num_gds / self.env.global_zhen
+        return (self.total_num_gds / self.env.global_zhen)
     
     def predict_num_of_goods_after_n(self, n):
         return self.cur_num_gds + self.cal_increase_rate() * n

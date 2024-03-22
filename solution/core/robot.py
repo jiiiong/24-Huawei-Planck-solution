@@ -322,6 +322,7 @@ class Robot():
                 poses.append(Point(x = robot.x, y = robot.y))
                 poses += robot.next_n_pos(predict_steps)
                 for pos in poses:
+                    # error_logger.error("??%s", pos)
                     ins_avoidance_matrix[pos.y-t][pos.x-l] = 0
 
             # 尝试一条避障路径
@@ -546,7 +547,7 @@ class Robot():
             # 转入BackBerthAndPull时paths必须为空，为保证切换条件正确，
             # 必须保证在update之前 经过规划操作，否则可能误以为到达
             # 实际上，每次update都放在了第二帧
-            if (self.paths_stk.empty()):
+            if (self.paths_stk.empty() and self.pos == self.env.berths[self.berth_id].pos):
                 self.extended_status = Robot_Extended_Status.OnBerth
                 if self.goods == 1:
                     print("pull", self.robot_id)
