@@ -194,3 +194,19 @@
 
 {"status":"Successful","score":203732}
 
+{"status":"Successful","score":209633}
+
+{"status":"Successful","score":241388}
+
+{"status":"Successful","score":258487}
+
+{"status":"Successful","score":243883}
+
+{"status":"Successful","score":203404}
+
+{"status":"Successful","score":279191}
+
+{"status":"Successful","score":306490}
+
+{"status":"Successful","score":264463}
+

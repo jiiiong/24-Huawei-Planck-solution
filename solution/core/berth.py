@@ -184,7 +184,7 @@ class Berth:
         return self.cur_num_gds + self.cal_increase_rate() * n
 
 class Goods:
-    def __init__(self, gen_zhen:int, global_zhen_ref: List[int], pos: Point = Point(-1, -1), price: int = 0):
+    def __init__(self, gen_zhen:int, global_zhen_ref: List[int], pos: Point = Point(-2, -2), price: int = 0):
         self.pos = pos
         self.price = price
         self.cost = -1
