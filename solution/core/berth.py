@@ -4,7 +4,7 @@ from queue import PriorityQueue, Queue, LifoQueue
 
 from core import Env
 from path_planing import Point
-from log import logger, error_logger
+from log import logger
 
 class Berth:
     def __init__(self, x=0, y=0, transport_time=0, loading_speed=0):
@@ -80,11 +80,13 @@ class Berth:
         success = False
         fetched_goods: Goods = Goods(-1, [0]) # 无效的，只是为了注释正确
         cost_matrix = self.env.cost_matrix_list[self.berth_id]
-        
         # 尝试在自己的优先级队列中取物品
         if not self.gds_priority_queue.empty():
             fetched_goods= self.gds_priority_queue.get(False)[1]
-            while ( (fetched_goods.fetched == True or (1000 - (fetched_goods.elapsed_zhen) < cost_matrix[fetched_goods.y][fetched_goods.x] + 5))
+            cost = cost_matrix[fetched_goods.y][fetched_goods.x]
+            while ( (fetched_goods.fetched == True 
+                     or (fetched_goods.remaining_zhen < cost + 5)
+                     ) # or (cost > (248 - (1/(8 * self.cal_increase_rate()))))
                    and not self.gds_priority_queue.empty()):
                 fetched_goods = self.gds_priority_queue.get(False)[1]
             # 如果能取到还未被取的

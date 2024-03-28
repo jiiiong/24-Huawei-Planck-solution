@@ -1,7 +1,7 @@
 from typing import List, Tuple, Set, Dict
 from queue import LifoQueue, Queue, PriorityQueue
 
-from log import logger, error_logger
+from log import scheduler_logger, main_logger
 from core import Env
 from core import Robot, Robot_Extended_Status
 from core import Berth, Goods, Boat
@@ -23,7 +23,8 @@ class Scheduler:
         #     robot.env = self.env
         #     robot.suppose_pos = robot.pos
         #     robot.last_pos = robot.pos
-            
+        main_logger.info("robots initialization starts")
+
         berths = self.env.berths
         robots = self.env.robots
         cost_matrix_list = self.env.cost_matrix_list
@@ -53,12 +54,31 @@ class Scheduler:
         # 分配robot到港口
         for i, robot in enumerate(robots):
             robot.berth_id = robot_berth_init_map[robot.robot_id]
+            #robot.berth_id = 0
+        # scheduler logger 记录机器人与港口的分配情况 
+        scheduler_logger.info("robots information:")
+        for i, robot in enumerate(robots):
+            scheduler_logger.info(f"robots_id: {robot.robot_id}, berth_id: {robot.berth_id}")
+        scheduler_logger.info(" ")
+
+        main_logger.info("robots initialization ends\n")
 
     def init_berths(self):
+
+        main_logger.info("berths initialization starts")
+
+        # 初始化所有港口的id，并配置env方便使用
         for berth_id, berth in enumerate(self.env.berths):
             berth.berth_id = berth_id
             berth.env = self.env
-
+        
+        # scheduler logger记录每个港口的基本信息
+        scheduler_logger.info("berth information: ")
+        for berth_id, berth in enumerate(self.env.berths):
+            scheduler_logger.info("berth_id: %s, transport time: %d, loading speed: %d", 
+                                   berth_id, berth.transport_time, berth.loading_speed)
+        scheduler_logger.info("")
+            
         for berth_id, berth in enumerate(self.env.berths): 
             # 计算可支援的港口
             distance_ordered_tuple: List[Tuple[Berth, int]] = []
@@ -71,12 +91,15 @@ class Scheduler:
             distance_ordered_tuple.sort(key=lambda tup: tup[1])
             distance_ordered_friends_berths = [friend_berth for friend_berth, cost in distance_ordered_tuple]
 
-            num_friend_berths = min(5, len(distance_ordered_friends_berths))
+            num_friend_berths = min(9, len(distance_ordered_friends_berths))
             for order in range(num_friend_berths):
-                #error_logger.error("friend_berth for %s is %s", berth_id, distance_ordered_friends_berths[order].berth_id)
+                #scheduler_logger.info("friend_berth for %s is %s", berth_id, distance_ordered_friends_berths[order].berth_id)
                 berth.friend_berths.append(distance_ordered_friends_berths[order])
+        main_logger.info("berths initialization ends\n")
 
     def init_boats(self):
+        main_logger.info("boats initialization starts")
+
         boats = self.env.boats
         berths = self.env.berths
 
@@ -88,7 +111,7 @@ class Scheduler:
             boat.total_capacity = self.env.boat_capacity
             boat.pos = -1
             boat.last_run = False
-        
+
         # 初始化最近的港口id列表
         self.tran_time_ordered_list = [(berth.berth_id, berth.transport_time) for berth in berths]
         self.tran_time_ordered_list.sort(key=lambda x:x[1])
@@ -98,13 +121,6 @@ class Scheduler:
         berths_cost_time = [(berth_id, berth.transport_time + int(self.env.boat_capacity/berth.loading_speed)+1 )
                             for berth_id, berth in enumerate(berths)]
         berths_cost_time.sort(key=lambda x:x[1], reverse=True)
-
-        # boat_berths_map = {
-        #     0: [berths_cost_time[0][0], berths_cost_time[9][0]],
-        #     1: [berths_cost_time[1][0], berths_cost_time[8][0]],
-        #     2: [berths_cost_time[2][0], berths_cost_time[7][0]],
-        #     3: [berths_cost_time[3][0], berths_cost_time[6][0]],
-        #     4: [berths_cost_time[4][0], berths_cost_time[5][0]]}
         
         # 初始化每条船周期调度所需的参数
         for boat_id, boat in enumerate(boats):
@@ -115,26 +131,24 @@ class Scheduler:
             boat.associated_berths_list.append(berth_1)
             boat.phase_limited_time_list.append(boat.phase_limited_time_list[0] + 500 + int(boat.total_capacity/berth_1.loading_speed) + 1)
             boat.phase_start_time = 0
-            
+
             ####################>?????????????????????????????????????????????????????????????????????????考虑小车超时造成的影响
             # 每一轮所需的时间
             boat.cost_per_round = (berth_0.transport_time + int(boat.total_capacity/berth_0.loading_speed) + 1
                                  + 500
                                  + berth_1.transport_time + int(boat.total_capacity/berth_1.loading_speed) + 1)
             boat.num_available_rounds = int(15000 / boat.cost_per_round)
-            error_logger.error("boat_id: %s, rounds: %s", boat.boat_id, boat.num_available_rounds)
-            error_logger.error("boat_id: %s, delay: %s", boat.boat_id, 15000 - boat.cost_per_round * boat.num_available_rounds)
 
+        scheduler_logger.info("boat infomations:")
+        scheduler_logger.info(f"boat capacity: {self.env.boat_capacity}")
         for boat_id, boat in enumerate(boats):
-            error_logger.error("%s : [%s, %s],", boat_id, boat.associated_berths_list[0].berth_id, boat.associated_berths_list[1].berth_id)
+            scheduler_logger.info(f"boat_id: {boat.boat_id}, available_rounds: {boat.num_available_rounds}, \
+                                  start_delay: {15000 - boat.cost_per_round * boat.num_available_rounds}")
+        for boat_id, boat in enumerate(boats):
+            scheduler_logger.info("%s : [%s, %s],", boat_id, boat.associated_berths_list[0].berth_id, boat.associated_berths_list[1].berth_id)
+        scheduler_logger.info("")
 
-        self.boat_berths_map = {
-            0: [berths_cost_time[0][0], berths_cost_time[9][0]],
-            1: [berths_cost_time[1][0], berths_cost_time[8][0]],
-            2: [berths_cost_time[2][0], berths_cost_time[7][0]],
-            3: [berths_cost_time[3][0], berths_cost_time[6][0]],
-            4: [berths_cost_time[4][0], berths_cost_time[5][0]],
-        }        
+        main_logger.info("boats initialization ends\n")
 
     def schedule_gds(self, goods: Goods):
         
@@ -161,13 +175,14 @@ class Scheduler:
         for cur_boat in boats:
             berth_0 = cur_boat.associated_berths_list[0]
             berth_1 = cur_boat.associated_berths_list[1]
-            # 如果已经到达虚拟点
+            
             if (self.env.global_zhen < 15000 - cur_boat.cost_per_round * cur_boat.num_available_rounds - 10):
                 continue
-            
+
+            # 如果已经到达虚拟点
             if (cur_boat.num_available_rounds == 1 and cur_boat.last_run is False):
                 cur_boat.last_run = True
-                error_logger.error("zhen: %s, boat_id: %s last_run_start ",
+                scheduler_logger.info("zhen: %s, boat_id: %s last_run_start ",
                         self.env.global_zhen, cur_boat.boat_id)
 
             # phase0 开始
@@ -178,7 +193,7 @@ class Scheduler:
                 print("ship", cur_boat.boat_id, berth_0.berth_id)
                     # 设置phase0 开始时间
                 cur_boat.phase_start_time = self.env.global_zhen
-                error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                scheduler_logger.info("zhen: %s, boat_id: %s, ship from %s to %s ",
                         self.env.global_zhen, cur_boat.boat_id, -1, berth_0.berth_id)
             
             # 已经到达第一个目标港口
@@ -203,22 +218,20 @@ class Scheduler:
                 if cur_boat.last_run == True:
                     if self.env.left_zhen <= 500 + berth_1.transport_time + int(cur_boat.capacity/berth_1.loading_speed) + 1:
                         print("ship", cur_boat.boat_id, berth_1.berth_id)
-                        error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                        scheduler_logger.info("zhen: %s, boat_id: %s, ship from %s to %s ",
                             self.env.global_zhen, cur_boat.boat_id, -1, berth_1.berth_id)
                     pass
-                    # # 调度机器人
-                    # if (cur_boat.last_run == True):
-                    #     for robot in self.env.robots:
-                    #         if robot.berth_id == berths_id_list[0]:
-                    #             robot.change_berth(berths_id_list[1])
-                    #             error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
-                    #                                 self.env.global_zhen, cur_boat.boat_id, berths_id_list[0], berths_id_list[1])
+                    # 调度机器人
+                    for robot in self.env.robots:
+                        if robot.berth_id == berth_0.berth_id:
+                            robot.change_berth(berth_1.berth_id)
+                
                 elif self.env.left_zhen <= berth_0.transport_time + 1 and self.env.left_zhen <= 500+berth_1.transport_time+1:
                     print("go", cur_boat.boat_id)
                 # phase0花费时间等于或者超时
                 elif phase0_elapsed_time >= phase0_limited_time:
                     print("ship", cur_boat.boat_id, berth_1.berth_id)
-                    error_logger.error("zhen: %s, boat_id: %s, ship from %s to %s ",
+                    scheduler_logger.info("zhen: %s, boat_id: %s, ship from %s to %s ",
                         self.env.global_zhen, cur_boat.boat_id, -1, berth_1.berth_id)
                     # phase2 开始
                 
@@ -238,16 +251,16 @@ class Scheduler:
                 if cur_boat.last_run == True:
                     if self.env.left_zhen <= berth_1.transport_time + 5:
                         print("go ", cur_boat.boat_id)
-                        error_logger.error("zhen: %s, boat_id: %s, go ",
+                        scheduler_logger.info("zhen: %s, boat_id: %s, go ",
                                             self.env.global_zhen, cur_boat.boat_id)
                 elif self.env.left_zhen <= berth_1.transport_time:
                     print("go ", cur_boat.boat_id)
-                    error_logger.error("zhen: %s, boat_id: %s, go ",
+                    scheduler_logger.info("zhen: %s, boat_id: %s, go ",
                                        self.env.global_zhen, cur_boat.boat_id)
                 # phase1花费时间等于或者超时
                 elif phase1_elapsed_time >= phase1_limited_time:
                     print("go ", cur_boat.boat_id)
-                    error_logger.error("zhen: %s, boat_id: %s, go ",
+                    scheduler_logger.info("zhen: %s, boat_id: %s, go ",
                                        self.env.global_zhen, cur_boat.boat_id)
                     cur_boat.num_available_rounds -= 1
 
@@ -271,6 +284,6 @@ class Scheduler:
                 # 避免分配当前港口拿不到的物品
                 if success:
                     if self.env.move_matrix_list[robot.berth_id][goods.y][goods.x] != UNREACHABLE:
-                        error_logger.error("id: %s, target_gds:%s", robot.robot_id, goods)
+                        scheduler_logger.info("id: %s, target_gds:%s", robot.robot_id, goods)
                         robot.go_to_fetch_gds_from_berth(goods)
                         goods.fetched = True

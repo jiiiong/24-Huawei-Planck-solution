@@ -1,0 +1,19 @@
+14 - main - INFO - env initialization starts
+1266 - main - INFO - env initialization ends
+
+1266 - main - INFO - scheduler initialization starts
+1266 - main - INFO - scheduler initialization ends
+
+1266 - main - INFO - berths initialization starts
+1268 - main - INFO - berths initialization ends
+
+1268 - main - INFO - robots initialization starts
+1269 - main - INFO - robots initialization ends
+
+1269 - main - INFO - boats initialization starts
+1270 - main - INFO - boats initialization ends
+
+21189 - main - INFO - collision_avoidance_time: ['114', '225', '136', '200', '52', '140', '175', '212', '67', '26']
+21189 - main - INFO - 全局货物价值：427689
+21189 - main - INFO - 港口堆积价值：180000 python -c "print(22860+9720+20700+13500+9360+24300+20160+22500+12420+24480)"
+21189 - main - INFO - 收获比例：0.9715666666666667

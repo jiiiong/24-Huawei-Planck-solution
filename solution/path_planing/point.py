@@ -12,7 +12,8 @@ class Point():
     def __hash__(self) -> int:
         return hash((self.x, self.y))
     def __repr__(self) -> str:
-        return "x = " + str(self.x) + ", y = " + str(self.y)
+        # return "x = " + str(self.x) + ", y = " + str(self.y)
+        return f"({self.x}, {self.y})"
     def __neg__(self):
         return Point(-self.x, -self.y)
     def __lt__(self, b):

@@ -1,0 +1,1136 @@
+1267 - scheduler - INFO - berth information: 
+1268 - scheduler - INFO - berth_id: 0, transport time: 800, loading speed: 1
+1268 - scheduler - INFO - berth_id: 1, transport time: 1102, loading speed: 2
+1268 - scheduler - INFO - berth_id: 2, transport time: 1013, loading speed: 1
+1268 - scheduler - INFO - berth_id: 3, transport time: 818, loading speed: 3
+1268 - scheduler - INFO - berth_id: 4, transport time: 1072, loading speed: 3
+1268 - scheduler - INFO - berth_id: 5, transport time: 953, loading speed: 2
+1268 - scheduler - INFO - berth_id: 6, transport time: 1133, loading speed: 1
+1268 - scheduler - INFO - berth_id: 7, transport time: 821, loading speed: 2
+1268 - scheduler - INFO - berth_id: 8, transport time: 1069, loading speed: 1
+1268 - scheduler - INFO - berth_id: 9, transport time: 1219, loading speed: 1
+1268 - scheduler - INFO - 
+1269 - scheduler - INFO - robots information:
+1269 - scheduler - INFO - robots_id: 0, berth_id: 0
+1269 - scheduler - INFO - robots_id: 1, berth_id: 8
+1269 - scheduler - INFO - robots_id: 2, berth_id: 3
+1269 - scheduler - INFO - robots_id: 3, berth_id: 1
+1269 - scheduler - INFO - robots_id: 4, berth_id: 5
+1269 - scheduler - INFO - robots_id: 5, berth_id: 2
+1269 - scheduler - INFO - robots_id: 6, berth_id: 4
+1269 - scheduler - INFO - robots_id: 7, berth_id: 7
+1269 - scheduler - INFO - robots_id: 8, berth_id: 6
+1269 - scheduler - INFO - robots_id: 9, berth_id: 9
+1269 - scheduler - INFO -  
+1270 - scheduler - INFO - boat infomations:
+1270 - scheduler - INFO - boat capacity: 71
+1270 - scheduler - INFO - boat_id: 0, available_rounds: 5,                                   start_delay: 1835
+1270 - scheduler - INFO - boat_id: 1, available_rounds: 5,                                   start_delay: 2190
+1270 - scheduler - INFO - boat_id: 2, available_rounds: 5,                                   start_delay: 2435
+1270 - scheduler - INFO - boat_id: 3, available_rounds: 5,                                   start_delay: 1865
+1270 - scheduler - INFO - boat_id: 4, available_rounds: 5,                                   start_delay: 1595
+1270 - scheduler - INFO - 0 : [9, 3],
+1270 - scheduler - INFO - 1 : [6, 7],
+1270 - scheduler - INFO - 2 : [8, 0],
+1270 - scheduler - INFO - 3 : [1, 5],
+1270 - scheduler - INFO - 4 : [4, 2],
+1270 - scheduler - INFO - 
+1346 - scheduler - INFO - id: 9, target_gds:cost: 21, price: 187
+1381 - scheduler - INFO - id: 5, target_gds:cost: 178, price: 183
+1391 - scheduler - INFO - id: 9, target_gds:cost: 74, price: 1
+1393 - scheduler - INFO - id: 0, target_gds:cost: 44, price: 193
+1404 - scheduler - INFO - id: 2, target_gds:cost: 97, price: 66
+1424 - scheduler - INFO - id: 7, target_gds:cost: 63, price: 200
+1440 - scheduler - INFO - id: 3, target_gds:cost: 169, price: 183
+1516 - scheduler - INFO - id: 0, target_gds:cost: 7, price: 38
+1532 - scheduler - INFO - id: 0, target_gds:cost: 65, price: 190
+1546 - scheduler - INFO - id: 6, target_gds:cost: 180, price: 196
+1586 - scheduler - INFO - id: 9, target_gds:cost: 26, price: 195
+1591 - scheduler - INFO - id: 7, target_gds:cost: 104, price: 190
+1594 - scheduler - INFO - id: 4, target_gds:cost: 60, price: 192
+1655 - scheduler - INFO - id: 8, target_gds:cost: 24, price: 196
+1666 - scheduler - INFO - id: 9, target_gds:cost: 42, price: 195
+1688 - scheduler - INFO - id: 1, target_gds:cost: 147, price: 192
+1699 - scheduler - INFO - id: 2, target_gds:cost: 165, price: 187
+1708 - scheduler - INFO - id: 0, target_gds:cost: 66, price: 177
+1715 - scheduler - INFO - id: 8, target_gds:cost: 37, price: 199
+1756 - scheduler - INFO - id: 4, target_gds:cost: 28, price: 193
+1768 - scheduler - INFO - id: 9, target_gds:cost: 49, price: 182
+1806 - scheduler - INFO - id: 8, target_gds:cost: 29, price: 182
+1830 - scheduler - INFO - id: 4, target_gds:cost: 40, price: 199
+1859 - scheduler - INFO - id: 5, target_gds:cost: 89, price: 188
+1875 - scheduler - INFO - id: 7, target_gds:cost: 108, price: 187
+1879 - scheduler - INFO - id: 0, target_gds:cost: 43, price: 189
+1887 - scheduler - INFO - id: 8, target_gds:cost: 66, price: 181
+1900 - scheduler - INFO - id: 9, target_gds:cost: 15, price: 184
+1933 - scheduler - INFO - id: 4, target_gds:cost: 45, price: 186
+1935 - scheduler - INFO - id: 9, target_gds:cost: 25, price: 197
+1957 - scheduler - INFO - id: 3, target_gds:cost: 125, price: 188
+1989 - scheduler - INFO - id: 0, target_gds:cost: 46, price: 191
+1999 - scheduler - INFO - id: 9, target_gds:cost: 48, price: 189
+2046 - scheduler - INFO - id: 4, target_gds:cost: 54, price: 193
+2051 - scheduler - INFO - id: 8, target_gds:cost: 73, price: 180
+2080 - scheduler - INFO - id: 5, target_gds:cost: 7, price: 199
+2096 - scheduler - INFO - id: 5, target_gds:cost: 110, price: 198
+2099 - scheduler - INFO - id: 1, target_gds:cost: 84, price: 183
+2100 - scheduler - INFO - id: 0, target_gds:cost: 77, price: 187
+2116 - scheduler - INFO - id: 6, target_gds:cost: 142, price: 190
+2118 - scheduler - INFO - id: 9, target_gds:cost: 70, price: 196
+2140 - scheduler - INFO - id: 7, target_gds:cost: 30, price: 181
+2142 - scheduler - INFO - id: 2, target_gds:cost: 153, price: 198
+2177 - scheduler - INFO - id: 4, target_gds:cost: 28, price: 186
+2210 - scheduler - INFO - id: 7, target_gds:cost: 102, price: 182
+2225 - scheduler - INFO - id: 8, target_gds:cost: 43, price: 189
+2242 - scheduler - INFO - id: 4, target_gds:cost: 26, price: 191
+2281 - scheduler - INFO - id: 9, target_gds:cost: 31, price: 187
+2283 - scheduler - INFO - id: 0, target_gds:cost: 75, price: 180
+2292 - scheduler - INFO - id: 3, target_gds:cost: 129, price: 182
+2305 - scheduler - INFO - id: 4, target_gds:cost: 8, price: 189
+2324 - scheduler - INFO - id: 4, target_gds:cost: 31, price: 189
+2328 - scheduler - INFO - id: 8, target_gds:cost: 90, price: 192
+2361 - scheduler - INFO - id: 9, target_gds:cost: 43, price: 190
+2366 - scheduler - INFO - id: 5, target_gds:cost: 72, price: 198
+2375 - scheduler - INFO - id: 1, target_gds:cost: 80, price: 182
+2399 - scheduler - INFO - id: 4, target_gds:cost: 55, price: 186
+2478 - scheduler - INFO - id: 7, target_gds:cost: 78, price: 181
+2484 - scheduler - INFO - id: 9, target_gds:cost: 46, price: 186
+2489 - scheduler - INFO - id: 0, target_gds:cost: 21, price: 180
+2550 - scheduler - INFO - id: 0, target_gds:cost: 32, price: 184
+2568 - scheduler - INFO - id: 4, target_gds:cost: 68, price: 197
+2575 - scheduler - INFO - id: 5, target_gds:cost: 23, price: 185
+2584 - scheduler - INFO - id: 2, target_gds:cost: 100, price: 190
+2586 - scheduler - INFO - id: 8, target_gds:cost: 3, price: 185
+2595 - scheduler - INFO - id: 8, target_gds:cost: 94, price: 200
+2615 - scheduler - INFO - id: 9, target_gds:cost: 50, price: 191
+2626 - scheduler - INFO - id: 6, target_gds:cost: 6, price: 180
+2636 - scheduler - INFO - id: 0, target_gds:cost: 43, price: 193
+2639 - scheduler - INFO - id: 5, target_gds:cost: 88, price: 181
+2643 - scheduler - INFO - id: 6, target_gds:cost: 11, price: 20
+2672 - scheduler - INFO - id: 6, target_gds:cost: 100, price: 184
+2686 - scheduler - INFO - id: 1, target_gds:cost: 69, price: 184
+2695 - scheduler - INFO - id: 7, target_gds:cost: 44, price: 198
+2703 - scheduler - INFO - id: 3, target_gds:cost: 90, price: 197
+2746 - scheduler - INFO - id: 9, target_gds:cost: 49, price: 182
+2749 - scheduler - INFO - id: 4, target_gds:cost: 24, price: 193
+2764 - scheduler - INFO - id: 0, target_gds:cost: 4, price: 189
+2774 - scheduler - INFO - id: 0, target_gds:cost: 51, price: 189
+2811 - scheduler - INFO - id: 7, target_gds:cost: 61, price: 183
+2814 - scheduler - INFO - id: 4, target_gds:cost: 30, price: 55
+2843 - scheduler - INFO - id: 8, target_gds:cost: 11, price: 181
+2872 - scheduler - INFO - id: 8, target_gds:cost: 24, price: 185
+2874 - scheduler - INFO - id: 5, target_gds:cost: 68, price: 198
+2877 - scheduler - INFO - id: 9, target_gds:cost: 28, price: 198
+2881 - scheduler - INFO - id: 2, target_gds:cost: 13, price: 194
+2891 - scheduler - INFO - id: 4, target_gds:cost: 99, price: 184
+2908 - scheduler - INFO - id: 0, target_gds:cost: 62, price: 180
+2915 - scheduler - INFO - id: 2, target_gds:cost: 102, price: 180
+2937 - scheduler - INFO - id: 8, target_gds:cost: 32, price: 180
+2949 - scheduler - INFO - id: 1, target_gds:cost: 72, price: 198
+2952 - scheduler - INFO - id: 9, target_gds:cost: 55, price: 193
+2973 - scheduler - INFO - id: 7, target_gds:cost: 87, price: 197
+2987 - scheduler - INFO - id: 3, target_gds:cost: 91, price: 180
+3024 - scheduler - INFO - id: 8, target_gds:cost: 58, price: 199
+3047 - scheduler - INFO - id: 6, target_gds:cost: 104, price: 181
+3062 - scheduler - INFO - id: 5, target_gds:cost: 13, price: 191
+3073 - scheduler - INFO - id: 0, target_gds:cost: 84, price: 198
+3094 - scheduler - INFO - id: 5, target_gds:cost: 86, price: 180
+3095 - scheduler - INFO - id: 9, target_gds:cost: 55, price: 185
+3174 - scheduler - INFO - id: 8, target_gds:cost: 60, price: 191
+3199 - scheduler - INFO - id: 7, target_gds:cost: 87, price: 198
+3215 - scheduler - INFO - id: 2, target_gds:cost: 108, price: 181
+3218 - scheduler - INFO - id: 4, target_gds:cost: 11, price: 191
+3227 - scheduler - INFO - id: 1, target_gds:cost: 109, price: 186
+3237 - scheduler - INFO - id: 9, target_gds:cost: 14, price: 199
+3248 - scheduler - INFO - id: 4, target_gds:cost: 78, price: 185
+3276 - scheduler - INFO - id: 3, target_gds:cost: 113, price: 188
+3276 - scheduler - INFO - id: 9, target_gds:cost: 70, price: 188
+3291 - scheduler - INFO - id: 0, target_gds:cost: 83, price: 180
+3324 - scheduler - INFO - id: 5, target_gds:cost: 96, price: 182
+3325 - scheduler - INFO - zhen: 1585, boat_id: 4, ship from -1 to 4 
+3328 - scheduler - INFO - id: 8, target_gds:cost: 75, price: 183
+3424 - scheduler - INFO - id: 6, target_gds:cost: 130, price: 196
+3426 - scheduler - INFO - id: 7, target_gds:cost: 94, price: 199
+3449 - scheduler - INFO - id: 9, target_gds:cost: 14, price: 198
+3480 - scheduler - INFO - id: 9, target_gds:cost: 76, price: 194
+3494 - scheduler - INFO - id: 0, target_gds:cost: 99, price: 200
+3511 - scheduler - INFO - id: 8, target_gds:cost: 95, price: 180
+3515 - scheduler - INFO - id: 2, target_gds:cost: 15, price: 196
+3543 - scheduler - INFO - id: 1, target_gds:cost: 11, price: 183
+3556 - scheduler - INFO - id: 2, target_gds:cost: 138, price: 182
+3567 - scheduler - INFO - id: 5, target_gds:cost: 39, price: 189
+3572 - scheduler - INFO - id: 1, target_gds:cost: 16, price: 200
+3620 - scheduler - INFO - id: 1, target_gds:cost: 126, price: 199
+3630 - scheduler - INFO - id: 3, target_gds:cost: 98, price: 192
+3639 - scheduler - INFO - zhen: 1825, boat_id: 0, ship from -1 to 9 
+3662 - scheduler - INFO - id: 4, target_gds:cost: 11, price: 184
+3686 - scheduler - INFO - zhen: 1855, boat_id: 3, ship from -1 to 1 
+3689 - scheduler - INFO - id: 5, target_gds:cost: 102, price: 198
+3697 - scheduler - INFO - id: 4, target_gds:cost: 20, price: 200
+3698 - scheduler - INFO - id: 9, target_gds:cost: 31, price: 183
+3716 - scheduler - INFO - id: 7, target_gds:cost: 17, price: 193
+3745 - scheduler - INFO - id: 4, target_gds:cost: 25, price: 198
+3758 - scheduler - INFO - id: 7, target_gds:cost: 20, price: 187
+3774 - scheduler - INFO - id: 8, target_gds:cost: 7, price: 181
+3774 - scheduler - INFO - id: 9, target_gds:cost: 51, price: 197
+3787 - scheduler - INFO - id: 0, target_gds:cost: 28, price: 195
+3792 - scheduler - INFO - id: 8, target_gds:cost: 43, price: 180
+3807 - scheduler - INFO - id: 4, target_gds:cost: 29, price: 194
+3807 - scheduler - INFO - id: 7, target_gds:cost: 96, price: 196
+3860 - scheduler - INFO - id: 0, target_gds:cost: 62, price: 200
+3880 - scheduler - INFO - id: 6, target_gds:cost: 112, price: 188
+3884 - scheduler - INFO - id: 4, target_gds:cost: 30, price: 190
+3905 - scheduler - INFO - id: 8, target_gds:cost: 88, price: 187
+3908 - scheduler - INFO - id: 9, target_gds:cost: 56, price: 198
+3934 - scheduler - INFO - id: 3, target_gds:cost: 122, price: 194
+3948 - scheduler - INFO - id: 5, target_gds:cost: 70, price: 192
+3958 - scheduler - INFO - id: 2, target_gds:cost: 16, price: 199
+3961 - scheduler - INFO - id: 4, target_gds:cost: 31, price: 192
+3990 - scheduler - INFO - id: 1, target_gds:cost: 111, price: 194
+3995 - scheduler - INFO - id: 2, target_gds:cost: 112, price: 196
+4013 - scheduler - INFO - id: 0, target_gds:cost: 6, price: 194
+4026 - scheduler - INFO - id: 0, target_gds:cost: 43, price: 195
+4038 - scheduler - INFO - id: 4, target_gds:cost: 32, price: 186
+4049 - scheduler - INFO - id: 9, target_gds:cost: 70, price: 200
+4078 - scheduler - INFO - id: 7, target_gds:cost: 76, price: 196
+4096 - scheduler - INFO - zhen: 2180, boat_id: 1, ship from -1 to 6 
+4118 - scheduler - INFO - id: 4, target_gds:cost: 45, price: 180
+4125 - scheduler - INFO - id: 5, target_gds:cost: 112, price: 191
+4139 - scheduler - INFO - id: 0, target_gds:cost: 8, price: 188
+4159 - scheduler - INFO - id: 0, target_gds:cost: 60, price: 190
+4231 - scheduler - INFO - id: 9, target_gds:cost: 40, price: 199
+4240 - scheduler - INFO - id: 4, target_gds:cost: 51, price: 192
+4263 - scheduler - INFO - id: 8, target_gds:cost: 39, price: 183
+4273 - scheduler - INFO - id: 7, target_gds:cost: 77, price: 188
+4275 - scheduler - INFO - id: 6, target_gds:cost: 120, price: 194
+4303 - scheduler - INFO - id: 3, target_gds:cost: 7, price: 194
+4328 - scheduler - INFO - id: 3, target_gds:cost: 115, price: 180
+4331 - scheduler - INFO - id: 0, target_gds:cost: 50, price: 199
+4345 - scheduler - INFO - id: 9, target_gds:cost: 47, price: 191
+4347 - scheduler - INFO - id: 2, target_gds:cost: 9, price: 184
+4368 - scheduler - INFO - id: 2, target_gds:cost: 136, price: 193
+4370 - scheduler - INFO - id: 1, target_gds:cost: 17, price: 188
+4376 - scheduler - INFO - id: 8, target_gds:cost: 73, price: 180
+4383 - scheduler - INFO - id: 4, target_gds:cost: 116, price: 190
+4422 - scheduler - INFO - id: 1, target_gds:cost: 115, price: 199
+4433 - scheduler - INFO - zhen: 2425, boat_id: 2, ship from -1 to 8 
+4443 - scheduler - INFO - id: 5, target_gds:cost: 109, price: 195
+4462 - scheduler - INFO - id: 0, target_gds:cost: 64, price: 184
+4471 - scheduler - INFO - id: 9, target_gds:cost: 67, price: 187
+4505 - scheduler - INFO - id: 7, target_gds:cost: 93, price: 189
+4638 - scheduler - INFO - id: 0, target_gds:cost: 70, price: 184
+4653 - scheduler - INFO - id: 9, target_gds:cost: 66, price: 182
+4680 - scheduler - INFO - id: 3, target_gds:cost: 112, price: 187
+4711 - scheduler - INFO - id: 8, target_gds:cost: 69, price: 180
+4714 - scheduler - INFO - id: 6, target_gds:cost: 13, price: 181
+4731 - scheduler - INFO - id: 5, target_gds:cost: 88, price: 185
+4746 - scheduler - INFO - id: 7, target_gds:cost: 65, price: 194
+4749 - scheduler - INFO - id: 6, target_gds:cost: 123, price: 188
+4755 - scheduler - INFO - id: 2, target_gds:cost: 133, price: 192
+4759 - scheduler - INFO - id: 1, target_gds:cost: 83, price: 187
+4763 - scheduler - INFO - zhen: 2680, boat_id: 4, ship from -1 to 2 
+4809 - scheduler - INFO - id: 0, target_gds:cost: 51, price: 191
+4815 - scheduler - INFO - id: 9, target_gds:cost: 55, price: 182
+4881 - scheduler - INFO - id: 4, target_gds:cost: 43, price: 191
+4891 - scheduler - INFO - id: 8, target_gds:cost: 35, price: 192
+4912 - scheduler - INFO - id: 7, target_gds:cost: 70, price: 191
+4955 - scheduler - INFO - id: 0, target_gds:cost: 76, price: 197
+4973 - scheduler - INFO - id: 9, target_gds:cost: 2, price: 197
+4977 - scheduler - INFO - id: 9, target_gds:cost: 48, price: 182
+4981 - scheduler - INFO - id: 5, target_gds:cost: 69, price: 198
+4990 - scheduler - INFO - id: 8, target_gds:cost: 80, price: 193
+5002 - scheduler - INFO - id: 4, target_gds:cost: 27, price: 51
+5029 - scheduler - INFO - id: 3, target_gds:cost: 7, price: 195
+5048 - scheduler - INFO - id: 3, target_gds:cost: 102, price: 192
+5053 - scheduler - INFO - id: 1, target_gds:cost: 73, price: 183
+5067 - scheduler - INFO - id: 4, target_gds:cost: 5, price: 194
+5083 - scheduler - INFO - id: 4, target_gds:cost: 21, price: 27
+5094 - scheduler - INFO - id: 9, target_gds:cost: 59, price: 182
+5099 - scheduler - INFO - id: 7, target_gds:cost: 70, price: 183
+5131 - scheduler - INFO - id: 2, target_gds:cost: 109, price: 185
+5141 - scheduler - INFO - id: 4, target_gds:cost: 111, price: 188
+5158 - scheduler - INFO - id: 5, target_gds:cost: 11, price: 182
+5159 - scheduler - INFO - id: 0, target_gds:cost: 25, price: 181
+5172 - scheduler - INFO - zhen: 2992, boat_id: 3, ship from -1 to 5 
+5179 - scheduler - INFO - id: 6, target_gds:cost: 120, price: 187
+5186 - scheduler - INFO - id: 5, target_gds:cost: 87, price: 197
+5199 - scheduler - INFO - id: 8, target_gds:cost: 18, price: 196
+5224 - scheduler - INFO - id: 0, target_gds:cost: 154, price: 193
+5241 - scheduler - INFO - id: 8, target_gds:cost: 30, price: 196
+5247 - scheduler - INFO - id: 9, target_gds:cost: 45, price: 182
+5277 - scheduler - INFO - id: 7, target_gds:cost: 31, price: 182
+5312 - scheduler - INFO - id: 8, target_gds:cost: 93, price: 87
+5318 - scheduler - INFO - id: 1, target_gds:cost: 73, price: 188
+5324 - scheduler - INFO - zhen: 3115, boat_id: 0, ship from -1 to 3 
+5339 - scheduler - INFO - id: 3, target_gds:cost: 107, price: 200
+5352 - scheduler - INFO - id: 7, target_gds:cost: 76, price: 189
+5355 - scheduler - INFO - id: 9, target_gds:cost: 54, price: 192
+5398 - scheduler - INFO - id: 5, target_gds:cost: 81, price: 196
+5433 - scheduler - INFO - id: 2, target_gds:cost: 98, price: 185
+5487 - scheduler - INFO - id: 9, target_gds:cost: 74, price: 198
+5491 - scheduler - INFO - zhen: 3253, boat_id: 4, go 
+5537 - scheduler - INFO - id: 7, target_gds:cost: 36, price: 198
+5537 - scheduler - INFO - id: 8, target_gds:cost: 40, price: 188
+5566 - scheduler - INFO - id: 1, target_gds:cost: 79, price: 186
+5569 - scheduler - INFO - id: 4, target_gds:cost: 29, price: 50
+5576 - scheduler - INFO - id: 6, target_gds:cost: 5, price: 194
+5588 - scheduler - INFO - id: 6, target_gds:cost: 100, price: 194
+5593 - scheduler - INFO - id: 0, target_gds:cost: 38, price: 180
+5598 - scheduler - INFO - id: 5, target_gds:cost: 6, price: 181
+5613 - scheduler - INFO - id: 5, target_gds:cost: 40, price: 183
+5625 - scheduler - INFO - id: 7, target_gds:cost: 40, price: 188
+5634 - scheduler - INFO - id: 8, target_gds:cost: 9, price: 192
+5641 - scheduler - INFO - id: 4, target_gds:cost: 5, price: 188
+5649 - scheduler - INFO - zhen: 3384, boat_id: 1, ship from -1 to 7 
+5652 - scheduler - INFO - id: 4, target_gds:cost: 63, price: 75
+5656 - scheduler - INFO - id: 8, target_gds:cost: 43, price: 189
+5659 - scheduler - INFO - id: 3, target_gds:cost: 98, price: 188
+5667 - scheduler - INFO - id: 9, target_gds:cost: 38, price: 195
+5692 - scheduler - INFO - id: 0, target_gds:cost: 87, price: 195
+5709 - scheduler - INFO - id: 2, target_gds:cost: 112, price: 188
+5732 - scheduler - INFO - id: 5, target_gds:cost: 68, price: 192
+5733 - scheduler - INFO - id: 7, target_gds:cost: 5, price: 182
+5746 - scheduler - INFO - id: 7, target_gds:cost: 45, price: 183
+5775 - scheduler - INFO - id: 9, target_gds:cost: 47, price: 188
+5781 - scheduler - INFO - id: 8, target_gds:cost: 99, price: 187
+5839 - scheduler - INFO - id: 4, target_gds:cost: 114, price: 186
+5849 - scheduler - INFO - id: 1, target_gds:cost: 94, price: 193
+5862 - scheduler - INFO - zhen: 3529, boat_id: 3, go 
+5922 - scheduler - INFO - zhen: 3565, boat_id: 2, ship from -1 to 0 
+5925 - scheduler - INFO - id: 9, target_gds:cost: 44, price: 196
+5938 - scheduler - INFO - id: 5, target_gds:cost: 80, price: 190
+5947 - scheduler - INFO - id: 7, target_gds:cost: 48, price: 183
+5951 - scheduler - INFO - id: 0, target_gds:cost: 81, price: 180
+6004 - scheduler - INFO - id: 3, target_gds:cost: 129, price: 197
+6008 - scheduler - INFO - id: 6, target_gds:cost: 124, price: 190
+6016 - scheduler - INFO - zhen: 3640, boat_id: 0, go 
+6033 - scheduler - INFO - id: 9, target_gds:cost: 47, price: 186
+6058 - scheduler - INFO - id: 8, target_gds:cost: 24, price: 197
+6061 - scheduler - INFO - id: 2, target_gds:cost: 3, price: 193
+6067 - scheduler - INFO - id: 7, target_gds:cost: 53, price: 197
+6069 - scheduler - INFO - id: 2, target_gds:cost: 109, price: 196
+6124 - scheduler - INFO - id: 8, target_gds:cost: 51, price: 181
+6151 - scheduler - INFO - id: 5, target_gds:cost: 34, price: 199
+6155 - scheduler - INFO - id: 1, target_gds:cost: 18, price: 197
+6158 - scheduler - INFO - id: 9, target_gds:cost: 49, price: 198
+6159 - scheduler - INFO - id: 0, target_gds:cost: 60, price: 185
+6199 - scheduler - INFO - id: 1, target_gds:cost: 92, price: 200
+6203 - scheduler - INFO - id: 7, target_gds:cost: 46, price: 199
+6235 - scheduler - INFO - id: 5, target_gds:cost: 88, price: 196
+6247 - scheduler - INFO - id: 8, target_gds:cost: 34, price: 194
+6276 - scheduler - INFO - id: 9, target_gds:cost: 16, price: 181
+6302 - scheduler - INFO - id: 4, target_gds:cost: 14, price: 200
+6305 - scheduler - INFO - id: 0, target_gds:cost: 63, price: 182
+6315 - scheduler - INFO - id: 7, target_gds:cost: 84, price: 193
+6316 - scheduler - INFO - id: 9, target_gds:cost: 19, price: 182
+6332 - scheduler - INFO - id: 8, target_gds:cost: 37, price: 199
+6339 - scheduler - INFO - id: 4, target_gds:cost: 85, price: 181
+6365 - scheduler - INFO - id: 9, target_gds:cost: 46, price: 199
+6369 - scheduler - INFO - zhen: 3921, boat_id: 1, go 
+6372 - scheduler - INFO - id: 2, target_gds:cost: 97, price: 187
+6383 - scheduler - INFO - id: 3, target_gds:cost: 106, price: 197
+6426 - scheduler - INFO - id: 6, target_gds:cost: 144, price: 191
+6428 - scheduler - INFO - id: 8, target_gds:cost: 48, price: 187
+6462 - scheduler - INFO - id: 5, target_gds:cost: 11, price: 189
+6472 - scheduler - INFO - id: 1, target_gds:cost: 83, price: 189
+6484 - scheduler - INFO - id: 9, target_gds:cost: 57, price: 196
+6486 - scheduler - INFO - id: 0, target_gds:cost: 37, price: 184
+6491 - scheduler - INFO - id: 5, target_gds:cost: 65, price: 200
+6553 - scheduler - INFO - id: 8, target_gds:cost: 20, price: 193
+6559 - scheduler - INFO - id: 7, target_gds:cost: 54, price: 195
+6581 - scheduler - INFO - id: 0, target_gds:cost: 30, price: 198
+6601 - scheduler - INFO - id: 8, target_gds:cost: 4, price: 181
+6610 - scheduler - INFO - id: 8, target_gds:cost: 31, price: 190
+6626 - scheduler - INFO - id: 9, target_gds:cost: 41, price: 196
+6641 - scheduler - INFO - zhen: 4138, boat_id: 2, go 
+6642 - scheduler - INFO - id: 2, target_gds:cost: 121, price: 200
+6650 - scheduler - INFO - id: 0, target_gds:cost: 49, price: 192
+6650 - scheduler - INFO - id: 5, target_gds:cost: 66, price: 196
+6683 - scheduler - INFO - id: 3, target_gds:cost: 122, price: 188
+6690 - scheduler - INFO - id: 8, target_gds:cost: 74, price: 192
+6693 - scheduler - INFO - id: 7, target_gds:cost: 8, price: 195
+6715 - scheduler - INFO - id: 7, target_gds:cost: 28, price: 194
+6730 - scheduler - INFO - id: 1, target_gds:cost: 94, price: 199
+6735 - scheduler - INFO - id: 9, target_gds:cost: 62, price: 188
+6752 - scheduler - INFO - id: 4, target_gds:cost: 44, price: 185
+6784 - scheduler - INFO - id: 0, target_gds:cost: 68, price: 190
+6789 - scheduler - INFO - id: 7, target_gds:cost: 41, price: 189
+6814 - scheduler - INFO - zhen: 4266, boat_id: 4, ship from -1 to 4 
+6830 - scheduler - INFO - id: 5, target_gds:cost: 67, price: 188
+6863 - scheduler - INFO - id: 4, target_gds:cost: 48, price: 187
+6881 - scheduler - INFO - id: 8, target_gds:cost: 45, price: 189
+6891 - scheduler - INFO - id: 7, target_gds:cost: 76, price: 182
+6893 - scheduler - INFO - id: 9, target_gds:cost: 84, price: 195
+6901 - scheduler - INFO - id: 6, target_gds:cost: 2, price: 192
+6907 - scheduler - INFO - id: 6, target_gds:cost: 104, price: 197
+6952 - scheduler - INFO - id: 0, target_gds:cost: 69, price: 180
+6981 - scheduler - INFO - id: 4, target_gds:cost: 27, price: 184
+6985 - scheduler - INFO - id: 2, target_gds:cost: 130, price: 191
+6992 - scheduler - INFO - id: 8, target_gds:cost: 87, price: 192
+7002 - scheduler - INFO - id: 5, target_gds:cost: 80, price: 186
+7006 - scheduler - INFO - id: 1, target_gds:cost: 13, price: 181
+7040 - scheduler - INFO - id: 1, target_gds:cost: 100, price: 196
+7051 - scheduler - INFO - id: 3, target_gds:cost: 59, price: 99
+7056 - scheduler - INFO - id: 4, target_gds:cost: 45, price: 192
+7057 - scheduler - INFO - zhen: 4458, boat_id: 0, ship from -1 to 9 
+7094 - scheduler - INFO - zhen: 4482, boat_id: 3, ship from -1 to 1 
+7123 - scheduler - INFO - id: 9, target_gds:cost: 44, price: 188
+7144 - scheduler - INFO - id: 7, target_gds:cost: 16, price: 199
+7171 - scheduler - INFO - id: 0, target_gds:cost: 63, price: 193
+7180 - scheduler - INFO - id: 7, target_gds:cost: 27, price: 200
+7185 - scheduler - INFO - id: 4, target_gds:cost: 17, price: 185
+7230 - scheduler - INFO - id: 5, target_gds:cost: 17, price: 189
+7234 - scheduler - INFO - id: 4, target_gds:cost: 30, price: 190
+7239 - scheduler - INFO - id: 8, target_gds:cost: 45, price: 199
+7242 - scheduler - INFO - id: 9, target_gds:cost: 70, price: 196
+7256 - scheduler - INFO - id: 7, target_gds:cost: 44, price: 196
+7273 - scheduler - INFO - id: 5, target_gds:cost: 82, price: 182
+7282 - scheduler - INFO - id: 3, target_gds:cost: 96, price: 186
+7299 - scheduler - INFO - id: 6, target_gds:cost: 100, price: 197
+7317 - scheduler - INFO - id: 4, target_gds:cost: 6, price: 200
+7333 - scheduler - INFO - id: 4, target_gds:cost: 42, price: 183
+7346 - scheduler - INFO - id: 0, target_gds:cost: 54, price: 194
+7358 - scheduler - INFO - id: 8, target_gds:cost: 94, price: 184
+7373 - scheduler - INFO - id: 7, target_gds:cost: 51, price: 197
+7377 - scheduler - INFO - id: 1, target_gds:cost: 98, price: 187
+7381 - scheduler - INFO - id: 2, target_gds:cost: 63, price: 180
+7423 - scheduler - INFO - id: 9, target_gds:cost: 82, price: 197
+7435 - scheduler - INFO - id: 4, target_gds:cost: 27, price: 199
+7441 - scheduler - INFO - zhen: 4742, boat_id: 1, ship from -1 to 6 
+7477 - scheduler - INFO - id: 0, target_gds:cost: 62, price: 181
+7484 - scheduler - INFO - id: 5, target_gds:cost: 30, price: 186
+7495 - scheduler - INFO - id: 7, target_gds:cost: 80, price: 188
+7499 - scheduler - INFO - id: 4, target_gds:cost: 56, price: 60
+7562 - scheduler - INFO - id: 5, target_gds:cost: 81, price: 186
+7588 - scheduler - INFO - id: 3, target_gds:cost: 75, price: 180
+7598 - scheduler - INFO - id: 8, target_gds:cost: 72, price: 193
+7633 - scheduler - INFO - id: 9, target_gds:cost: 79, price: 193
+7643 - scheduler - INFO - id: 2, target_gds:cost: 92, price: 187
+7646 - scheduler - INFO - id: 0, target_gds:cost: 69, price: 200
+7649 - scheduler - INFO - id: 4, target_gds:cost: 36, price: 6
+7660 - scheduler - INFO - id: 6, target_gds:cost: 101, price: 194
+7677 - scheduler - INFO - id: 1, target_gds:cost: 81, price: 189
+7692 - scheduler - INFO - zhen: 4938, boat_id: 2, ship from -1 to 8 
+7779 - scheduler - INFO - id: 4, target_gds:cost: 35, price: 198
+7802 - scheduler - INFO - id: 7, target_gds:cost: 40, price: 88
+7823 - scheduler - INFO - id: 8, target_gds:cost: 26, price: 185
+7825 - scheduler - INFO - id: 5, target_gds:cost: 82, price: 189
+7856 - scheduler - INFO - id: 3, target_gds:cost: 74, price: 183
+7866 - scheduler - INFO - id: 0, target_gds:cost: 65, price: 184
+7876 - scheduler - INFO - id: 4, target_gds:cost: 53, price: 180
+7880 - scheduler - INFO - id: 9, target_gds:cost: 81, price: 193
+7896 - scheduler - INFO - id: 8, target_gds:cost: 32, price: 196
+7913 - scheduler - INFO - id: 7, target_gds:cost: 94, price: 189
+7968 - scheduler - INFO - id: 2, target_gds:cost: 97, price: 191
+7989 - scheduler - INFO - id: 8, target_gds:cost: 27, price: 50
+8010 - scheduler - INFO - id: 1, target_gds:cost: 104, price: 196
+8028 - scheduler - INFO - id: 4, target_gds:cost: 61, price: 200
+8049 - scheduler - INFO - id: 0, target_gds:cost: 75, price: 190
+8055 - scheduler - INFO - id: 5, target_gds:cost: 89, price: 196
+8058 - scheduler - INFO - id: 8, target_gds:cost: 42, price: 69
+8095 - scheduler - INFO - id: 6, target_gds:cost: 110, price: 194
+8102 - scheduler - INFO - id: 9, target_gds:cost: 60, price: 186
+8109 - scheduler - INFO - id: 3, target_gds:cost: 103, price: 184
+8162 - scheduler - INFO - id: 8, target_gds:cost: 34, price: 3
+8165 - scheduler - INFO - id: 7, target_gds:cost: 79, price: 184
+8180 - scheduler - INFO - id: 4, target_gds:cost: 77, price: 180
+8232 - scheduler - INFO - id: 0, target_gds:cost: 53, price: 197
+8247 - scheduler - INFO - id: 9, target_gds:cost: 82, price: 194
+8250 - scheduler - INFO - id: 8, target_gds:cost: 85, price: 186
+8253 - scheduler - INFO - id: 2, target_gds:cost: 128, price: 187
+8275 - scheduler - INFO - id: 5, target_gds:cost: 73, price: 187
+8288 - scheduler - INFO - zhen: 5361, boat_id: 4, ship from -1 to 2 
+8305 - scheduler - INFO - id: 1, target_gds:cost: 19, price: 199
+8354 - scheduler - INFO - id: 1, target_gds:cost: 120, price: 198
+8361 - scheduler - INFO - id: 7, target_gds:cost: 66, price: 187
+8366 - scheduler - INFO - id: 0, target_gds:cost: 6, price: 184
+8382 - scheduler - INFO - id: 0, target_gds:cost: 73, price: 182
+8396 - scheduler - INFO - id: 3, target_gds:cost: 156, price: 181
+8450 - scheduler - INFO - id: 9, target_gds:cost: 55, price: 196
+8456 - scheduler - INFO - id: 5, target_gds:cost: 10, price: 186
+8475 - scheduler - INFO - id: 6, target_gds:cost: 14, price: 182
+8482 - scheduler - INFO - id: 5, target_gds:cost: 60, price: 180
+8509 - scheduler - INFO - id: 6, target_gds:cost: 99, price: 192
+8523 - scheduler - INFO - id: 7, target_gds:cost: 82, price: 191
+8555 - scheduler - INFO - id: 4, target_gds:cost: 53, price: 86
+8560 - scheduler - INFO - id: 0, target_gds:cost: 23, price: 44
+8588 - scheduler - INFO - id: 9, target_gds:cost: 59, price: 199
+8598 - scheduler - INFO - id: 2, target_gds:cost: 123, price: 197
+8609 - scheduler - INFO - zhen: 5619, boat_id: 3, ship from -1 to 5 
+8618 - scheduler - INFO - id: 0, target_gds:cost: 114, price: 195
+8636 - scheduler - INFO - id: 5, target_gds:cost: 87, price: 197
+8676 - scheduler - INFO - id: 8, target_gds:cost: 9, price: 189
+8684 - scheduler - INFO - id: 1, target_gds:cost: 80, price: 183
+8686 - scheduler - INFO - id: 4, target_gds:cost: 8, price: 184
+8700 - scheduler - INFO - id: 8, target_gds:cost: 28, price: 196
+8708 - scheduler - INFO - id: 4, target_gds:cost: 106, price: 199
+8737 - scheduler - INFO - id: 7, target_gds:cost: 21, price: 197
+8744 - scheduler - INFO - id: 9, target_gds:cost: 63, price: 190
+8787 - scheduler - INFO - zhen: 5748, boat_id: 0, ship from -1 to 3 
+8792 - scheduler - INFO - id: 8, target_gds:cost: 52, price: 196
+8799 - scheduler - INFO - id: 7, target_gds:cost: 31, price: 185
+8874 - scheduler - INFO - id: 5, target_gds:cost: 24, price: 198
+8878 - scheduler - INFO - id: 6, target_gds:cost: 132, price: 192
+8880 - scheduler - INFO - id: 7, target_gds:cost: 92, price: 199
+8905 - scheduler - INFO - id: 3, target_gds:cost: 131, price: 196
+8914 - scheduler - INFO - id: 9, target_gds:cost: 54, price: 187
+8925 - scheduler - INFO - id: 8, target_gds:cost: 82, price: 192
+8926 - scheduler - INFO - id: 0, target_gds:cost: 119, price: 199
+8934 - scheduler - INFO - id: 5, target_gds:cost: 114, price: 193
+9004 - scheduler - INFO - id: 1, target_gds:cost: 110, price: 197
+9037 - scheduler - INFO - zhen: 5934, boat_id: 4, go 
+9053 - scheduler - INFO - zhen: 5946, boat_id: 1, ship from -1 to 7 
+9065 - scheduler - INFO - id: 9, target_gds:cost: 73, price: 195
+9090 - scheduler - INFO - id: 2, target_gds:cost: 110, price: 180
+9142 - scheduler - INFO - id: 7, target_gds:cost: 14, price: 196
+9148 - scheduler - INFO - id: 8, target_gds:cost: 56, price: 183
+9179 - scheduler - INFO - id: 7, target_gds:cost: 62, price: 193
+9223 - scheduler - INFO - id: 4, target_gds:cost: 45, price: 181
+9239 - scheduler - INFO - zhen: 6078, boat_id: 2, ship from -1 to 0 
+9262 - scheduler - INFO - id: 5, target_gds:cost: 37, price: 181
+9264 - scheduler - INFO - id: 0, target_gds:cost: 24, price: 193
+9273 - scheduler - INFO - id: 9, target_gds:cost: 52, price: 200
+9319 - scheduler - INFO - id: 8, target_gds:cost: 65, price: 196
+9331 - scheduler - INFO - id: 0, target_gds:cost: 49, price: 190
+9334 - scheduler - INFO - id: 3, target_gds:cost: 108, price: 189
+9346 - scheduler - INFO - zhen: 6156, boat_id: 3, go 
+9348 - scheduler - INFO - id: 1, target_gds:cost: 88, price: 183
+9349 - scheduler - INFO - id: 4, target_gds:cost: 12, price: 192
+9361 - scheduler - INFO - id: 7, target_gds:cost: 36, price: 187
+9363 - scheduler - INFO - id: 5, target_gds:cost: 17, price: 196
+9365 - scheduler - INFO - id: 6, target_gds:cost: 127, price: 193
+9379 - scheduler - INFO - id: 4, target_gds:cost: 18, price: 183
+9407 - scheduler - INFO - id: 5, target_gds:cost: 64, price: 195
+9411 - scheduler - INFO - id: 9, target_gds:cost: 57, price: 194
+9425 - scheduler - INFO - id: 2, target_gds:cost: 136, price: 199
+9425 - scheduler - INFO - id: 4, target_gds:cost: 60, price: 192
+9449 - scheduler - INFO - id: 7, target_gds:cost: 27, price: 186
+9453 - scheduler - INFO - id: 0, target_gds:cost: 94, price: 192
+9478 - scheduler - INFO - id: 8, target_gds:cost: 87, price: 185
+9518 - scheduler - INFO - zhen: 6274, boat_id: 0, go 
+9542 - scheduler - INFO - id: 7, target_gds:cost: 61, price: 192
+9572 - scheduler - INFO - id: 9, target_gds:cost: 78, price: 198
+9599 - scheduler - INFO - id: 5, target_gds:cost: 7, price: 181
+9600 - scheduler - INFO - id: 4, target_gds:cost: 27, price: 184
+9616 - scheduler - INFO - id: 5, target_gds:cost: 71, price: 190
+9657 - scheduler - INFO - id: 1, target_gds:cost: 76, price: 185
+9666 - scheduler - INFO - id: 4, target_gds:cost: 59, price: 43
+9681 - scheduler - INFO - id: 3, target_gds:cost: 2, price: 196
+9688 - scheduler - INFO - id: 3, target_gds:cost: 130, price: 193
+9697 - scheduler - INFO - id: 7, target_gds:cost: 11, price: 194
+9714 - scheduler - INFO - id: 0, target_gds:cost: 110, price: 182
+9723 - scheduler - INFO - id: 7, target_gds:cost: 68, price: 184
+9724 - scheduler - INFO - id: 8, target_gds:cost: 83, price: 190
+9771 - scheduler - INFO - id: 9, target_gds:cost: 49, price: 185
+9778 - scheduler - INFO - zhen: 6483, boat_id: 1, go 
+9792 - scheduler - INFO - id: 5, target_gds:cost: 71, price: 200
+9811 - scheduler - INFO - id: 4, target_gds:cost: 40, price: 197
+9813 - scheduler - INFO - id: 6, target_gds:cost: 85, price: 183
+9817 - scheduler - INFO - id: 2, target_gds:cost: 108, price: 196
+9890 - scheduler - INFO - id: 7, target_gds:cost: 37, price: 187
+9892 - scheduler - INFO - id: 9, target_gds:cost: 14, price: 189
+9909 - scheduler - INFO - id: 4, target_gds:cost: 80, price: 193
+9918 - scheduler - INFO - id: 1, target_gds:cost: 84, price: 181
+9927 - scheduler - INFO - id: 9, target_gds:cost: 31, price: 185
+9979 - scheduler - INFO - id: 5, target_gds:cost: 38, price: 195
+9992 - scheduler - INFO - zhen: 6651, boat_id: 2, go 
+9992 - scheduler - INFO - id: 0, target_gds:cost: 54, price: 180
+10008 - scheduler - INFO - id: 7, target_gds:cost: 72, price: 187
+10013 - scheduler - INFO - id: 9, target_gds:cost: 68, price: 191
+10072 - scheduler - INFO - id: 3, target_gds:cost: 7, price: 181
+10073 - scheduler - INFO - id: 8, target_gds:cost: 74, price: 180
+10086 - scheduler - INFO - id: 5, target_gds:cost: 68, price: 186
+10092 - scheduler - INFO - id: 3, target_gds:cost: 108, price: 194
+10131 - scheduler - INFO - id: 2, target_gds:cost: 106, price: 184
+10138 - scheduler - INFO - id: 0, target_gds:cost: 89, price: 186
+10143 - scheduler - INFO - id: 6, target_gds:cost: 135, price: 198
+10184 - scheduler - INFO - id: 1, target_gds:cost: 74, price: 191
+10194 - scheduler - INFO - id: 9, target_gds:cost: 31, price: 192
+10201 - scheduler - INFO - id: 7, target_gds:cost: 25, price: 187
+10262 - scheduler - INFO - id: 7, target_gds:cost: 42, price: 198
+10269 - scheduler - INFO - id: 5, target_gds:cost: 89, price: 196
+10271 - scheduler - INFO - id: 9, target_gds:cost: 59, price: 195
+10297 - scheduler - INFO - id: 4, target_gds:cost: 54, price: 189
+10316 - scheduler - INFO - id: 8, target_gds:cost: 37, price: 195
+10363 - scheduler - INFO - id: 0, target_gds:cost: 62, price: 192
+10370 - scheduler - INFO - id: 7, target_gds:cost: 7, price: 197
+10377 - scheduler - INFO - zhen: 6947, boat_id: 4, ship from -1 to 4 
+10385 - scheduler - INFO - id: 7, target_gds:cost: 88, price: 193
+10405 - scheduler - INFO - id: 1, target_gds:cost: 93, price: 195
+10407 - scheduler - INFO - id: 8, target_gds:cost: 29, price: 181
+10410 - scheduler - INFO - id: 3, target_gds:cost: 102, price: 189
+10418 - scheduler - INFO - id: 9, target_gds:cost: 48, price: 196
+10427 - scheduler - INFO - id: 2, target_gds:cost: 13, price: 192
+10431 - scheduler - INFO - id: 4, target_gds:cost: 66, price: 194
+10460 - scheduler - INFO - id: 2, target_gds:cost: 115, price: 194
+10480 - scheduler - INFO - id: 8, target_gds:cost: 34, price: 196
+10495 - scheduler - INFO - id: 5, target_gds:cost: 89, price: 183
+10518 - scheduler - INFO - id: 0, target_gds:cost: 105, price: 190
+10537 - scheduler - INFO - id: 9, target_gds:cost: 64, price: 182
+10555 - scheduler - INFO - zhen: 7092, boat_id: 0, ship from -1 to 9 
+10564 - scheduler - INFO - id: 8, target_gds:cost: 37, price: 180
+10577 - scheduler - INFO - zhen: 7109, boat_id: 3, ship from -1 to 1 
+10592 - scheduler - INFO - id: 6, target_gds:cost: 9, price: 192
+10598 - scheduler - INFO - id: 4, target_gds:cost: 15, price: 3
+10608 - scheduler - INFO - id: 7, target_gds:cost: 92, price: 192
+10620 - scheduler - INFO - id: 6, target_gds:cost: 73, price: 182
+10638 - scheduler - INFO - id: 4, target_gds:cost: 137, price: 186
+10662 - scheduler - INFO - id: 8, target_gds:cost: 9, price: 181
+10684 - scheduler - INFO - id: 8, target_gds:cost: 60, price: 57
+10701 - scheduler - INFO - id: 9, target_gds:cost: 55, price: 196
+10716 - scheduler - INFO - id: 1, target_gds:cost: 113, price: 182
+10718 - scheduler - INFO - id: 5, target_gds:cost: 96, price: 181
+10733 - scheduler - INFO - id: 3, target_gds:cost: 114, price: 188
+10791 - scheduler - INFO - id: 2, target_gds:cost: 136, price: 185
+10805 - scheduler - INFO - id: 0, target_gds:cost: 61, price: 187
+10834 - scheduler - INFO - zhen: 7304, boat_id: 1, ship from -1 to 6 
+10844 - scheduler - INFO - id: 8, target_gds:cost: 77, price: 182
+10849 - scheduler - INFO - id: 9, target_gds:cost: 52, price: 195
+10851 - scheduler - INFO - id: 7, target_gds:cost: 77, price: 182
+10987 - scheduler - INFO - id: 0, target_gds:cost: 60, price: 184
+11000 - scheduler - INFO - id: 5, target_gds:cost: 57, price: 194
+11010 - scheduler - INFO - id: 9, target_gds:cost: 71, price: 200
+11045 - scheduler - INFO - zhen: 7451, boat_id: 2, ship from -1 to 8 
+11073 - scheduler - INFO - id: 7, target_gds:cost: 90, price: 189
+11078 - scheduler - INFO - id: 6, target_gds:cost: 21, price: 189
+11081 - scheduler - INFO - id: 1, target_gds:cost: 95, price: 180
+11095 - scheduler - INFO - id: 3, target_gds:cost: 106, price: 197
+11128 - scheduler - INFO - id: 6, target_gds:cost: 150, price: 198
+11136 - scheduler - INFO - id: 0, target_gds:cost: 43, price: 194
+11146 - scheduler - INFO - id: 5, target_gds:cost: 73, price: 194
+11189 - scheduler - INFO - id: 9, target_gds:cost: 76, price: 196
+11191 - scheduler - INFO - id: 4, target_gds:cost: 2, price: 74
+11196 - scheduler - INFO - id: 4, target_gds:cost: 25, price: 190
+11202 - scheduler - INFO - id: 2, target_gds:cost: 6, price: 181
+11211 - scheduler - INFO - id: 8, target_gds:cost: 10, price: 190
+11217 - scheduler - INFO - id: 2, target_gds:cost: 152, price: 195
+11235 - scheduler - INFO - id: 8, target_gds:cost: 81, price: 187
+11247 - scheduler - INFO - id: 0, target_gds:cost: 25, price: 190
+11259 - scheduler - INFO - id: 4, target_gds:cost: 23, price: 196
+11300 - scheduler - INFO - id: 7, target_gds:cost: 9, price: 181
+11310 - scheduler - INFO - id: 0, target_gds:cost: 37, price: 181
+11318 - scheduler - INFO - id: 4, target_gds:cost: 55, price: 195
+11328 - scheduler - INFO - id: 7, target_gds:cost: 113, price: 194
+11343 - scheduler - INFO - id: 5, target_gds:cost: 83, price: 189
+11412 - scheduler - INFO - id: 9, target_gds:cost: 39, price: 189
+11432 - scheduler - INFO - id: 0, target_gds:cost: 75, price: 196
+11437 - scheduler - INFO - id: 1, target_gds:cost: 97, price: 197
+11445 - scheduler - INFO - id: 3, target_gds:cost: 150, price: 200
+11468 - scheduler - INFO - id: 8, target_gds:cost: 72, price: 199
+11483 - scheduler - INFO - id: 4, target_gds:cost: 66, price: 188
+11508 - scheduler - INFO - id: 9, target_gds:cost: 44, price: 198
+11583 - scheduler - INFO - id: 5, target_gds:cost: 112, price: 193
+11628 - scheduler - INFO - id: 9, target_gds:cost: 41, price: 197
+11649 - scheduler - INFO - id: 7, target_gds:cost: 88, price: 194
+11653 - scheduler - INFO - id: 6, target_gds:cost: 80, price: 187
+11662 - scheduler - INFO - id: 8, target_gds:cost: 12, price: 187
+11664 - scheduler - INFO - id: 4, target_gds:cost: 8, price: 200
+11669 - scheduler - INFO - id: 2, target_gds:cost: 89, price: 199
+11682 - scheduler - INFO - id: 4, target_gds:cost: 28, price: 186
+11688 - scheduler - INFO - id: 0, target_gds:cost: 43, price: 199
+11692 - scheduler - INFO - id: 8, target_gds:cost: 38, price: 198
+11730 - scheduler - INFO - id: 9, target_gds:cost: 39, price: 198
+11747 - scheduler - INFO - id: 4, target_gds:cost: 53, price: 21
+11763 - scheduler - INFO - id: 1, target_gds:cost: 119, price: 184
+11783 - scheduler - INFO - id: 8, target_gds:cost: 18, price: 11
+11797 - scheduler - INFO - id: 0, target_gds:cost: 50, price: 184
+11840 - scheduler - INFO - id: 8, target_gds:cost: 66, price: 196
+11841 - scheduler - INFO - id: 9, target_gds:cost: 31, price: 186
+11848 - scheduler - INFO - zhen: 8042, boat_id: 4, ship from -1 to 2 
+11893 - scheduler - INFO - id: 5, target_gds:cost: 118, price: 193
+11893 - scheduler - INFO - id: 7, target_gds:cost: 77, price: 192
+11898 - scheduler - INFO - id: 4, target_gds:cost: 29, price: 185
+11911 - scheduler - INFO - id: 3, target_gds:cost: 146, price: 199
+11924 - scheduler - INFO - id: 9, target_gds:cost: 47, price: 181
+11935 - scheduler - INFO - id: 0, target_gds:cost: 63, price: 197
+11973 - scheduler - INFO - id: 4, target_gds:cost: 124, price: 199
+12000 - scheduler - INFO - id: 6, target_gds:cost: 141, price: 190
+12012 - scheduler - INFO - id: 8, target_gds:cost: 5, price: 196
+12024 - scheduler - INFO - id: 2, target_gds:cost: 144, price: 193
+12029 - scheduler - INFO - id: 8, target_gds:cost: 76, price: 196
+12047 - scheduler - INFO - id: 9, target_gds:cost: 50, price: 187
+12097 - scheduler - INFO - id: 7, target_gds:cost: 32, price: 199
+12105 - scheduler - INFO - id: 0, target_gds:cost: 83, price: 195
+12130 - scheduler - INFO - zhen: 8246, boat_id: 3, ship from -1 to 5 
+12217 - scheduler - INFO - id: 9, target_gds:cost: 59, price: 196
+12219 - scheduler - INFO - id: 7, target_gds:cost: 47, price: 191
+12223 - scheduler - INFO - id: 1, target_gds:cost: 112, price: 189
+12247 - scheduler - INFO - id: 5, target_gds:cost: 17, price: 182
+12267 - scheduler - INFO - id: 8, target_gds:cost: 71, price: 193
+12293 - scheduler - INFO - id: 5, target_gds:cost: 53, price: 180
+12328 - scheduler - INFO - zhen: 8382, boat_id: 0, ship from -1 to 3 
+12337 - scheduler - INFO - id: 7, target_gds:cost: 86, price: 183
+12351 - scheduler - INFO - id: 0, target_gds:cost: 36, price: 190
+12366 - scheduler - INFO - id: 9, target_gds:cost: 21, price: 197
+12376 - scheduler - INFO - id: 3, target_gds:cost: 6, price: 182
+12392 - scheduler - INFO - id: 3, target_gds:cost: 81, price: 180
+12416 - scheduler - INFO - id: 9, target_gds:cost: 81, price: 189
+12422 - scheduler - INFO - id: 5, target_gds:cost: 25, price: 182
+12443 - scheduler - INFO - id: 8, target_gds:cost: 36, price: 199
+12450 - scheduler - INFO - id: 0, target_gds:cost: 57, price: 195
+12457 - scheduler - INFO - id: 2, target_gds:cost: 114, price: 185
+12486 - scheduler - INFO - zhen: 8508, boat_id: 1, ship from -1 to 7 
+12488 - scheduler - INFO - id: 5, target_gds:cost: 46, price: 192
+12491 - scheduler - INFO - id: 4, target_gds:cost: 20, price: 197
+12517 - scheduler - INFO - id: 6, target_gds:cost: 133, price: 198
+12534 - scheduler - INFO - id: 8, target_gds:cost: 21, price: 52
+12542 - scheduler - INFO - id: 1, target_gds:cost: 14, price: 190
+12543 - scheduler - INFO - id: 4, target_gds:cost: 93, price: 196
+12555 - scheduler - INFO - id: 7, target_gds:cost: 98, price: 192
+12578 - scheduler - INFO - id: 1, target_gds:cost: 128, price: 195
+12591 - scheduler - INFO - id: 8, target_gds:cost: 80, price: 185
+12593 - scheduler - INFO - zhen: 8591, boat_id: 2, ship from -1 to 0 
+12596 - scheduler - INFO - id: 0, target_gds:cost: 78, price: 192
+12610 - scheduler - INFO - id: 5, target_gds:cost: 64, price: 185
+12624 - scheduler - INFO - zhen: 8615, boat_id: 4, go 
+12627 - scheduler - INFO - id: 9, target_gds:cost: 71, price: 191
+12641 - scheduler - INFO - id: 3, target_gds:cost: 121, price: 181
+12772 - scheduler - INFO - id: 5, target_gds:cost: 77, price: 190
+12780 - scheduler - INFO - id: 2, target_gds:cost: 122, price: 185
+12792 - scheduler - INFO - id: 8, target_gds:cost: 42, price: 18
+12794 - scheduler - INFO - id: 0, target_gds:cost: 43, price: 184
+12803 - scheduler - INFO - id: 7, target_gds:cost: 97, price: 187
+12805 - scheduler - INFO - id: 9, target_gds:cost: 23, price: 186
+12836 - scheduler - INFO - zhen: 8783, boat_id: 3, go 
+12863 - scheduler - INFO - id: 9, target_gds:cost: 33, price: 194
+12898 - scheduler - INFO - id: 8, target_gds:cost: 75, price: 191
+12903 - scheduler - INFO - id: 0, target_gds:cost: 92, price: 199
+12941 - scheduler - INFO - id: 1, target_gds:cost: 6, price: 199
+12946 - scheduler - INFO - id: 9, target_gds:cost: 40, price: 197
+12957 - scheduler - INFO - id: 1, target_gds:cost: 74, price: 182
+12963 - scheduler - INFO - id: 6, target_gds:cost: 77, price: 180
+12977 - scheduler - INFO - id: 5, target_gds:cost: 95, price: 190
+12981 - scheduler - INFO - id: 4, target_gds:cost: 13, price: 184
+12995 - scheduler - INFO - id: 3, target_gds:cost: 144, price: 194
+12996 - scheduler - INFO - zhen: 8907, boat_id: 0, go 
+13012 - scheduler - INFO - id: 4, target_gds:cost: 29, price: 187
+13049 - scheduler - INFO - id: 7, target_gds:cost: 112, price: 191
+13051 - scheduler - INFO - id: 9, target_gds:cost: 22, price: 199
+13080 - scheduler - INFO - id: 4, target_gds:cost: 54, price: 85
+13104 - scheduler - INFO - id: 9, target_gds:cost: 37, price: 180
+13121 - scheduler - INFO - id: 2, target_gds:cost: 142, price: 188
+13133 - scheduler - INFO - id: 0, target_gds:cost: 4, price: 181
+13140 - scheduler - INFO - id: 8, target_gds:cost: 78, price: 198
+13144 - scheduler - INFO - id: 0, target_gds:cost: 58, price: 190
+13165 - scheduler - INFO - zhen: 9045, boat_id: 1, go 
+13199 - scheduler - INFO - id: 9, target_gds:cost: 50, price: 186
+13213 - scheduler - INFO - id: 5, target_gds:cost: 104, price: 191
+13216 - scheduler - INFO - id: 1, target_gds:cost: 23, price: 200
+13218 - scheduler - INFO - id: 4, target_gds:cost: 12, price: 200
+13248 - scheduler - INFO - id: 4, target_gds:cost: 79, price: 200
+13258 - scheduler - INFO - id: 6, target_gds:cost: 85, price: 181
+13276 - scheduler - INFO - id: 1, target_gds:cost: 80, price: 182
+13291 - scheduler - INFO - id: 0, target_gds:cost: 37, price: 194
+13316 - scheduler - INFO - zhen: 9164, boat_id: 2, go 
+13324 - scheduler - INFO - id: 9, target_gds:cost: 11, price: 59
+13332 - scheduler - INFO - id: 7, target_gds:cost: 64, price: 188
+13345 - scheduler - INFO - id: 8, target_gds:cost: 91, price: 198
+13359 - scheduler - INFO - id: 9, target_gds:cost: 53, price: 197
+13390 - scheduler - INFO - id: 0, target_gds:cost: 101, price: 193
+13400 - scheduler - INFO - id: 3, target_gds:cost: 118, price: 183
+13494 - scheduler - INFO - id: 5, target_gds:cost: 14, price: 180
+13505 - scheduler - INFO - id: 9, target_gds:cost: 57, price: 200
+13508 - scheduler - INFO - id: 7, target_gds:cost: 109, price: 189
+13522 - scheduler - INFO - id: 2, target_gds:cost: 146, price: 182
+13534 - scheduler - INFO - id: 5, target_gds:cost: 105, price: 188
+13571 - scheduler - INFO - id: 1, target_gds:cost: 74, price: 194
+13652 - scheduler - INFO - id: 9, target_gds:cost: 54, price: 189
+13657 - scheduler - INFO - id: 0, target_gds:cost: 44, price: 196
+13659 - scheduler - INFO - id: 4, target_gds:cost: 19, price: 183
+13705 - scheduler - INFO - id: 4, target_gds:cost: 58, price: 194
+13738 - scheduler - INFO - id: 6, target_gds:cost: 112, price: 184
+13759 - scheduler - INFO - id: 3, target_gds:cost: 107, price: 183
+13769 - scheduler - INFO - id: 0, target_gds:cost: 44, price: 192
+13785 - scheduler - INFO - id: 7, target_gds:cost: 89, price: 189
+13788 - scheduler - INFO - id: 9, target_gds:cost: 57, price: 193
+13800 - scheduler - INFO - id: 5, target_gds:cost: 26, price: 192
+13814 - scheduler - INFO - id: 8, target_gds:cost: 32, price: 193
+13855 - scheduler - INFO - id: 4, target_gds:cost: 123, price: 196
+13868 - scheduler - INFO - id: 5, target_gds:cost: 61, price: 196
+13881 - scheduler - INFO - id: 0, target_gds:cost: 44, price: 189
+13894 - scheduler - INFO - id: 1, target_gds:cost: 14, price: 200
+13896 - scheduler - INFO - id: 8, target_gds:cost: 39, price: 189
+13922 - scheduler - INFO - zhen: 9628, boat_id: 4, ship from -1 to 4 
+13927 - scheduler - INFO - id: 2, target_gds:cost: 140, price: 181
+13930 - scheduler - INFO - id: 1, target_gds:cost: 19, price: 189
+13937 - scheduler - INFO - id: 9, target_gds:cost: 69, price: 184
+13978 - scheduler - INFO - id: 1, target_gds:cost: 106, price: 180
+13994 - scheduler - INFO - id: 0, target_gds:cost: 49, price: 200
+13998 - scheduler - INFO - id: 8, target_gds:cost: 49, price: 185
+14049 - scheduler - INFO - id: 5, target_gds:cost: 66, price: 187
+14063 - scheduler - INFO - zhen: 9725, boat_id: 0, ship from -1 to 9 
+14078 - scheduler - INFO - zhen: 9736, boat_id: 3, ship from -1 to 1 
+14080 - scheduler - INFO - id: 7, target_gds:cost: 35, price: 186
+14086 - scheduler - INFO - id: 3, target_gds:cost: 118, price: 181
+14126 - scheduler - INFO - id: 9, target_gds:cost: 86, price: 185
+14136 - scheduler - INFO - id: 0, target_gds:cost: 94, price: 190
+14140 - scheduler - INFO - id: 8, target_gds:cost: 42, price: 197
+14157 - scheduler - INFO - id: 6, target_gds:cost: 115, price: 192
+14171 - scheduler - INFO - id: 7, target_gds:cost: 65, price: 196
+14222 - scheduler - INFO - id: 5, target_gds:cost: 19, price: 198
+14246 - scheduler - INFO - zhen: 9866, boat_id: 1, ship from -1 to 6 
+14249 - scheduler - INFO - id: 8, target_gds:cost: 84, price: 26
+14277 - scheduler - INFO - id: 5, target_gds:cost: 16, price: 186
+14318 - scheduler - INFO - id: 1, target_gds:cost: 122, price: 187
+14321 - scheduler - INFO - id: 5, target_gds:cost: 36, price: 181
+14345 - scheduler - INFO - id: 2, target_gds:cost: 116, price: 197
+14373 - scheduler - INFO - id: 9, target_gds:cost: 32, price: 183
+14380 - scheduler - INFO - id: 4, target_gds:cost: 23, price: 184
+14400 - scheduler - INFO - zhen: 9964, boat_id: 2, ship from -1 to 8 
+14410 - scheduler - INFO - id: 0, target_gds:cost: 109, price: 198
+14429 - scheduler - INFO - id: 7, target_gds:cost: 78, price: 198
+14445 - scheduler - INFO - id: 5, target_gds:cost: 69, price: 183
+14448 - scheduler - INFO - id: 4, target_gds:cost: 28, price: 198
+14465 - scheduler - INFO - id: 9, target_gds:cost: 36, price: 188
+14474 - scheduler - INFO - id: 3, target_gds:cost: 157, price: 199
+14519 - scheduler - INFO - id: 4, target_gds:cost: 18, price: 192
+14559 - scheduler - INFO - id: 9, target_gds:cost: 37, price: 186
+14568 - scheduler - INFO - id: 4, target_gds:cost: 34, price: 55
+14597 - scheduler - INFO - id: 6, target_gds:cost: 107, price: 185
+14625 - scheduler - INFO - id: 5, target_gds:cost: 75, price: 186
+14627 - scheduler - INFO - id: 7, target_gds:cost: 81, price: 192
+14654 - scheduler - INFO - id: 4, target_gds:cost: 74, price: 184
+14655 - scheduler - INFO - id: 9, target_gds:cost: 37, price: 188
+14697 - scheduler - INFO - id: 0, target_gds:cost: 7, price: 195
+14706 - scheduler - INFO - id: 2, target_gds:cost: 158, price: 198
+14717 - scheduler - INFO - id: 0, target_gds:cost: 110, price: 181
+14721 - scheduler - INFO - id: 1, target_gds:cost: 75, price: 181
+14735 - scheduler - INFO - id: 8, target_gds:cost: 67, price: 183
+14754 - scheduler - INFO - id: 9, target_gds:cost: 44, price: 180
+14831 - scheduler - INFO - id: 5, target_gds:cost: 121, price: 196
+14845 - scheduler - INFO - id: 7, target_gds:cost: 67, price: 184
+14875 - scheduler - INFO - id: 9, target_gds:cost: 49, price: 197
+14950 - scheduler - INFO - id: 3, target_gds:cost: 118, price: 182
+14964 - scheduler - INFO - id: 8, target_gds:cost: 77, price: 24
+14992 - scheduler - INFO - id: 6, target_gds:cost: 7, price: 6
+14996 - scheduler - INFO - id: 1, target_gds:cost: 88, price: 187
+15001 - scheduler - INFO - id: 9, target_gds:cost: 15, price: 189
+15012 - scheduler - INFO - id: 0, target_gds:cost: 87, price: 186
+15013 - scheduler - INFO - id: 6, target_gds:cost: 145, price: 180
+15024 - scheduler - INFO - id: 7, target_gds:cost: 65, price: 181
+15041 - scheduler - INFO - id: 9, target_gds:cost: 53, price: 196
+15059 - scheduler - INFO - id: 4, target_gds:cost: 6, price: 198
+15076 - scheduler - INFO - id: 4, target_gds:cost: 99, price: 186
+15155 - scheduler - INFO - id: 2, target_gds:cost: 143, price: 190
+15156 - scheduler - INFO - id: 5, target_gds:cost: 15, price: 194
+15171 - scheduler - INFO - id: 8, target_gds:cost: 78, price: 195
+15183 - scheduler - INFO - id: 9, target_gds:cost: 57, price: 198
+15194 - scheduler - INFO - id: 5, target_gds:cost: 97, price: 182
+15196 - scheduler - INFO - id: 7, target_gds:cost: 8, price: 87
+15213 - scheduler - INFO - id: 7, target_gds:cost: 23, price: 199
+15237 - scheduler - INFO - id: 0, target_gds:cost: 95, price: 184
+15264 - scheduler - INFO - id: 1, target_gds:cost: 5, price: 199
+15272 - scheduler - INFO - id: 7, target_gds:cost: 60, price: 188
+15277 - scheduler - INFO - id: 1, target_gds:cost: 104, price: 198
+15296 - scheduler - INFO - id: 3, target_gds:cost: 137, price: 184
+15333 - scheduler - INFO - id: 9, target_gds:cost: 56, price: 190
+15412 - scheduler - INFO - zhen: 10723, boat_id: 4, ship from -1 to 2 
+15448 - scheduler - INFO - id: 7, target_gds:cost: 82, price: 181
+15459 - scheduler - INFO - id: 5, target_gds:cost: 108, price: 198
+15486 - scheduler - INFO - id: 9, target_gds:cost: 49, price: 190
+15497 - scheduler - INFO - id: 0, target_gds:cost: 48, price: 190
+15513 - scheduler - INFO - id: 6, target_gds:cost: 165, price: 199
+15544 - scheduler - INFO - id: 4, target_gds:cost: 28, price: 180
+15575 - scheduler - INFO - id: 2, target_gds:cost: 162, price: 193
+15606 - scheduler - INFO - id: 1, target_gds:cost: 97, price: 194
+15610 - scheduler - INFO - zhen: 10873, boat_id: 3, ship from -1 to 5 
+15616 - scheduler - INFO - id: 4, target_gds:cost: 32, price: 193
+15620 - scheduler - INFO - id: 9, target_gds:cost: 59, price: 189
+15625 - scheduler - INFO - id: 0, target_gds:cost: 101, price: 195
+15627 - scheduler - INFO - id: 8, target_gds:cost: 48, price: 185
+15701 - scheduler - INFO - id: 7, target_gds:cost: 38, price: 198
+15710 - scheduler - INFO - id: 4, target_gds:cost: 68, price: 200
+15737 - scheduler - INFO - id: 3, target_gds:cost: 140, price: 186
+15754 - scheduler - INFO - id: 5, target_gds:cost: 10, price: 187
+15762 - scheduler - INFO - id: 8, target_gds:cost: 51, price: 180
+15782 - scheduler - INFO - id: 5, target_gds:cost: 115, price: 199
+15784 - scheduler - INFO - id: 9, target_gds:cost: 51, price: 186
+15804 - scheduler - INFO - id: 7, target_gds:cost: 5, price: 191
+15809 - scheduler - INFO - zhen: 11015, boat_id: 0, ship from -1 to 3 
+15820 - scheduler - INFO - id: 7, target_gds:cost: 88, price: 194
+15892 - scheduler - INFO - zhen: 11070, boat_id: 1, ship from -1 to 7 
+15902 - scheduler - INFO - id: 4, target_gds:cost: 67, price: 197
+15909 - scheduler - INFO - id: 8, target_gds:cost: 53, price: 186
+15913 - scheduler - INFO - id: 0, target_gds:cost: 38, price: 187
+15929 - scheduler - INFO - id: 9, target_gds:cost: 57, price: 197
+15933 - scheduler - INFO - zhen: 11104, boat_id: 2, ship from -1 to 0 
+15943 - scheduler - INFO - id: 1, target_gds:cost: 97, price: 187
+16006 - scheduler - INFO - id: 0, target_gds:cost: 29, price: 180
+16034 - scheduler - INFO - id: 2, target_gds:cost: 125, price: 186
+16038 - scheduler - INFO - id: 8, target_gds:cost: 44, price: 34
+16052 - scheduler - INFO - id: 7, target_gds:cost: 88, price: 184
+16061 - scheduler - INFO - id: 6, target_gds:cost: 75, price: 200
+16065 - scheduler - INFO - id: 4, target_gds:cost: 128, price: 180
+16070 - scheduler - INFO - id: 9, target_gds:cost: 6, price: 198
+16078 - scheduler - INFO - id: 0, target_gds:cost: 47, price: 181
+16086 - scheduler - INFO - id: 9, target_gds:cost: 32, price: 191
+16090 - scheduler - INFO - id: 5, target_gds:cost: 86, price: 190
+16151 - scheduler - INFO - id: 8, target_gds:cost: 45, price: 24
+16163 - scheduler - INFO - id: 3, target_gds:cost: 157, price: 193
+16168 - scheduler - INFO - id: 9, target_gds:cost: 59, price: 182
+16174 - scheduler - INFO - zhen: 11296, boat_id: 4, go 
+16209 - scheduler - INFO - id: 0, target_gds:cost: 29, price: 187
+16227 - scheduler - INFO - id: 1, target_gds:cost: 119, price: 185
+16274 - scheduler - INFO - id: 8, target_gds:cost: 130, price: 194
+16296 - scheduler - INFO - id: 0, target_gds:cost: 52, price: 199
+16322 - scheduler - INFO - id: 7, target_gds:cost: 76, price: 184
+16324 - scheduler - INFO - id: 5, target_gds:cost: 80, price: 193
+16332 - scheduler - INFO - id: 9, target_gds:cost: 80, price: 199
+16335 - scheduler - INFO - zhen: 11410, boat_id: 3, go 
+16426 - scheduler - INFO - id: 2, target_gds:cost: 122, price: 184
+16454 - scheduler - INFO - id: 0, target_gds:cost: 56, price: 186
+16514 - scheduler - INFO - id: 6, target_gds:cost: 65, price: 188
+16524 - scheduler - INFO - zhen: 11540, boat_id: 0, go 
+16541 - scheduler - INFO - id: 7, target_gds:cost: 11, price: 190
+16555 - scheduler - INFO - id: 5, target_gds:cost: 64, price: 191
+16559 - scheduler - INFO - id: 9, target_gds:cost: 64, price: 199
+16567 - scheduler - INFO - id: 7, target_gds:cost: 73, price: 187
+16611 - scheduler - INFO - id: 0, target_gds:cost: 84, price: 193
+16615 - scheduler - INFO - id: 4, target_gds:cost: 5, price: 192
+16640 - scheduler - INFO - zhen: 11607, boat_id: 1, go 
+16643 - scheduler - INFO - id: 4, target_gds:cost: 18, price: 193
+16676 - scheduler - INFO - id: 3, target_gds:cost: 118, price: 199
+16692 - scheduler - INFO - id: 1, target_gds:cost: 98, price: 187
+16694 - scheduler - INFO - id: 4, target_gds:cost: 20, price: 190
+16733 - scheduler - INFO - zhen: 11677, boat_id: 2, go 
+16733 - scheduler - INFO - id: 6, target_gds:cost: 10, price: 196
+16742 - scheduler - INFO - id: 4, target_gds:cost: 30, price: 184
+16753 - scheduler - INFO - id: 5, target_gds:cost: 98, price: 190
+16757 - scheduler - INFO - id: 6, target_gds:cost: 137, price: 185
+16758 - scheduler - INFO - id: 9, target_gds:cost: 86, price: 191
+16788 - scheduler - INFO - id: 7, target_gds:cost: 98, price: 197
+16801 - scheduler - INFO - id: 2, target_gds:cost: 170, price: 199
+16807 - scheduler - INFO - id: 8, target_gds:cost: 99, price: 188
+16817 - scheduler - INFO - id: 4, target_gds:cost: 36, price: 191
+16841 - scheduler - INFO - id: 0, target_gds:cost: 55, price: 190
+16910 - scheduler - INFO - id: 4, target_gds:cost: 45, price: 198
+16977 - scheduler - INFO - id: 9, target_gds:cost: 101, price: 187
+16986 - scheduler - INFO - id: 0, target_gds:cost: 94, price: 188
+17004 - scheduler - INFO - id: 5, target_gds:cost: 84, price: 181
+17011 - scheduler - INFO - id: 3, target_gds:cost: 125, price: 182
+17018 - scheduler - INFO - id: 1, target_gds:cost: 4, price: 197
+17025 - scheduler - INFO - id: 4, target_gds:cost: 24, price: 93
+17028 - scheduler - INFO - id: 1, target_gds:cost: 124, price: 193
+17042 - scheduler - INFO - id: 7, target_gds:cost: 72, price: 191
+17060 - scheduler - INFO - id: 8, target_gds:cost: 43, price: 200
+17083 - scheduler - INFO - id: 4, target_gds:cost: 49, price: 180
+17163 - scheduler - INFO - id: 8, target_gds:cost: 106, price: 189
+17202 - scheduler - INFO - id: 4, target_gds:cost: 69, price: 200
+17203 - scheduler - INFO - id: 6, target_gds:cost: 15, price: 197
+17208 - scheduler - INFO - id: 5, target_gds:cost: 59, price: 199
+17213 - scheduler - INFO - id: 7, target_gds:cost: 82, price: 198
+17215 - scheduler - INFO - id: 0, target_gds:cost: 32, price: 182
+17226 - scheduler - INFO - id: 9, target_gds:cost: 41, price: 190
+17240 - scheduler - INFO - id: 6, target_gds:cost: 112, price: 183
+17253 - scheduler - INFO - id: 2, target_gds:cost: 11, price: 194
+17279 - scheduler - INFO - id: 2, target_gds:cost: 124, price: 191
+17295 - scheduler - INFO - id: 0, target_gds:cost: 73, price: 200
+17335 - scheduler - INFO - id: 9, target_gds:cost: 46, price: 192
+17360 - scheduler - INFO - id: 3, target_gds:cost: 104, price: 181
+17370 - scheduler - INFO - id: 5, target_gds:cost: 35, price: 71
+17378 - scheduler - INFO - id: 1, target_gds:cost: 113, price: 192
+17384 - scheduler - INFO - id: 4, target_gds:cost: 140, price: 196
+17472 - scheduler - INFO - id: 9, target_gds:cost: 17, price: 190
+17479 - scheduler - INFO - id: 5, target_gds:cost: 110, price: 198
+17482 - scheduler - INFO - id: 7, target_gds:cost: 11, price: 190
+17509 - scheduler - INFO - id: 7, target_gds:cost: 52, price: 200
+17516 - scheduler - INFO - id: 9, target_gds:cost: 49, price: 182
+17531 - scheduler - INFO - id: 0, target_gds:cost: 57, price: 187
+17555 - scheduler - INFO - zhen: 12309, boat_id: 4 last_run_start 
+17555 - scheduler - INFO - zhen: 12309, boat_id: 4, ship from -1 to 4 
+17588 - scheduler - INFO - id: 8, target_gds:cost: 24, price: 200
+17624 - scheduler - INFO - zhen: 12357, boat_id: 0 last_run_start 
+17625 - scheduler - INFO - zhen: 12358, boat_id: 0, ship from -1 to 9 
+17634 - scheduler - INFO - zhen: 12363, boat_id: 3 last_run_start 
+17634 - scheduler - INFO - zhen: 12363, boat_id: 3, ship from -1 to 1 
+17654 - scheduler - INFO - id: 9, target_gds:cost: 55, price: 192
+17658 - scheduler - INFO - id: 7, target_gds:cost: 8, price: 181
+17663 - scheduler - INFO - id: 8, target_gds:cost: 17, price: 183
+17667 - scheduler - INFO - id: 2, target_gds:cost: 9, price: 185
+17674 - scheduler - INFO - id: 6, target_gds:cost: 76, price: 181
+17687 - scheduler - INFO - id: 7, target_gds:cost: 88, price: 190
+17696 - scheduler - INFO - id: 2, target_gds:cost: 19, price: 199
+17703 - scheduler - INFO - id: 0, target_gds:cost: 37, price: 194
+17706 - scheduler - INFO - id: 3, target_gds:cost: 112, price: 182
+17721 - scheduler - INFO - id: 8, target_gds:cost: 46, price: 200
+17741 - scheduler - INFO - zhen: 12428, boat_id: 1 last_run_start 
+17741 - scheduler - INFO - zhen: 12428, boat_id: 1, ship from -1 to 6 
+17754 - scheduler - INFO - id: 2, target_gds:cost: 126, price: 183
+17780 - scheduler - INFO - id: 1, target_gds:cost: 118, price: 199
+17797 - scheduler - INFO - id: 5, target_gds:cost: 16, price: 181
+17802 - scheduler - INFO - zhen: 12477, boat_id: 2 last_run_start 
+17802 - scheduler - INFO - zhen: 12477, boat_id: 2, ship from -1 to 8 
+17804 - scheduler - INFO - id: 0, target_gds:cost: 63, price: 195
+17814 - scheduler - INFO - id: 9, target_gds:cost: 19, price: 187
+17839 - scheduler - INFO - id: 5, target_gds:cost: 17, price: 198
+17841 - scheduler - INFO - id: 8, target_gds:cost: 38, price: 188
+17864 - scheduler - INFO - id: 9, target_gds:cost: 40, price: 181
+17883 - scheduler - INFO - id: 5, target_gds:cost: 38, price: 192
+17918 - scheduler - INFO - id: 7, target_gds:cost: 39, price: 183
+17937 - scheduler - INFO - id: 8, target_gds:cost: 77, price: 199
+17956 - scheduler - INFO - id: 4, target_gds:cost: 27, price: 192
+17963 - scheduler - INFO - id: 0, target_gds:cost: 66, price: 196
+17963 - scheduler - INFO - id: 9, target_gds:cost: 58, price: 186
+17978 - scheduler - INFO - id: 5, target_gds:cost: 91, price: 181
+18017 - scheduler - INFO - id: 7, target_gds:cost: 82, price: 186
+18023 - scheduler - INFO - id: 4, target_gds:cost: 67, price: 183
+18036 - scheduler - INFO - id: 3, target_gds:cost: 107, price: 188
+18053 - scheduler - INFO - id: 6, target_gds:cost: 17, price: 191
+18102 - scheduler - INFO - id: 6, target_gds:cost: 65, price: 189
+18105 - scheduler - INFO - id: 2, target_gds:cost: 113, price: 193
+18118 - scheduler - INFO - id: 9, target_gds:cost: 20, price: 181
+18135 - scheduler - INFO - id: 1, target_gds:cost: 9, price: 180
+18143 - scheduler - INFO - id: 0, target_gds:cost: 78, price: 197
+18157 - scheduler - INFO - id: 1, target_gds:cost: 105, price: 195
+18168 - scheduler - INFO - id: 9, target_gds:cost: 62, price: 194
+18196 - scheduler - INFO - id: 4, target_gds:cost: 21, price: 197
+18212 - scheduler - INFO - id: 5, target_gds:cost: 82, price: 181
+18227 - scheduler - INFO - id: 7, target_gds:cost: 62, price: 185
+18247 - scheduler - INFO - id: 4, target_gds:cost: 25, price: 5
+18310 - scheduler - INFO - id: 4, target_gds:cost: 68, price: 184
+18321 - scheduler - INFO - id: 9, target_gds:cost: 29, price: 182
+18339 - scheduler - INFO - id: 0, target_gds:cost: 85, price: 193
+18342 - scheduler - INFO - id: 3, target_gds:cost: 109, price: 194
+18369 - scheduler - INFO - id: 8, target_gds:cost: 3, price: 185
+18376 - scheduler - INFO - id: 8, target_gds:cost: 22, price: 197
+18390 - scheduler - INFO - id: 7, target_gds:cost: 48, price: 191
+18402 - scheduler - INFO - id: 9, target_gds:cost: 41, price: 195
+18422 - scheduler - INFO - id: 2, target_gds:cost: 107, price: 185
+18427 - scheduler - INFO - id: 5, target_gds:cost: 10, price: 190
+18435 - scheduler - INFO - id: 8, target_gds:cost: 38, price: 193
+18453 - scheduler - INFO - id: 6, target_gds:cost: 120, price: 188
+18458 - scheduler - INFO - id: 5, target_gds:cost: 14, price: 190
+18493 - scheduler - INFO - id: 5, target_gds:cost: 81, price: 191
+18511 - scheduler - INFO - id: 9, target_gds:cost: 52, price: 181
+18513 - scheduler - INFO - id: 1, target_gds:cost: 3, price: 197
+18519 - scheduler - INFO - id: 7, target_gds:cost: 82, price: 194
+18521 - scheduler - INFO - id: 1, target_gds:cost: 3, price: 193
+18529 - scheduler - INFO - id: 1, target_gds:cost: 27, price: 181
+18538 - scheduler - INFO - id: 8, target_gds:cost: 43, price: 187
+18570 - scheduler - INFO - id: 0, target_gds:cost: 86, price: 193
+18604 - scheduler - INFO - id: 1, target_gds:cost: 83, price: 185
+18651 - scheduler - INFO - id: 9, target_gds:cost: 70, price: 192
+18654 - scheduler - INFO - id: 8, target_gds:cost: 75, price: 192
+18689 - scheduler - INFO - id: 3, target_gds:cost: 85, price: 188
+18698 - scheduler - INFO - id: 4, target_gds:cost: 51, price: 191
+18706 - scheduler - INFO - id: 5, target_gds:cost: 88, price: 197
+18729 - scheduler - INFO - id: 7, target_gds:cost: 51, price: 199
+18743 - scheduler - INFO - id: 2, target_gds:cost: 118, price: 199
+18792 - scheduler - INFO - id: 0, target_gds:cost: 160, price: 180
+18827 - scheduler - INFO - id: 4, target_gds:cost: 44, price: 189
+18828 - scheduler - INFO - id: 9, target_gds:cost: 67, price: 195
+18841 - scheduler - INFO - id: 8, target_gds:cost: 74, price: 181
+18864 - scheduler - INFO - id: 7, target_gds:cost: 93, price: 192
+18875 - scheduler - INFO - id: 6, target_gds:cost: 73, price: 180
+18891 - scheduler - INFO - id: 1, target_gds:cost: 113, price: 196
+18935 - scheduler - INFO - id: 5, target_gds:cost: 98, price: 196
+18941 - scheduler - INFO - id: 4, target_gds:cost: 11, price: 199
+18945 - scheduler - INFO - id: 3, target_gds:cost: 123, price: 191
+18970 - scheduler - INFO - id: 4, target_gds:cost: 80, price: 186
+19000 - scheduler - INFO - id: 9, target_gds:cost: 53, price: 180
+19028 - scheduler - INFO - zhen: 13427, boat_id: 4, ship from -1 to 2 
+19034 - scheduler - INFO - id: 8, target_gds:cost: 79, price: 180
+19077 - scheduler - INFO - id: 2, target_gds:cost: 130, price: 195
+19100 - scheduler - INFO - id: 7, target_gds:cost: 48, price: 190
+19123 - scheduler - INFO - id: 6, target_gds:cost: 101, price: 195
+19137 - scheduler - INFO - id: 9, target_gds:cost: 33, price: 200
+19145 - scheduler - INFO - zhen: 13516, boat_id: 3, ship from -1 to 5 
+19231 - scheduler - INFO - id: 5, target_gds:cost: 133, price: 191
+19242 - scheduler - INFO - id: 0, target_gds:cost: 29, price: 200
+19262 - scheduler - INFO - id: 7, target_gds:cost: 16, price: 184
+19302 - scheduler - INFO - id: 7, target_gds:cost: 68, price: 190
+19308 - scheduler - INFO - id: 3, target_gds:cost: 3, price: 195
+19314 - scheduler - INFO - id: 0, target_gds:cost: 49, price: 185
+19317 - scheduler - INFO - id: 3, target_gds:cost: 40, price: 186
+19334 - scheduler - INFO - id: 4, target_gds:cost: 76, price: 190
+19341 - scheduler - INFO - zhen: 13642, boat_id: 2, ship from -1 to 0 
+19353 - scheduler - INFO - zhen: 13652, boat_id: 1, ship from -1 to 7 
+19370 - scheduler - INFO - zhen: 13666, boat_id: 0, ship from -1 to 3 
+19416 - scheduler - INFO - id: 6, target_gds:cost: 61, price: 200
+19420 - scheduler - INFO - id: 8, target_gds:cost: 81, price: 184
+19435 - scheduler - INFO - id: 0, target_gds:cost: 84, price: 192
+19471 - scheduler - INFO - id: 2, target_gds:cost: 82, price: 188
+19479 - scheduler - INFO - id: 9, target_gds:cost: 81, price: 181
+19482 - scheduler - INFO - id: 3, target_gds:cost: 40, price: 195
+19488 - scheduler - INFO - id: 7, target_gds:cost: 95, price: 180
+19595 - scheduler - INFO - id: 5, target_gds:cost: 69, price: 196
+19603 - scheduler - INFO - id: 6, target_gds:cost: 103, price: 197
+19622 - scheduler - INFO - id: 1, target_gds:cost: 51, price: 194
+19647 - scheduler - INFO - id: 8, target_gds:cost: 109, price: 192
+19671 - scheduler - INFO - id: 3, target_gds:cost: 42, price: 199
+19690 - scheduler - INFO - id: 0, target_gds:cost: 76, price: 197
+19753 - scheduler - INFO - id: 2, target_gds:cost: 34, price: 193
+19763 - scheduler - INFO - id: 4, target_gds:cost: 37, price: 186
+19764 - scheduler - INFO - id: 9, target_gds:cost: 79, price: 183
+19775 - scheduler - INFO - id: 7, target_gds:cost: 105, price: 196
+19779 - scheduler - INFO - id: 1, target_gds:cost: 31, price: 191
+19804 - scheduler - INFO - id: 5, target_gds:cost: 100, price: 200
+19820 - scheduler - INFO - zhen: 13982, boat_id: 4, go 
+19865 - scheduler - INFO - id: 1, target_gds:cost: 46, price: 180
+19868 - scheduler - INFO - id: 3, target_gds:cost: 40, price: 183
+19885 - scheduler - INFO - id: 2, target_gds:cost: 84, price: 196
+19905 - scheduler - INFO - zhen: 14042, boat_id: 3, go 
+19912 - scheduler - INFO - id: 6, target_gds:cost: 120, price: 180
+19928 - scheduler - INFO - id: 0, target_gds:cost: 64, price: 193
+19940 - scheduler - INFO - id: 4, target_gds:cost: 72, price: 193
+19971 - scheduler - INFO - id: 8, target_gds:cost: 85, price: 186
+19990 - scheduler - INFO - id: 1, target_gds:cost: 77, price: 195
+20036 - scheduler - INFO - id: 9, target_gds:cost: 12, price: 200
+20043 - scheduler - INFO - id: 3, target_gds:cost: 49, price: 190
+20064 - scheduler - INFO - id: 7, target_gds:cost: 32, price: 196
+20075 - scheduler - INFO - zhen: 14174, boat_id: 1, go 
+20075 - scheduler - INFO - id: 5, target_gds:cost: 80, price: 185
+20079 - scheduler - INFO - zhen: 14177, boat_id: 0, go 
+20086 - scheduler - INFO - id: 9, target_gds:cost: 12, price: 196
+20094 - scheduler - INFO - id: 0, target_gds:cost: 95, price: 189
+20104 - scheduler - INFO - zhen: 14195, boat_id: 2, go 
+20138 - scheduler - INFO - id: 2, target_gds:cost: 30, price: 190
+20149 - scheduler - INFO - id: 7, target_gds:cost: 113, price: 194
+20171 - scheduler - INFO - id: 3, target_gds:cost: 4, price: 180
+20195 - scheduler - INFO - id: 1, target_gds:cost: 101, price: 192
+20198 - scheduler - INFO - id: 4, target_gds:cost: 52, price: 193
+20205 - scheduler - INFO - id: 9, target_gds:cost: 103, price: 189
+20223 - scheduler - INFO - id: 8, target_gds:cost: 111, price: 184
+20230 - scheduler - INFO - id: 6, target_gds:cost: 131, price: 190
+20297 - scheduler - INFO - id: 5, target_gds:cost: 54, price: 197
+20345 - scheduler - INFO - id: 0, target_gds:cost: 82, price: 187
+20358 - scheduler - INFO - id: 3, target_gds:cost: 15, price: 199
+20429 - scheduler - INFO - id: 2, target_gds:cost: 7, price: 200
+20442 - scheduler - INFO - id: 5, target_gds:cost: 27, price: 180
+20452 - scheduler - INFO - id: 7, target_gds:cost: 119, price: 197
+20456 - scheduler - INFO - id: 4, target_gds:cost: 3, price: 187
+20464 - scheduler - INFO - id: 2, target_gds:cost: 17, price: 92
+20466 - scheduler - INFO - id: 3, target_gds:cost: 71, price: 184
+20494 - scheduler - INFO - id: 1, target_gds:cost: 12, price: 188
+20521 - scheduler - INFO - id: 5, target_gds:cost: 134, price: 193
+20526 - scheduler - INFO - id: 1, target_gds:cost: 104, price: 187
+20527 - scheduler - INFO - id: 8, target_gds:cost: 70, price: 184
+20531 - scheduler - INFO - id: 4, target_gds:cost: 32, price: 197
+20541 - scheduler - INFO - id: 2, target_gds:cost: 138, price: 191
+20587 - scheduler - INFO - id: 9, target_gds:cost: 79, price: 200
+20593 - scheduler - INFO - id: 0, target_gds:cost: 105, price: 182
+20597 - scheduler - INFO - id: 6, target_gds:cost: 144, price: 193
+20720 - scheduler - INFO - id: 8, target_gds:cost: 119, price: 184
+20731 - scheduler - INFO - id: 3, target_gds:cost: 36, price: 191
+20791 - scheduler - INFO - id: 7, target_gds:cost: 67, price: 185
+20816 - scheduler - INFO - id: 1, target_gds:cost: 63, price: 193
+20830 - scheduler - INFO - id: 4, target_gds:cost: 50, price: 192
+20893 - scheduler - INFO - id: 5, target_gds:cost: 114, price: 196
+20908 - scheduler - INFO - id: 0, target_gds:cost: 106, price: 186
+20935 - scheduler - INFO - id: 9, target_gds:cost: 3, price: 182
+20944 - scheduler - INFO - id: 9, target_gds:cost: 5, price: 187
+20955 - scheduler - INFO - id: 2, target_gds:cost: 105, price: 180
+20972 - scheduler - INFO - id: 4, target_gds:cost: 69, price: 194
+20977 - scheduler - INFO - id: 7, target_gds:cost: 69, price: 187
+20993 - scheduler - INFO - id: 6, target_gds:cost: 123, price: 185
+21002 - scheduler - INFO - id: 1, target_gds:cost: 93, price: 183
+21046 - scheduler - INFO - id: 3, target_gds:cost: 56, price: 180
+21077 - scheduler - INFO - id: 8, target_gds:cost: 6, price: 199
+21090 - scheduler - INFO - id: 8, target_gds:cost: 112, price: 189
+21155 - scheduler - INFO - id: 7, target_gds:cost: 123, price: 200
+21160 - scheduler - INFO - id: 9, target_gds:cost: 46, price: 190
+21183 - scheduler - INFO - zhen: 14995, boat_id: 0, ship from -1 to 9 
+21183 - scheduler - INFO - zhen: 14995, boat_id: 1, ship from -1 to 6 
+21183 - scheduler - INFO - zhen: 14995, boat_id: 2, ship from -1 to 8 
+21184 - scheduler - INFO - zhen: 14995, boat_id: 3, ship from -1 to 1 
+21184 - scheduler - INFO - zhen: 14995, boat_id: 4, ship from -1 to 4 
+21185 - scheduler - INFO - id: 0, target_gds:cost: 39, price: 196

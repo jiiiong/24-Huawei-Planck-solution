@@ -24,6 +24,8 @@ class Env:
     id:int = 0
 
     total_map_gds_value:int = 0
+
+
     
     def __init__(self):
         self.ch: List[List[str]] = []#每行只有一个元素
